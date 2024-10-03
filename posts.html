@@ -1,17 +1,28 @@
-<!-- posts.html (블로그 게시판) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>블로그 게시판</title>
+    <title>선수 데이터 보기</title>
+    <script>
+        async function fetchPlayerData() {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec');
+            const data = await response.json();
+
+            let html = '<table><tr><th>이름</th><th>포지션</th><th>점수</th></tr>';
+            data.forEach(player => {
+                html += `<tr><td>${player.이름}</td><td>${player.포지션}</td><td>${player.점수}</td></tr>`;
+            });
+            html += '</table>';
+
+            document.getElementById('playerData').innerHTML = html;
+        }
+
+        window.onload = fetchPlayerData;
+    </script>
 </head>
 <body>
-    <h1>블로그 게시판</h1>
-    <ul>
-        <li><a href="post1.html">첫 번째 블로그 포스트</a></li>
-        <li><a href="post2.html">두 번째 블로그 포스트</a></li>
-    </ul>
-    <a href="index.html">메인 페이지로 돌아가기</a>
+    <h1>선수 데이터</h1>
+    <div id="playerData">데이터 불러오는 중...</div>
 </body>
 </html>
