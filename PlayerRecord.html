@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>선수 기록 보기</title>
     <script>
-        let currentSortColumn = 1; // 기본 정렬을 득점(1번째 열)으로 설정
+        let currentSortColumn = '득점'; // 기본 정렬을 득점으로 설정
         let currentSortDirection = 'desc'; // 기본 내림차순
 
         function sortTable(data, column, direction) {
@@ -34,21 +34,21 @@
             const data = cachedData?.playerRecord;
 
             if (data) {
-                let sortedData = sortTable(data, '득점', currentSortDirection); // 기본 정렬 득점으로 설정
+                let sortedData = sortTable(data, currentSortColumn, currentSortDirection); // 기본 정렬 득점으로 설정
 
                 let html = '<table border="1"><tr><th>이름</th><th onclick="sortBy(\'득점\')">득점</th><th onclick="sortBy(\'도움\')">도움</th><th onclick="sortBy(\'공격포인트\')">공격포인트</th><th onclick="sortBy(\'경기수\')">경기수</th><th onclick="sortBy(\'MOM\')">MOM</th><th onclick="sortBy(\'승\')">승</th><th onclick="sortBy(\'패\')">패</th><th>년도</th></tr>';
 
                 sortedData.forEach(player => {
                     html += `<tr>
-                                <td>${player[0]}</td> <!-- 이름 -->
-                                <td>${player[1]}</td> <!-- 득점 -->
-                                <td>${player[2]}</td> <!-- 도움 -->
-                                <td>${player[3]}</td> <!-- 공격포인트 -->
-                                <td>${player[4]}</td> <!-- 경기수 -->
-                                <td>${player[5]}</td> <!-- MOM -->
-                                <td>${player[6]}</td> <!-- 승 -->
-                                <td>${player[7]}</td> <!-- 패 -->
-                                <td>${player[8]}</td> <!-- 년도 -->
+                                <td>${player.이름}</td> <!-- 이름 -->
+                                <td>${player.득점}</td> <!-- 득점 -->
+                                <td>${player.도움}</td> <!-- 도움 -->
+                                <td>${player.공격포인트}</td> <!-- 공격포인트 -->
+                                <td>${player.경기수}</td> <!-- 경기수 -->
+                                <td>${player.MOM}</td> <!-- MOM -->
+                                <td>${player.승}</td> <!-- 승 -->
+                                <td>${player.패}</td> <!-- 패 -->
+                                <td>${player.년도}</td> <!-- 년도 -->
                              </tr>`;
                 });
                 html += '</table>';
@@ -78,15 +78,15 @@
 
                 sortedData.forEach(player => {
                     html += `<tr>
-                                <td>${player[0]}</td> <!-- 이름 -->
-                                <td>${player[1]}</td> <!-- 득점 -->
-                                <td>${player[2]}</td> <!-- 도움 -->
-                                <td>${player[3]}</td> <!-- 공격포인트 -->
-                                <td>${player[4]}</td> <!-- 경기수 -->
-                                <td>${player[5]}</td> <!-- MOM -->
-                                <td>${player[6]}</td> <!-- 승 -->
-                                <td>${player[7]}</td> <!-- 패 -->
-                                <td>${player[8]}</td> <!-- 년도 -->
+                                <td>${player.이름}</td> <!-- 이름 -->
+                                <td>${player.득점}</td> <!-- 득점 -->
+                                <td>${player.도움}</td> <!-- 도움 -->
+                                <td>${player.공격포인트}</td> <!-- 공격포인트 -->
+                                <td>${player.경기수}</td> <!-- 경기수 -->
+                                <td>${player.MOM}</td> <!-- MOM -->
+                                <td>${player.승}</td> <!-- 승 -->
+                                <td>${player.패}</td> <!-- 패 -->
+                                <td>${player.년도}</td> <!-- 년도 -->
                              </tr>`;
                 });
                 html += '</table>';
