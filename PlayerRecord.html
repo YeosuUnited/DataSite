@@ -3,44 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>선수 기록 보기</title>
+    <title>경기 기록 보기</title>
     <script>
-        async function fetchPlayerData() {
-            try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerRecord'); // 웹앱 URL에 'PlayerRecord' 시트 지정
-                const data = await response.json();
+        function displayMatchRecord() {
+            const cachedData = JSON.parse(localStorage.getItem('cachedData'));
+            const data = cachedData?.matchRecord;
 
-                // PlayerRecord의 데이터 구조에 맞춘 테이블 생성
-                let html = '<table border="1"><tr><th>이름</th><th>득점</th><th>도움</th><th>공격포인트</th><th>경기수</th><th>평균평점</th><th>MOM</th><th>승</th><th>패</th><th>년도</th></tr>';
-                
-                data.forEach(player => {
+            if (data) {
+                let html = '<table border="1"><tr><th>번호</th><th>날짜</th><th>경기장이름</th><th>경기종류</th><th>상대팀</th><th>승</th><th>패</th></tr>';
+
+                data.forEach(match => {
                     html += `<tr>
-                                <td>${player.이름}</td>
-                                <td>${player.득점}</td>
-                                <td>${player.도움}</td>
-                                <td>${player.공격포인트}</td>
-                                <td>${player.경기수}</td>
-                                <td>${player.평균평점}</td>
-                                <td>${player.MOM}</td>
-                                <td>${player.승}</td>
-                                <td>${player.패}</td>
-                                <td>${player.년도}</td>
+                                <td>${match.번호}</td>
+                                <td>${match.날짜}</td>
+                                <td>${match.경기장이름}</td>
+                                <td>${match.경기종류}</td>
+                                <td>${match.상대팀}</td>
+                                <td>${match.승}</td>
+                                <td>${match.패}</td>
                              </tr>`;
-                });
-                html += '</table>';
-
-                document.getElementById('playerData').innerHTML = html;
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                document.getElementById('playerData').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
-            }
-        }
-
-        window.onload = fetchPlayerData;
-    </script>
-</head>
-<body>
-    <h1>선수 기록</h1>
-    <div id="playerData">데이터 불러오는 중...</div>
-</body>
-</html>
+               
