@@ -1,10 +1,66 @@
-<!-- index.html (메인 페이지) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 페이지</title>
+    <script>
+        let cachedData = {};
+        let lastUpdated = null;
+
+        async function fetchData() {
+            try {
+                document.getElementById('status').innerText = '데이터를 불러오는 중...';
+
+                const playerRecordResponse = await fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerRecord');
+                const matchRecordResponse = await fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=MatchRecord');
+                const playerDataResponse = await fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerData');
+
+                cachedData.playerRecord = await playerRecordResponse.json();
+                cachedData.matchRecord = await matchRecordResponse.json();
+                cachedData.playerData = await playerDataResponse.json();
+
+                lastUpdated = new Date().getTime();
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
+                localStorage.setItem('lastUpdated', lastUpdated);
+
+                document.getElementById('status').innerText = '데이터가 성공적으로 업데이트되었습니다.';
+            } catch (error) {
+                document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function checkAndUpdateData() {
+            const now = new Date().getTime();
+            const cacheExpiryTime = 60000; // 1분 (60,000밀리초)
+
+            if (!lastUpdated || (now - lastUpdated) > cacheExpiryTime) {
+                fetchData();
+            } else {
+                document.getElementById('status').innerText = '데이터가 캐시에서 로드되었습니다.';
+            }
+        }
+
+        function init() {
+            // 캐시된 데이터가 있으면 로드
+            const cached = localStorage.getItem('cachedData');
+            const lastTime = localStorage.getItem('lastUpdated');
+
+            if (cached && lastTime) {
+                cachedData = JSON.parse(cached);
+                lastUpdated = parseInt(lastTime);
+                document.getElementById('status').innerText = '캐시된 데이터를 사용합니다.';
+            } else {
+                fetchData();
+            }
+
+            // 1분마다 데이터 갱신 확인
+            setInterval(checkAndUpdateData, 60000); // 1분(60초) 주기
+        }
+
+        window.onload = init;
+    </script>
 </head>
 <body>
     <h1>메인 페이지에 오신 것을 환영합니다!</h1>
@@ -16,5 +72,7 @@
             <li><a href="PlayerRecord.html">선수기록</a></li>
         </ul>
     </nav>
+
+    <div id="status">데이터 상태: 로딩 중...</div>
 </body>
 </html>
