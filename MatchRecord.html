@@ -10,7 +10,7 @@
             const data = cachedData?.playerRecord;
 
             if (data) {
-                let html = '<table border="1"><tr><th>이름</th><th>득점</th><th>도움</th><th>공격포인트</th><th>경기수</th><th>평균평점</th><th>MOM</th><th>승</th><th>패</th><th>년도</th></tr>';
+                let html = '<table border="1"><tr><th>이름</th><th>득점</th><th>도움</th><th>공격포인트</th><th>경기수</th><th>MOM</th><th>승</th><th>패</th><th>년도</th></tr>';
 
                 data.forEach(player => {
                     html += `<tr>
@@ -19,7 +19,6 @@
                                 <td>${player.도움}</td>
                                 <td>${player.공격포인트}</td>
                                 <td>${player.경기수}</td>
-                                <td>${player.평균평점}</td>
                                 <td>${player.MOM}</td>
                                 <td>${player.승}</td>
                                 <td>${player.패}</td>
