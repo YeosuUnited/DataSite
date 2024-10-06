@@ -148,6 +148,17 @@
             }
         }
 
+        function observeTableChanges() {
+            const targetNode = document.getElementById('scrollableTable');
+            const config = { childList: true, subtree: true };
+        
+            const observer = new MutationObserver(() => {
+                matchRowHeights(); // 테이블 변경 후 높이 맞추기
+            });
+        
+            observer.observe(targetNode, config);
+        }
+
         function sortBy(column, columnIndex) {
             const cachedData = JSON.parse(localStorage.getItem('cachedData'));
             const data = cachedData?.playerRecord;
@@ -158,9 +169,13 @@
         
                 highlightSelectedColumn(columnIndex); // 선택된 열 강조
                 displayPlayerRecord(); // 테이블 다시 렌더링
-                setTimeout(matchRowHeights, 100); // 렌더링 후 높이 다시 맞추기
             }
         }
+
+window.onload = function() {
+    displayPlayerRecord();
+    observeTableChanges(); // 테이블 변경을 감지하고 높이 맞추기
+};
 
         function matchRowHeights() {
     const fixedRows = document.querySelectorAll('.fixed-column tr');
