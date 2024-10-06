@@ -41,9 +41,11 @@
         }
 
         .scrollable-table th, .scrollable-table td {
-            width: 10px;
+            width: 20px;
             text-align: center;
-            text-overflow: ellipsis; /* 잘린 부분에 ... 표시 */
+            text-overflow: ellipsis; /* 넘치는 텍스트는 ...로 표시 */
+            white-space: nowrap; /* 줄바꿈을 하지 않도록 설정 */
+            overflow: hidden; /* 셀 너비를 넘어가는 내용은 숨김 */
             border: 1px solid lightgray;
             background-color: #e0e0e0; /* 기본적으로 회색 */
         }
@@ -95,11 +97,11 @@
             });
         
             // 선택된 열의 셀에 selected 클래스 추가 및 스타일 적용
-            const selectedCells = document.querySelectorAll(`.scrollable-table td:nth-child(${columnIndex + 1}), .scrollable-table th:nth-child(${columnIndex + 1})`);
+            const selectedCells = document.querySelectorAll(`.scrollable-table td:nth-child(${columnIndex}), .scrollable-table th:nth-child(${columnIndex})`);
             selectedCells.forEach(cell => {
                 cell.classList.add('selected');
                 cell.style.backgroundColor = 'white'; // 선택된 열의 배경을 흰색으로 설정
-                cell.style.color = 'lightblue'; // 선택된 열의 글자 색을 연한 파란색으로 설정
+                cell.style.color = '#6495ED'; // 선택된 열의 글자 색을 진한 파란색으로 설정 (Cornflower Blue)
             });
         }
 
