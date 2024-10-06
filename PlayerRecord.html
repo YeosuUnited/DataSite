@@ -152,15 +152,11 @@
             const data = cachedData?.playerRecord;
 
             if (data) {
-                if (currentSortColumn === column) {
-                    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
-                } else {
-                    currentSortDirection = 'desc';
-                    currentSortColumn = column;
-                }
+        currentSortDirection = 'desc'; // 항상 내림차순으로 고정
+        currentSortColumn = column;
 
-                highlightSelectedColumn(columnIndex); // 선택된 열 강조
-                displayPlayerRecord();
+        highlightSelectedColumn(columnIndex); // 선택된 열 강조
+        displayPlayerRecord();
             }
         }
 
