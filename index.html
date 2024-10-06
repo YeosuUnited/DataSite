@@ -54,18 +54,9 @@
             document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
         }
 
-        function init() {
-            // Service Worker 등록
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('service-worker.js').then(function(registration) {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }).catch(function(error) {
-                    console.log('ServiceWorker registration failed: ', error);
-                });
-            }
-        }
-
-        window.onload = init;
+        window.onload = function() {
+            fetchData(); // 페이지 로드 시 데이터 자동 갱신
+        };
     </script>
 </head>
 <body>
