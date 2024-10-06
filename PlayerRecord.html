@@ -165,22 +165,24 @@
         }
 
         function matchRowHeights() {
-            const fixedRows = document.querySelectorAll('.fixed-column tr');
-            const scrollableRows = document.querySelectorAll('.scrollable-table tr');
-            
-            fixedRows.forEach((row, index) => {
-                const fixedHeight = row.offsetHeight;
-                const scrollableHeight = scrollableRows[index].offsetHeight;
-                const maxHeight = Math.max(fixedHeight, scrollableHeight);
-                
-                row.style.height = `${maxHeight}px`;
-                scrollableRows[index].style.height = `${maxHeight}px`;
-            });
-        }
+    const fixedRows = document.querySelectorAll('.fixed-column tr');
+    const scrollableRows = document.querySelectorAll('.scrollable-table tr');
+    
+    fixedRows.forEach((row, index) => {
+        const fixedHeight = row.getBoundingClientRect().height; // 고정된 이름 열의 높이 계산
+        const scrollableHeight = scrollableRows[index].getBoundingClientRect().height; // 나머지 테이블의 높이 계산
+        const maxHeight = Math.max(fixedHeight, scrollableHeight);
+        
+        row.style.height = `${maxHeight}px`; // 동일한 높이 적용
+        scrollableRows[index].style.height = `${maxHeight}px`; // 동일한 높이 적용
+    });
+}
 
-        window.onload = function() {
-            displayPlayerRecord();
-        };
+window.onload = function() {
+    displayPlayerRecord();
+    setTimeout(matchRowHeights, 100); // 테이블 렌더링 후 높이 맞추기
+};
+
     </script>
 </head>
 <body>
