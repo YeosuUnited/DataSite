@@ -48,14 +48,21 @@
             }
         }
 
-        // 최근 갱신 시간과 다음 갱신 시간을 계산하여 화면에 표시
+        // 최근 갱신 시간 표시
         function updateTimeInfo() {
             const lastUpdatedTime = new Date(lastUpdated);
             document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
         }
 
         function init() {
-            fetchData(); // 페이지 로드시 데이터 갱신
+            // Service Worker 등록
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }).catch(function(error) {
+                    console.log('ServiceWorker registration failed: ', error);
+                });
+            }
         }
 
         window.onload = init;
