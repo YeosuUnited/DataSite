@@ -5,46 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>선수 기록 보기</title>
     <style>
-        table {
+        .table-container {
+            width: 80%;
             margin: auto;
-            border-collapse: collapse;
-            width: 80%; /* 적정 크기로 설정 */
-            max-width: 1000px; /* 최대 크기 고정 */
-            border: 1px solid lightgray;
-            table-layout: fixed; /* 고정된 레이아웃 */
-            overflow-x: auto;
-            white-space: nowrap; /* 행의 내용을 한 줄로 고정 */
+            display: flex;
+            overflow: hidden;
         }
-        th, td {
+
+        /* 이름 열을 고정한 테이블 */
+        .fixed-column {
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        .fixed-column th, .fixed-column td {
             padding: 10px;
             text-align: center;
+            border: 1px solid lightgray;
+            background-color: white; /* 고정된 이름 열 흰색 */
         }
-        th {
-            background-color: white; /* 이름 행 배경을 흰색으로 고정 */
+
+        /* 슬라이드 가능한 나머지 테이블 */
+        .scrollable-table-container {
+            overflow-x: auto;
+        }
+
+        .scrollable-table {
+            border-collapse: collapse;
+            background-color: white;
+            min-width: 800px; /* 나머지 기록이 담긴 표의 최소 너비 */
+        }
+
+        .scrollable-table th, .scrollable-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid lightgray;
+            background-color: #f7f7f7; /* 나머지 행 기본 회색 */
+        }
+
+        .scrollable-table th {
             position: sticky;
             top: 0;
-            z-index: 1;
-            cursor: pointer; /* 클릭 가능한 열로 표시 */
+            background-color: white; /* 슬라이드 테이블의 헤더는 흰색 */
         }
-        td {
-            background-color: #f7f7f7; /* 나머지 행은 기본 회색 */
-        }
+
         tr.selected td {
-            background-color: white; /* 선택된 행의 배경을 흰색으로 변경 */
-        }
-        .highlight {
-            border: 2px solid red;
-        }
-        .table-container {
-            width: 80%; /* 테이블을 감싸는 컨테이너의 크기 */
-            max-width: 1000px;
-            overflow-x: auto; /* 좌우 스크롤 가능하게 설정 */
-            margin: auto;
+            background-color: white; /* 선택된 행 흰색 */
         }
     </style>
     <script>
-        let currentSortColumn = '득점';
-        let currentSortDirection = 'desc';
+        let currentSortColumn = '득점'; // 기본 정렬 기준
+        let currentSortDirection = 'desc'; // 기본 내림차순
 
         function sortTable(data, column, direction) {
             return data.sort((a, b) => {
@@ -73,8 +84,15 @@
             if (data) {
                 let sortedData = sortTable(data, currentSortColumn, currentSortDirection);
 
-                 let html = '<table><tr>' +
-                    `<th class="${currentSortColumn === '이름' ? 'highlight' : ''}" onclick="sortBy('이름')">이름</th>` +
+                // 고정된 이름 열 테이블
+                let fixedColumnHtml = '<table class="fixed-column"><tr><th>이름</th></tr>';
+                sortedData.forEach(player => {
+                    fixedColumnHtml += `<tr><td>${player.이름}</td></tr>`;
+                });
+                fixedColumnHtml += '</table>';
+
+                // 슬라이드 가능한 나머지 테이블
+                let scrollableTableHtml = '<table class="scrollable-table"><tr>' +
                     `<th class="${currentSortColumn === '득점' ? 'highlight' : ''}" onclick="sortBy('득점')">득점</th>` +
                     `<th class="${currentSortColumn === '도움' ? 'highlight' : ''}" onclick="sortBy('도움')">도움</th>` +
                     `<th class="${currentSortColumn === '공격포인트' ? 'highlight' : ''}" onclick="sortBy('공격포인트')">공격포인트</th>` +
@@ -83,22 +101,22 @@
                     `<th class="${currentSortColumn === '승' ? 'highlight' : ''}" onclick="sortBy('승')">승</th>` +
                     `<th class="${currentSortColumn === '패' ? 'highlight' : ''}" onclick="sortBy('패')">패</th>` +
                     '</tr>';
-                
-                sortedData.forEach(player => {
-                    html += `<tr>
-                                <td>${player.이름}</td>
-                                <td>${player.득점}</td>
-                                <td>${player.도움}</td>
-                                <td>${player.공격포인트}</td>
-                                <td>${player.경기수}</td>
-                                <td>${player.MOM}</td>
-                                <td>${player.승}</td>
-                                <td>${player.패}</td>
-                             </tr>`;
-                });
-                html += '</table>';
 
-                document.getElementById('playerData').innerHTML = html;
+                sortedData.forEach(player => {
+                    scrollableTableHtml += `<tr>
+                                                <td>${player.득점}</td>
+                                                <td>${player.도움}</td>
+                                                <td>${player.공격포인트}</td>
+                                                <td>${player.경기수}</td>
+                                                <td>${player.MOM}</td>
+                                                <td>${player.승}</td>
+                                                <td>${player.패}</td>
+                                             </tr>`;
+                });
+                scrollableTableHtml += '</table>';
+
+                document.getElementById('fixedColumn').innerHTML = fixedColumnHtml;
+                document.getElementById('scrollableTable').innerHTML = scrollableTableHtml;
             } else {
                 document.getElementById('playerData').innerText = '캐시된 데이터를 찾을 수 없습니다.';
             }
@@ -116,33 +134,7 @@
                     currentSortColumn = column;
                 }
 
-                let sortedData = sortTable(data, column, currentSortDirection);
-                let html = '<table><tr>' +
-                    `<th class="${currentSortColumn === '이름' ? 'highlight' : ''}" onclick="sortBy('이름')">이름</th>` +
-                    `<th class="${currentSortColumn === '득점' ? 'highlight' : ''}" onclick="sortBy('득점')">득점</th>` +
-                    `<th class="${currentSortColumn === '도움' ? 'highlight' : ''}" onclick="sortBy('도움')">도움</th>` +
-                    `<th class="${currentSortColumn === '공격포인트' ? 'highlight' : ''}" onclick="sortBy('공격포인트')">공격포인트</th>` +
-                    `<th class="${currentSortColumn === '경기수' ? 'highlight' : ''}" onclick="sortBy('경기수')">경기수</th>` +
-                    `<th class="${currentSortColumn === 'MOM' ? 'highlight' : ''}" onclick="sortBy('MOM')">MOM</th>` +
-                    `<th class="${currentSortColumn === '승' ? 'highlight' : ''}" onclick="sortBy('승')">승</th>` +
-                    `<th class="${currentSortColumn === '패' ? 'highlight' : ''}" onclick="sortBy('패')">패</th>` +
-                    '</tr>';
-                
-                sortedData.forEach(player => {
-                    html += `<tr>
-                                <td>${player.이름}</td>
-                                <td>${player.득점}</td>
-                                <td>${player.도움}</td>
-                                <td>${player.공격포인트}</td>
-                                <td>${player.경기수}</td>
-                                <td>${player.MOM}</td>
-                                <td>${player.승}</td>
-                                <td>${player.패}</td>
-                             </tr>`;
-                });
-                html += '</table>';
-
-                document.getElementById('playerData').innerHTML = html;
+                displayPlayerRecord();
             }
         }
 
@@ -152,7 +144,10 @@
 <body>
     <h1>선수 기록</h1>
     <div class="table-container">
-        <div id="playerData">캐싱데이터 불러오는 중...</div>
+        <div id="fixedColumn"></div> <!-- 이름 열 -->
+        <div class="scrollable-table-container">
+            <div id="scrollableTable"></div> <!-- 나머지 기록 -->
+        </div>
     </div>
 </body>
 </html>
