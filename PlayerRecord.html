@@ -148,15 +148,16 @@
         }
 
         function sortBy(column, columnIndex) {
-            const cachedData = JSON.parse(localStorage.getItem('cachedData'));
-            const data = cachedData?.playerRecord;
-
-            if (data) {
-        currentSortDirection = 'desc'; // 항상 내림차순으로 고정
-        currentSortColumn = column;
-
-        highlightSelectedColumn(columnIndex); // 선택된 열 강조
-        displayPlayerRecord();
+                const cachedData = JSON.parse(localStorage.getItem('cachedData'));
+                const data = cachedData?.playerRecord;
+    
+                if (data) {
+                currentSortDirection = 'desc'; // 항상 내림차순으로 고정
+                currentSortColumn = column;
+        
+                highlightSelectedColumn(columnIndex); // 선택된 열 강조
+                displayPlayerRecord();
+                setTimeout(matchRowHeights, 100); // 렌더링 후 높이 다시 맞추기
             }
         }
 
