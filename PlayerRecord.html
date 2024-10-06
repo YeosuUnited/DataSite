@@ -22,7 +22,7 @@
             padding: 10px;
             text-align: center;
             border: 1px solid lightgray;
-            background-color: white; /* 고정된 이름 열 흰색 */
+            background-color: white; /* 1열(이름 열)은 항상 흰색 */
         }
 
         /* 슬라이드 가능한 나머지 테이블 */
@@ -40,7 +40,7 @@
             padding: 10px;
             text-align: center;
             border: 1px solid lightgray;
-            background-color: #f7f7f7; /* 나머지 행 기본 회색 */
+            background-color: #f7f7f7; /* 기본적으로 회색 */
         }
 
         .scrollable-table th {
@@ -49,9 +49,10 @@
             background-color: white; /* 슬라이드 테이블의 헤더는 흰색 */
         }
 
-        tr.selected td {
-            background-color: white; /* 선택된 행 흰색 */
+        .scrollable-table td.selected, .scrollable-table th.selected {
+            background-color: white; /* 선택된 열은 흰색 */
         }
+
     </style>
     <script>
         let currentSortColumn = '득점'; // 기본 정렬 기준
@@ -77,6 +78,20 @@
             });
         }
 
+        function highlightSelectedColumn(columnIndex) {
+            // 모든 셀의 선택 효과 제거
+            const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
+            allCells.forEach(cell => {
+                cell.classList.remove('selected');
+            });
+
+            // 선택된 열의 셀에 selected 클래스 추가
+            const cells = document.querySelectorAll('.scrollable-table td:nth-child(' + (columnIndex + 1) + '), .scrollable-table th:nth-child(' + (columnIndex + 1) + ')');
+            cells.forEach(cell => {
+                cell.classList.add('selected'); // 선택된 열을 흰색으로 변경
+            });
+        }
+
         function displayPlayerRecord() {
             const cachedData = JSON.parse(localStorage.getItem('cachedData'));
             const data = cachedData?.playerRecord;
@@ -93,13 +108,13 @@
 
                 // 슬라이드 가능한 나머지 테이블
                 let scrollableTableHtml = '<table class="scrollable-table"><tr>' +
-                    `<th class="${currentSortColumn === '득점' ? 'highlight' : ''}" onclick="sortBy('득점')">득점</th>` +
-                    `<th class="${currentSortColumn === '도움' ? 'highlight' : ''}" onclick="sortBy('도움')">도움</th>` +
-                    `<th class="${currentSortColumn === '공격포인트' ? 'highlight' : ''}" onclick="sortBy('공격포인트')">공격포인트</th>` +
-                    `<th class="${currentSortColumn === '경기수' ? 'highlight' : ''}" onclick="sortBy('경기수')">경기수</th>` +
-                    `<th class="${currentSortColumn === 'MOM' ? 'highlight' : ''}" onclick="sortBy('MOM')">MOM</th>` +
-                    `<th class="${currentSortColumn === '승' ? 'highlight' : ''}" onclick="sortBy('승')">승</th>` +
-                    `<th class="${currentSortColumn === '패' ? 'highlight' : ''}" onclick="sortBy('패')">패</th>` +
+                    `<th class="${currentSortColumn === '득점' ? 'highlight' : ''}" onclick="sortBy('득점', 1)">득점</th>` +
+                    `<th class="${currentSortColumn === '도움' ? 'highlight' : ''}" onclick="sortBy('도움', 2)">도움</th>` +
+                    `<th class="${currentSortColumn === '공격포인트' ? 'highlight' : ''}" onclick="sortBy('공격포인트', 3)">공격포인트</th>` +
+                    `<th class="${currentSortColumn === '경기수' ? 'highlight' : ''}" onclick="sortBy('경기수', 4)">경기수</th>` +
+                    `<th class="${currentSortColumn === 'MOM' ? 'highlight' : ''}" onclick="sortBy('MOM', 5)">MOM</th>` +
+                    `<th class="${currentSortColumn === '승' ? 'highlight' : ''}" onclick="sortBy('승', 6)">승</th>` +
+                    `<th class="${currentSortColumn === '패' ? 'highlight' : ''}" onclick="sortBy('패', 7)">패</th>` +
                     '</tr>';
 
                 sortedData.forEach(player => {
@@ -122,7 +137,7 @@
             }
         }
 
-        function sortBy(column) {
+        function sortBy(column, columnIndex) {
             const cachedData = JSON.parse(localStorage.getItem('cachedData'));
             const data = cachedData?.playerRecord;
 
@@ -134,6 +149,7 @@
                     currentSortColumn = column;
                 }
 
+                highlightSelectedColumn(columnIndex); // 선택된 열 강조
                 displayPlayerRecord();
             }
         }
