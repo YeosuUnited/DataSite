@@ -83,8 +83,8 @@
             });
         }
 
-        // 선택된 열을 강조하는 함수
         function highlightSelectedColumn(columnIndex) {
+            // 모든 셀의 선택 효과 제거
             const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
             allCells.forEach(cell => {
                 cell.classList.remove('selected');
@@ -92,13 +92,15 @@
                 cell.style.color = ''; // 글자 색 초기화
             });
         
-            const cells = document.querySelectorAll('.scrollable-table td:nth-child(' + (columnIndex + 1) + '), .scrollable-table th:nth-child(' + (columnIndex + 1) + ')');
-            cells.forEach(cell => {
+            // 선택된 열 전체의 셀에 selected 클래스 추가 및 스타일 적용
+            const selectedCells = document.querySelectorAll('.scrollable-table td:nth-child(' + (columnIndex + 1) + '), .scrollable-table th:nth-child(' + (columnIndex + 1) + ')');
+            selectedCells.forEach(cell => {
                 cell.classList.add('selected');
                 cell.style.backgroundColor = 'white'; // 선택된 열의 배경을 흰색으로 설정
                 cell.style.color = 'lightblue'; // 선택된 열의 글자 색을 연한 파란색으로 설정
             });
         }
+
 
 
         function displayPlayerRecord() {
