@@ -86,20 +86,21 @@
 
         function highlightSelectedColumn(columnIndex) {
     // 모든 셀의 선택 효과 제거
-    const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
-    allCells.forEach(cell => {
-        cell.classList.remove('selected');
-        cell.style.color = ''; // 이전에 설정된 색상 초기화
-    });
-
-    // 선택된 열의 셀에 selected 클래스 추가 및 색상 설정
-    const cells = document.querySelectorAll('.scrollable-table td:nth-child(' + (columnIndex + 1) + '), .scrollable-table th:nth-child(' + (columnIndex + 1) + ')');
-    cells.forEach(cell => {
-        cell.classList.add('selected');
-        cell.style.backgroundColor = 'white'; // 선택된 열을 흰색으로 설정
-        cell.style.color = 'lightblue'; // 선택된 열의 글자를 연한 파란색으로 설정
-    });
-}
+            const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
+            allCells.forEach(cell => {
+                cell.classList.remove('selected');
+                cell.style.backgroundColor = ''; // 배경색 초기화
+                cell.style.color = ''; // 글자 색 초기화
+            });
+        
+            // 선택된 열의 셀에 selected 클래스 추가 및 스타일 적용
+            const cells = document.querySelectorAll('.scrollable-table td:nth-child(' + (columnIndex + 1) + '), .scrollable-table th:nth-child(' + (columnIndex + 1) + ')');
+            cells.forEach(cell => {
+                cell.classList.add('selected');
+                cell.style.backgroundColor = 'white'; // 선택된 열의 배경을 흰색으로 설정
+                cell.style.color = 'lightblue'; // 선택된 열의 글자 색을 연한 파란색으로 설정
+            });
+        }
 
 
         function displayPlayerRecord() {
@@ -148,15 +149,15 @@
         }
 
         function sortBy(column, columnIndex) {
-                const cachedData = JSON.parse(localStorage.getItem('cachedData'));
-                const data = cachedData?.playerRecord;
-    
-                if (data) {
+            const cachedData = JSON.parse(localStorage.getItem('cachedData'));
+            const data = cachedData?.playerRecord;
+        
+            if (data) {
                 currentSortDirection = 'desc'; // 항상 내림차순으로 고정
                 currentSortColumn = column;
         
                 highlightSelectedColumn(columnIndex); // 선택된 열 강조
-                displayPlayerRecord();
+                displayPlayerRecord(); // 테이블 다시 렌더링
                 setTimeout(matchRowHeights, 100); // 렌더링 후 높이 다시 맞추기
             }
         }
