@@ -6,14 +6,15 @@
     <title>선수 기록 보기</title>
     <style>
         .table-container {
-            width: 80%;
-            margin: auto;
+            width: 100%; /* 테이블이 화면 전체 너비를 차지하도록 수정 */
+            margin: 0; /* 여백을 제거 */
             display: flex;
             overflow: hidden;
         }
 
         /* 이름 열을 고정한 테이블 */
         .fixed-column {
+            width: auto; /* 너비 자동으로 설정 */
             border-collapse: collapse;
             background-color: white;
         }
@@ -27,13 +28,15 @@
 
         /* 슬라이드 가능한 나머지 테이블 */
         .scrollable-table-container {
+            width: 100%; /* 나머지 표도 화면 전체 너비 차지 */
             overflow-x: auto;
         }
 
         .scrollable-table {
+            width: 100%; /* 테이블이 화면 양 끝에 붙도록 설정 */
             border-collapse: collapse;
             background-color: white;
-            min-width: 800px; /* 나머지 기록이 담긴 표의 최소 너비 */
+            min-width: 800px; /* 최소 너비는 유지 */
         }
 
         .scrollable-table th, .scrollable-table td {
