@@ -41,7 +41,7 @@
         }
 
         .scrollable-table th, .scrollable-table td {
-            width: 40px;
+            width: 10px;
             text-align: center;
             text-overflow: ellipsis; /* 잘린 부분에 ... 표시 */
             border: 1px solid lightgray;
@@ -85,22 +85,22 @@
             });
         }
 
-        function highlightSelectedRow(rowIndex) {
-        // 모든 셀의 선택 효과 제거
-        const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
-        allCells.forEach(cell => {
-            cell.classList.remove('selected');
-            cell.style.backgroundColor = '#e0e0e0'; // 선택되지 않은 셀의 배경색을 진한 회색으로 설정
-            cell.style.color = ''; // 글자 색 초기화
-        });
+        function highlightSelectedColumn(columnIndex) {
+            // 모든 셀의 선택 효과 제거
+            const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
+            allCells.forEach(cell => {
+                cell.classList.remove('selected');
+                cell.style.backgroundColor = '#e0e0e0'; // 선택되지 않은 셀의 배경색을 진한 회색으로 설정
+                cell.style.color = ''; // 글자 색 초기화
+            });
         
-        // 선택된 행 전체의 셀에 selected 클래스 추가 및 스타일 적용
-        const selectedCells = document.querySelectorAll(`.scrollable-table tr:nth-child(${rowIndex}) td, .scrollable-table tr:nth-child(${rowIndex}) th`);
-        selectedCells.forEach(cell => {
-            cell.classList.add('selected');
-            cell.style.backgroundColor = 'white'; // 선택된 행의 배경을 흰색으로 설정
-            cell.style.color = 'lightblue'; // 선택된 행의 글자 색을 연한 파란색으로 설정
-        });
+            // 선택된 열의 셀에 selected 클래스 추가 및 스타일 적용
+            const selectedCells = document.querySelectorAll(`.scrollable-table td:nth-child(${columnIndex + 1}), .scrollable-table th:nth-child(${columnIndex + 1})`);
+            selectedCells.forEach(cell => {
+                cell.classList.add('selected');
+                cell.style.backgroundColor = 'white'; // 선택된 열의 배경을 흰색으로 설정
+                cell.style.color = 'lightblue'; // 선택된 열의 글자 색을 연한 파란색으로 설정
+            });
         }
 
 
@@ -171,13 +171,28 @@
         function sortBy(column, columnIndex) {
             const cachedData = JSON.parse(localStorage.getItem('cachedData'));
             const data = cachedData?.playerRecord;
-
+        
             if (data) {
-                currentSortDirection = 'desc'; // 항상 내림차순으로 고정
-                currentSortColumn = column;
-
-                highlightSelectedColumn(columnIndex); // 선택된 열 강조
-                displayPlayerRecord(); // 테이블 다시 렌더링
+                // 내림차순 정렬로 고정
+                data.sort((a, b) => {
+                    let valA = a[column];
+                    let valB = b[column];
+        
+                    if (!isNaN(valA) && !isNaN(valB)) {
+                        valA = Number(valA);
+                        valB = Number(valB);
+                    }
+        
+                    if (valA > valB) return -1;
+                    if (valA < valB) return 1;
+                    return 0;
+                });
+        
+                // 테이블 렌더링
+                displayPlayerRecord();
+        
+                // 선택된 열 강조
+                highlightSelectedColumn(columnIndex);
             }
         }
         
