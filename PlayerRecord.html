@@ -40,7 +40,7 @@
         }
 
         .scrollable-table th, .scrollable-table td {
-            width: 5px;
+            width: 0px;
             text-align: center;
             border: 1px solid lightgray;
             background-color: #e0e0e0; /* 기본적으로 회색 */
@@ -93,7 +93,7 @@
             });
         
             // 선택된 열 전체의 셀에 selected 클래스 추가 및 스타일 적용
-            const selectedCells = document.querySelectorAll('.scrollable-table td:nth-child(' + (columnIndex + 1) + '), .scrollable-table th:nth-child(' + (columnIndex + 1) + ')');
+            const selectedCells = document.querySelectorAll(`.scrollable-table td:nth-child(${columnIndex}), .scrollable-table th:nth-child(${columnIndex})`);
             selectedCells.forEach(cell => {
                 cell.classList.add('selected');
                 cell.style.backgroundColor = 'white'; // 선택된 열의 배경을 흰색으로 설정
