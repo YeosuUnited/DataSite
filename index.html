@@ -57,6 +57,10 @@
         window.onload = function() {
             fetchData(); // 페이지 로드 시 데이터 자동 갱신
         };
+
+         window.onpopstate = function() {
+        fetchData(); // 뒤로가기 시에도 데이터 갱신
+        };    
     </script>
 </head>
 <body>
