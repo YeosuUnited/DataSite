@@ -110,20 +110,15 @@
 
 
 
-        function displayPlayerRecord() {
-            const cachedData = JSON.parse(localStorage.getItem('cachedData'));
-            const data = cachedData?.playerRecord;
-
-            if (data) {
-                let sortedData = sortTable(data, currentSortColumn, currentSortDirection);
-
+        function displayPlayerRecord(sortedData) {
+            if (sortedData) {
                 // 고정된 이름 열 테이블
                 let fixedColumnHtml = '<table class="fixed-column"><tr><th>이름</th></tr>';
                 sortedData.forEach(player => {
                     fixedColumnHtml += `<tr><td>${player.이름}</td></tr>`;
                 });
                 fixedColumnHtml += '</table>';
-
+            
                 // 슬라이드 가능한 나머지 테이블
                 let scrollableTableHtml = '<table class="scrollable-table"><tr>' +
                     `<th class="${currentSortColumn === '득점' ? 'highlight' : ''}" onclick="sortBy('득점', 1)">득점</th>` +
@@ -134,7 +129,7 @@
                     `<th class="${currentSortColumn === '승' ? 'highlight' : ''}" onclick="sortBy('승', 6)">승</th>` +
                     `<th class="${currentSortColumn === '패' ? 'highlight' : ''}" onclick="sortBy('패', 7)">패</th>` +
                     '</tr>';
-
+            
                 sortedData.forEach(player => {
                     scrollableTableHtml += `<tr>
                                                 <td>${player.득점}</td>
@@ -147,10 +142,10 @@
                                              </tr>`;
                 });
                 scrollableTableHtml += '</table>';
-
+            
                 document.getElementById('fixedColumn').innerHTML = fixedColumnHtml;
                 document.getElementById('scrollableTable').innerHTML = scrollableTableHtml;
-
+            
                 // 테이블 렌더링 후 높이 맞추기
                 requestAnimationFrame(() => {
                     matchRowHeights();
@@ -158,7 +153,8 @@
             } else {
                 document.getElementById('playerData').innerText = '캐시된 데이터를 찾을 수 없습니다.';
             }
-        }
+            }
+
 
         // 테이블 변경을 감지하고 높이 맞추는 함수
         function observeTableChanges() {
@@ -178,28 +174,23 @@
             const data = cachedData?.playerRecord;
         
             if (data) {
-                // 내림차순 정렬로 고정
-                data.sort((a, b) => {
-                    let valA = a[column];
-                    let valB = b[column];
-        
-                    if (!isNaN(valA) && !isNaN(valB)) {
-                        valA = Number(valA);
-                        valB = Number(valB);
+                // 다중 정렬: 득점 -> 도움 -> 공격포인트 -> 경기수
+                const sortedData = data.sort((a, b) => {
+                    if (a[column] !== b[column]) {
+                        return b[column] - a[column]; // 내림차순
                     }
-        
-                    if (valA > valB) return -1;
-                    if (valA < valB) return 1;
-                    return 0;
+                    // 2차, 3차 정렬 기준 (득점, 도움, 공격포인트, 경기수)
+                    return sortTable(a, b);
                 });
         
-                // 테이블 렌더링
-                displayPlayerRecord();
+                // 정렬된 데이터로 테이블 다시 렌더링
+                displayPlayerRecord(sortedData);
         
                 // 선택된 열 강조
                 highlightSelectedColumn(columnIndex);
             }
         }
+
         
         function matchRowHeights() {
             const fixedRows = document.querySelectorAll('.fixed-column tr');
