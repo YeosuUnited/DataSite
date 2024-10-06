@@ -18,27 +18,33 @@
         async function fetchData() {
             try {
                 document.getElementById('status').innerText = '데이터를 불러오는 중...';
-
-                const playerRecordResponse = await fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerRecord');
-                const matchRecordResponse = await fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=MatchRecord');
-                const playerDataResponse = await fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerData');
-
-                cachedData.playerRecord = await playerRecordResponse.json();
-                cachedData.matchRecord = await matchRecordResponse.json();
-                cachedData.playerData = await playerDataResponse.json();
-
+        
+                const [playerRecordResponse, matchRecordResponse, playerDataResponse] = await Promise.all([
+                    fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerRecord'),
+                    fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=MatchRecord'),
+                    fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerData')
+                ]);
+        
+                const [playerRecord, matchRecord, playerData] = await Promise.all([
+                    playerRecordResponse.json(),
+                    matchRecordResponse.json(),
+                    playerDataResponse.json()
+                ]);
+        
+                cachedData = { playerRecord, matchRecord, playerData };
+        
                 lastUpdated = new Date().getTime();
                 localStorage.setItem('cachedData', JSON.stringify(cachedData));
                 localStorage.setItem('lastUpdated', lastUpdated);
-
+        
                 document.getElementById('status').innerText = '데이터가 성공적으로 업데이트되었습니다.';
-
-                updateTimeInfo(); // 시간 정보 업데이트
+                updateTimeInfo();
             } catch (error) {
                 document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
                 console.error('Error fetching data:', error);
             }
         }
+
 
         // 최근 갱신 시간과 다음 갱신 시간을 계산하여 화면에 표시
         function updateTimeInfo() {
@@ -53,9 +59,9 @@
         // 갱신 시간이 지났을 경우 데이터 새로 가져오기
         function checkAndUpdateData() {
             const now = new Date().getTime();
-
-            if (!lastUpdated || (now - lastUpdated) > refreshInterval) {
-                fetchData();
+        
+            if (!lastUpdated || (now - lastUpdated) >= refreshInterval) {
+                fetchData(); // 갱신 시간이 지나면 데이터를 새로 불러옴
             } else {
                 document.getElementById('status').innerText = '데이터가 캐시에서 로드되었습니다.';
                 updateTimeInfo(); // 시간 정보 업데이트
