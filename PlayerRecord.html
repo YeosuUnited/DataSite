@@ -34,13 +34,14 @@
 
         .scrollable-table {
             width: 100%; /* 테이블이 화면 양 끝에 붙도록 설정 */
+            table-layout: fixed; /* 고정된 테이블 레이아웃 사용 */
             border-collapse: collapse;
             background-color: white;
             min-width: 800px; /* 최소 너비는 유지 */
         }
 
         .scrollable-table th, .scrollable-table td {
-            width: 0px;
+            width: 40px;
             text-align: center;
             border: 1px solid lightgray;
             background-color: #e0e0e0; /* 기본적으로 회색 */
@@ -83,22 +84,22 @@
             });
         }
 
-        function highlightSelectedColumn(columnIndex) {
-            // 모든 셀의 선택 효과 제거
-            const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
-            allCells.forEach(cell => {
-                cell.classList.remove('selected');
-                cell.style.backgroundColor = '#e0e0e0'; // 선택되지 않은 열 배경을 진한 회색으로 설정
-                cell.style.color = ''; // 글자 색 초기화
-            });
+        function highlightSelectedRow(rowIndex) {
+        // 모든 셀의 선택 효과 제거
+        const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
+        allCells.forEach(cell => {
+            cell.classList.remove('selected');
+            cell.style.backgroundColor = '#e0e0e0'; // 선택되지 않은 셀의 배경색을 진한 회색으로 설정
+            cell.style.color = ''; // 글자 색 초기화
+        });
         
-            // 선택된 열 전체의 셀에 selected 클래스 추가 및 스타일 적용
-            const selectedCells = document.querySelectorAll(`.scrollable-table td:nth-child(${columnIndex}), .scrollable-table th:nth-child(${columnIndex})`);
-            selectedCells.forEach(cell => {
-                cell.classList.add('selected');
-                cell.style.backgroundColor = 'white'; // 선택된 열의 배경을 흰색으로 설정
-                cell.style.color = 'lightblue'; // 선택된 열의 글자 색을 연한 파란색으로 설정
-            });
+        // 선택된 행 전체의 셀에 selected 클래스 추가 및 스타일 적용
+        const selectedCells = document.querySelectorAll(`.scrollable-table tr:nth-child(${rowIndex}) td, .scrollable-table tr:nth-child(${rowIndex}) th`);
+        selectedCells.forEach(cell => {
+            cell.classList.add('selected');
+            cell.style.backgroundColor = 'white'; // 선택된 행의 배경을 흰색으로 설정
+            cell.style.color = 'lightblue'; // 선택된 행의 글자 색을 연한 파란색으로 설정
+        });
         }
 
 
