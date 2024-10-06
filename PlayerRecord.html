@@ -206,8 +206,15 @@
             const data = cachedData?.playerRecord;
         
             if (data) {
-                // 정렬되지 않은 데이터를 우선 표시
-                displayPlayerRecord(data);
+                // 득점 기준으로 자동 정렬
+                const sortedData = data.sort((a, b) => sortTable(a, b));
+        
+                // 정렬된 데이터를 테이블에 표시
+                displayPlayerRecord(sortedData);
+        
+                // 득점 열 강조
+                highlightSelectedColumn(1);
+        
                 observeTableChanges(); // 테이블 변경을 감지하고 높이 맞추기
             } else {
                 document.getElementById('playerData').innerText = '캐시된 데이터를 찾을 수 없습니다.';
