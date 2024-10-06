@@ -67,25 +67,28 @@
         let currentSortColumn = '득점'; // 기본 정렬 기준
         let currentSortDirection = 'desc'; // 기본 내림차순
 
-        function sortTable(data, column, direction) {
+        function sortTable(data) {
             return data.sort((a, b) => {
-                let valA = a[column];
-                let valB = b[column];
-                
-                if (!isNaN(valA) && !isNaN(valB)) {
-                    valA = Number(valA);
-                    valB = Number(valB);
+                // 1순위: 득점(Goals) 기준으로 정렬
+                if (a.득점 !== b.득점) {
+                    return b.득점 - a.득점; // 내림차순
                 }
-
-                if (valA > valB) {
-                    return direction === 'desc' ? -1 : 1;
+        
+                // 2순위: 도움(Assists) 기준으로 정렬
+                if (a.도움 !== b.도움) {
+                    return b.도움 - a.도움; // 내림차순
                 }
-                if (valA < valB) {
-                    return direction === 'desc' ? 1 : -1;
+        
+                // 3순위: 공격포인트(Attack Points) 기준으로 정렬
+                if (a.공격포인트 !== b.공격포인트) {
+                    return b.공격포인트 - a.공격포인트; // 내림차순
                 }
-                return 0;
+        
+                // 4순위: 경기수(Matches) 기준으로 정렬
+                return b.경기수 - a.경기수; // 내림차순
             });
         }
+
 
         function highlightSelectedColumn(columnIndex) {
             // 모든 셀의 선택 효과 제거
