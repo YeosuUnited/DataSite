@@ -24,12 +24,13 @@
             position: sticky;
             top: 0;
             z-index: 1;
+            cursor: pointer; /* 클릭 가능한 열로 표시 */
         }
         td {
             background-color: #f7f7f7; /* 나머지 행은 기본 회색 */
         }
-        tr:hover td {
-            background-color: white; /* 선택된 행은 흰색 배경 */
+        tr.selected td {
+            background-color: white; /* 선택된 행의 배경을 흰색으로 변경 */
         }
         .highlight {
             border: 2px solid red;
