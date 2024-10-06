@@ -40,8 +40,7 @@
         }
 
         .scrollable-table th, .scrollable-table td {
-            padding: 2px;
-            width: 40px;
+            width: 20px;
             text-align: center;
             border: 1px solid lightgray;
             background-color: #f7f7f7; /* 기본적으로 회색 */
@@ -84,15 +83,16 @@
             });
         }
 
+        // 선택된 열을 강조하는 함수
         function highlightSelectedColumn(columnIndex) {
-    // 모든 셀의 선택 효과 제거
+            // 모든 셀의 선택 효과 제거
             const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
             allCells.forEach(cell => {
                 cell.classList.remove('selected');
                 cell.style.backgroundColor = ''; // 배경색 초기화
                 cell.style.color = ''; // 글자 색 초기화
             });
-        
+
             // 선택된 열의 셀에 selected 클래스 추가 및 스타일 적용
             const cells = document.querySelectorAll('.scrollable-table td:nth-child(' + (columnIndex + 1) + '), .scrollable-table th:nth-child(' + (columnIndex + 1) + ')');
             cells.forEach(cell => {
@@ -143,60 +143,62 @@
 
                 document.getElementById('fixedColumn').innerHTML = fixedColumnHtml;
                 document.getElementById('scrollableTable').innerHTML = scrollableTableHtml;
+
+                // 테이블 렌더링 후 높이 맞추기
+                requestAnimationFrame(() => {
+                    matchRowHeights();
+                });
             } else {
                 document.getElementById('playerData').innerText = '캐시된 데이터를 찾을 수 없습니다.';
             }
         }
 
+        // 테이블 변경을 감지하고 높이 맞추는 함수
         function observeTableChanges() {
             const targetNode = document.getElementById('scrollableTable');
             const config = { childList: true, subtree: true };
-        
+
             const observer = new MutationObserver(() => {
                 matchRowHeights(); // 테이블 변경 후 높이 맞추기
             });
-        
+
             observer.observe(targetNode, config);
         }
 
+        // 정렬 후 테이블 렌더링과 높이 맞추기
         function sortBy(column, columnIndex) {
             const cachedData = JSON.parse(localStorage.getItem('cachedData'));
             const data = cachedData?.playerRecord;
-        
+
             if (data) {
                 currentSortDirection = 'desc'; // 항상 내림차순으로 고정
                 currentSortColumn = column;
-        
+
                 highlightSelectedColumn(columnIndex); // 선택된 열 강조
                 displayPlayerRecord(); // 테이블 다시 렌더링
             }
         }
-
-window.onload = function() {
-    displayPlayerRecord();
-    observeTableChanges(); // 테이블 변경을 감지하고 높이 맞추기
-};
-
-        function matchRowHeights() {
-    const fixedRows = document.querySelectorAll('.fixed-column tr');
-    const scrollableRows = document.querySelectorAll('.scrollable-table tr');
-    
-    fixedRows.forEach((row, index) => {
-        const fixedHeight = row.getBoundingClientRect().height; // 고정된 이름 열의 높이 계산
-        const scrollableHeight = scrollableRows[index].getBoundingClientRect().height; // 나머지 테이블의 높이 계산
-        const maxHeight = Math.max(fixedHeight, scrollableHeight);
         
-        row.style.height = `${maxHeight}px`; // 동일한 높이 적용
-        scrollableRows[index].style.height = `${maxHeight}px`; // 동일한 높이 적용
-    });
-}
+        function matchRowHeights() {
+            const fixedRows = document.querySelectorAll('.fixed-column tr');
+            const scrollableRows = document.querySelectorAll('.scrollable-table tr');
 
-window.onload = function() {
-    displayPlayerRecord();
-    setTimeout(matchRowHeights, 100); // 테이블 렌더링 후 높이 맞추기
-};
+            fixedRows.forEach((row, index) => {
+                const fixedHeight = row.getBoundingClientRect().height; // 고정된 이름 열의 높이 계산
+                const scrollableHeight = scrollableRows[index].getBoundingClientRect().height; // 나머지 테이블의 높이 계산
+                const maxHeight = Math.max(fixedHeight, scrollableHeight);
 
+                row.style.height = `${maxHeight}px`; // 동일한 높이 적용
+                scrollableRows[index].style.height = `${maxHeight}px`; // 동일한 높이 적용
+            });
+        }
+
+        window.onload = function() {
+            displayPlayerRecord();
+            observeTableChanges(); // 테이블 변경을 감지하고 높이 맞추기
+        };
     </script>
+    
 </head>
 <body>
     <h1>선수 기록</h1>
