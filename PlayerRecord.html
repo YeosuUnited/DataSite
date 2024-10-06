@@ -115,7 +115,17 @@
                 fixedColumnHtml += '</table>';
         
                 // 슬라이드 가능한 나머지 테이블
-                let scrollableTableHtml = '<table class="scrollable-table"><tr>' +
+                let scrollableTableHtml = '<table class="scrollable-table">' +
+                    '<colgroup>' +
+                        '<col style="width: 20px;">' +
+                        '<col style="width: 20px;">' +
+                        '<col style="width: 20px;">' +
+                        '<col style="width: 20px;">' +
+                        '<col style="width: 20px;">' +
+                        '<col style="width: 20px;">' +
+                        '<col style="width: 20px;">' +
+                    '</colgroup>' +
+                    '<tr>' +
                     `<th class="${currentSortColumn === '득점' ? 'highlight' : ''}" onclick="sortBy('득점', 1)">득점</th>` +
                     `<th class="${currentSortColumn === '도움' ? 'highlight' : ''}" onclick="sortBy('도움', 2)">도움</th>` +
                     `<th class="${currentSortColumn === '공격포인트' ? 'highlight' : ''}" onclick="sortBy('공격포인트', 3)">공격포인트</th>` +
