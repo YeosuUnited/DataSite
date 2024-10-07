@@ -17,10 +17,15 @@
         }
         td {
             text-align: left; /* 이름 왼쪽 정렬 */
+            border-top: 1px solid black; /* 상단 경계선 */
+            border-bottom: 1px solid black; /* 하단 경계선 */
         }
-        td span.player-name, td span.stat-value {
-            border-left: none; /* 이름과 득점/도움 사이의 안쪽 선 제거 */
-            border-right: none; /* 이름과 득점/도움 사이의 안쪽 선 제거 */
+        td:first-child, td:nth-child(odd) {
+            border-right: none; /* 이름과 기록 사이의 안쪽 선 제거 */
+        }
+        td:nth-child(even) {
+            text-align: center; /* 기록 값은 가운데 정렬 */
+            border-left: none; /* 기록 값 사이의 안쪽 선 제거 */
         }
         th {
             background-color: #f2f2f2;
