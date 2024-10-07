@@ -42,31 +42,12 @@
             border-top: none;
             border-bottom: none;
         }
-        .table-container {
-            overflow-x: auto;
-        }
-        .top-label {
-            color: blue;
-        }
-        .top-number {
-            color: red;
-        }
-        .first-place-number {
-            color: blue;
-        }
-        .other-place-number {
-            color: gray;
-        }
-        .player-name {
-            color: black;
-            margin-left: 5px;
-        }
-        .stat-value {
-            color: blue;
-        }        
-        /* 각 카테고리 간 구분선 유지 */
-        th:nth-child(2), th:nth-child(4), th:nth-child(6) {
+        td:nth-child(2), td:nth-child(4), td:nth-child(6) {
             border-right: 1px solid black;
+        }
+        /* thead에 가로줄 추가 */
+        thead th {
+            border-top: 1px solid black; /* 표 위에 가로줄 */
         }
     </style>
     <script>
