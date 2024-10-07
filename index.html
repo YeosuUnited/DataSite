@@ -30,6 +30,15 @@
         .top-number {
             color: red; /* 5 빨간색 */
         }
+        .first-place {
+            color: blue; /* 1등은 파란색 */
+        }
+        .other-place {
+            color: gray; /* 나머지 순위는 회색 */
+        }
+        .stat-value {
+            color: blue; /* 득점, 도움 등의 값은 파란색 */
+        }
     </style>
     <script>
         let cachedData = {};
@@ -80,32 +89,34 @@
         function createTable(playerRecord) {
             const currentYear = new Date().getFullYear(); // 서버 시간 기준으로 현재 연도 가져옴
             const thisYearData = playerRecord.filter(player => player['년도'] === currentYear); // 올해 데이터만 필터링
-        
+
             const topGoals = getSortedPlayers(thisYearData, '득점').slice(0, 5); // 5명까지 표시
             const topAssists = getSortedPlayers(thisYearData, '도움').slice(0, 5);
             const topAttackPoints = getSortedPlayers(thisYearData, '공격P').slice(0, 5);
             const topMatches = getSortedPlayers(thisYearData, '경기수').slice(0, 5);
-        
+
             const tableBody = document.querySelector('tbody');
             tableBody.innerHTML = ''; // 기존 테이블 초기화
-        
+
             let rank = 1;
             for (let i = 0; i < 5; i++) {
                 if (i > 0 && topGoals[i]?.득점 !== topGoals[i - 1]?.득점) {
                     rank = i + 1;
                 }
-                
+
+                const rankClass = (rank === 1) ? 'first-place' : 'other-place'; // 1등과 나머지 색상 구분
                 const row = document.createElement('tr');
+
                 row.innerHTML = `
-                    <td>${rank}. ${topGoals[i]?.이름 || '-'}</td><td>${topGoals[i]?.득점 || '-'} 골</td>
-                    <td>${rank}. ${topAssists[i]?.이름 || '-'}</td><td>${topAssists[i]?.도움 || '-'} 도움</td>
-                    <td>${rank}. ${topAttackPoints[i]?.이름 || '-'}</td><td>${topAttackPoints[i]?.공격P || '-'} P</td>
-                    <td>${rank}. ${topMatches[i]?.이름 || '-'}</td><td>${topMatches[i]?.경기수 || '-'} 경기</td>
+                    <td><span class="${rankClass}">${rank}. ${topGoals[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topGoals[i]?.득점 || '-'} 골</span></td>
+                    <td><span class="${rankClass}">${rank}. ${topAssists[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topAssists[i]?.도움 || '-'} 도움</span></td>
+                    <td><span class="${rankClass}">${rank}. ${topAttackPoints[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topAttackPoints[i]?.공격P || '-'} P</span></td>
+                    <td><span class="${rankClass}">${rank}. ${topMatches[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topMatches[i]?.경기수 || '-'} 경기</span></td>
                 `;
-        
+
                 tableBody.appendChild(row);
+                }
             }
-        }
 
         // 동률 처리 함수
         function getSortedPlayers(playerRecord, key) {
