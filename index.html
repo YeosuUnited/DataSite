@@ -72,25 +72,29 @@
         function createTable(playerRecord) {
             const currentYear = new Date().getFullYear(); // 서버 시간 기준으로 현재 연도 가져옴
             const thisYearData = playerRecord.filter(player => player['년도'] === currentYear); // 올해 데이터만 필터링
-
-            const topGoals = getSortedPlayers(thisYearData, '득점').slice(0, 3);
-            const topAssists = getSortedPlayers(thisYearData, '도움').slice(0, 3);
-            const topAttackPoints = getSortedPlayers(thisYearData, '공격P').slice(0, 3);
-            const topMatches = getSortedPlayers(thisYearData, '경기수').slice(0, 3);
-
+        
+            const topGoals = getSortedPlayers(thisYearData, '득점').slice(0, 5); // 5명까지 표시
+            const topAssists = getSortedPlayers(thisYearData, '도움').slice(0, 5);
+            const topAttackPoints = getSortedPlayers(thisYearData, '공격P').slice(0, 5);
+            const topMatches = getSortedPlayers(thisYearData, '경기수').slice(0, 5);
+        
             const tableBody = document.querySelector('tbody');
             tableBody.innerHTML = ''; // 기존 테이블 초기화
-
-            for (let i = 0; i < 3; i++) { // 상위 3명의 선수만 보여줌
+        
+            let rank = 1;
+            for (let i = 0; i < 5; i++) {
+                if (i > 0 && topGoals[i]?.득점 !== topGoals[i - 1]?.득점) {
+                    rank = i + 1;
+                }
+                
                 const row = document.createElement('tr');
-                
                 row.innerHTML = `
-                    <td>${i + 1}. ${topGoals[i]?.이름 || '-'}</td><td>${topGoals[i]?.득점 || '-'} 골</td>
-                    <td>${i + 1}. ${topAssists[i]?.이름 || '-'}</td><td>${topAssists[i]?.도움 || '-'} 도움</td>
-                    <td>${i + 1}. ${topAttackPoints[i]?.이름 || '-'}</td><td>${topAttackPoints[i]?.공격P || '-'} P</td>
-                    <td>${i + 1}. ${topMatches[i]?.이름 || '-'}</td><td>${topMatches[i]?.경기수 || '-'} 경기</td>
+                    <td>${rank}. ${topGoals[i]?.이름 || '-'}</td><td>${topGoals[i]?.득점 || '-'} 골</td>
+                    <td>${rank}. ${topAssists[i]?.이름 || '-'}</td><td>${topAssists[i]?.도움 || '-'} 도움</td>
+                    <td>${rank}. ${topAttackPoints[i]?.이름 || '-'}</td><td>${topAttackPoints[i]?.공격P || '-'} P</td>
+                    <td>${rank}. ${topMatches[i]?.이름 || '-'}</td><td>${topMatches[i]?.경기수 || '-'} 경기</td>
                 `;
-                
+        
                 tableBody.appendChild(row);
             }
         }
