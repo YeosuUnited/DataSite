@@ -90,29 +90,39 @@
                     fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=MatchRecord'),
                     fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerData')
                 ]);
-                
+        
                 if (!playerRecordResponse.ok || !matchRecordResponse.ok || !playerDataResponse.ok) {
                     throw new Error('데이터 응답 실패');
                 }
-                
+        
                 const [playerRecord, matchRecord, playerData] = await Promise.all([
                     playerRecordResponse.json(),
                     matchRecordResponse.json(),
                     playerDataResponse.json()
                 ]);
-                
+        
                 cachedData = { playerRecord, matchRecord, playerData };
-                
                 lastUpdated = new Date().getTime();
                 localStorage.setItem('cachedData', JSON.stringify(cachedData));
                 localStorage.setItem('lastUpdated', lastUpdated);
-                
+        
                 document.getElementById('status').innerText = '데이터가 성공적으로 업데이트되었습니다.';
                 updateTimeInfo();
                 createTable(playerRecord);
+        
             } catch (error) {
                 console.error('Error fetching data:', error);
-                document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+                
+                // 캐싱된 데이터가 있으면 캐싱된 데이터 사용
+                const cached = localStorage.getItem('cachedData');
+                if (cached) {
+                    cachedData = JSON.parse(cached);
+                    document.getElementById('status').innerText = '인터넷 연결 문제, 캐싱된 데이터를 사용 중입니다.';
+                    updateTimeInfo();
+                    createTable(cachedData.playerRecord);
+                } else {
+                    document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+                }
             }
         }
 
