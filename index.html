@@ -7,17 +7,18 @@
     <style>
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate; /* collapse 대신 separate로 변경 */
+            border-spacing: 0; /* 셀 사이 간격 없앰 */
             margin-bottom: 20px;
             min-width: 800px; /* 테이블 최소 너비 설정 */
         }
         th, td {
-            border: 1px solid black;
+            border-top: 1px solid black; /* 상단 경계선 */
+            border-bottom: 1px solid black; /* 하단 경계선 */
             padding: 8px;
         }
         td {
             text-align: left; /* 이름 왼쪽 정렬 */
-            border-top: 1px solid black; /* 상단 경계선 */
         }
         tr:not(:last-child) td {
             border-bottom: none; /* 각 행 사이의 가로줄 제거 */
