@@ -139,29 +139,49 @@
             const tableBody = document.querySelector('tbody');
             tableBody.innerHTML = '';
         
-            let rank = 1;
+            let rankGoals = 1, rankAssists = 1, rankAttack = 1, rankMatches = 1;
+        
             for (let i = 0; i < 5; i++) {
+                // 득점 순위 처리
                 if (i > 0 && topGoals[i]?.득점 !== topGoals[i - 1]?.득점) {
-                    rank = i + 1;
+                    rankGoals = i + 1;
+                }
+                
+                // 도움 순위 처리
+                if (i > 0 && topAssists[i]?.도움 !== topAssists[i - 1]?.도움) {
+                    rankAssists = i + 1;
                 }
         
-                const rankClass = (rank === 1) ? 'first-place-number' : 'other-place-number';
-                const boldGoalClass = (rank === 1) ? 'bold-number' : '';  // 1등 득점 굵게
-                const boldAssistClass = (rank === 1) ? 'bold-number' : '';  // 1등 도움 굵게
-                const boldAttackClass = (rank === 1) ? 'bold-number' : '';  // 1등 공격포인트 굵게
-                const boldMatchClass = (rank === 1) ? 'bold-number' : '';  // 1등 출전수 굵게
-                const boldNameClass = (rank === 1) ? 'bold-number' : '';  // 1등 이름 굵게
+                // 공격 포인트 순위 처리
+                if (i > 0 && topAttackPoints[i]?.공격P !== topAttackPoints[i - 1]?.공격P) {
+                    rankAttack = i + 1;
+                }
+        
+                // 출전수 순위 처리
+                if (i > 0 && topMatches[i]?.경기수 !== topMatches[i - 1]?.경기수) {
+                    rankMatches = i + 1;
+                }
+        
+                const rankGoalsClass = (rankGoals === 1) ? 'first-place-number' : 'other-place-number';
+                const rankAssistsClass = (rankAssists === 1) ? 'first-place-number' : 'other-place-number';
+                const rankAttackClass = (rankAttack === 1) ? 'first-place-number' : 'other-place-number';
+                const rankMatchesClass = (rankMatches === 1) ? 'first-place-number' : 'other-place-number';
+                
+                const boldGoalClass = (rankGoals === 1) ? 'bold-number' : '';
+                const boldAssistClass = (rankAssists === 1) ? 'bold-number' : '';
+                const boldAttackClass = (rankAttack === 1) ? 'bold-number' : '';
+                const boldMatchClass = (rankMatches === 1) ? 'bold-number' : '';
         
                 const row = document.createElement('tr');
         
                 row.innerHTML = `
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topGoals[i]?.이름 || '-'}</span></td>
+                    <td><span class="${rankGoalsClass}">${rankGoals}</span> <span class="player-name ${boldGoalClass}">${topGoals[i]?.이름 || '-'}</span></td>
                     <td><span class="stat-value ${boldGoalClass}">${topGoals[i]?.득점 || '-'} 골</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topAssists[i]?.이름 || '-'}</span></td>
+                    <td><span class="${rankAssistsClass}">${rankAssists}</span> <span class="player-name ${boldAssistClass}">${topAssists[i]?.이름 || '-'}</span></td>
                     <td><span class="stat-value ${boldAssistClass}">${topAssists[i]?.도움 || '-'} 도움</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topAttackPoints[i]?.이름 || '-'}</span></td>
+                    <td><span class="${rankAttackClass}">${rankAttack}</span> <span class="player-name ${boldAttackClass}">${topAttackPoints[i]?.이름 || '-'}</span></td>
                     <td><span class="stat-value ${boldAttackClass}">${topAttackPoints[i]?.공격P || '-'} P</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topMatches[i]?.이름 || '-'}</span></td>
+                    <td><span class="${rankMatchesClass}">${rankMatches}</span> <span class="player-name ${boldMatchClass}">${topMatches[i]?.이름 || '-'}</span></td>
                     <td><span class="stat-value ${boldMatchClass}">${topMatches[i]?.경기수 || '-'} 경기</span></td>
                 `;
         
