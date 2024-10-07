@@ -18,9 +18,17 @@
         }
         th {
             background-color: #f2f2f2;
+            text-align: left; /* 왼쪽 정렬 */
+            color: blue; /* 파란색 텍스트 */
         }
         .table-container {
             overflow-x: auto; /* 테이블 슬라이딩 기능 */
+        }
+        .top-label {
+            color: blue; /* TOP 파란색 */
+        }
+        .top-number {
+            color: red; /* 5 빨간색 */
         }
     </style>
     <script>
@@ -140,10 +148,10 @@
         <table>
             <thead>
                 <tr>
-                    <th colspan="2">최다 득점</th>
-                    <th colspan="2">최다 도움</th>
-                    <th colspan="2">최다 공격포인트</th>
-                    <th colspan="2">최다 출전수</th>
+                    <th colspan="2"><span class="top-label">최다 득점 TOP</span><span class="top-number">5</span></th>
+                    <th colspan="2"><span class="top-label">최다 도움 TOP</span><span class="top-number">5</span></th>
+                    <th colspan="2"><span class="top-label">최다 공격포인트 TOP</span><span class="top-number">5</span></th>
+                    <th colspan="2"><span class="top-label">최다 출전수 TOP</span><span class="top-number">5</span></th>
                 </tr>
             </thead>
             <tbody>
