@@ -116,7 +116,7 @@
             }
         }
 
-        // 득점, 도움에서 숫자 "4"를 찾고 굵게 표시하기
+        // 1등의 값만 굵게 표시하는 함수
         function createTable(playerRecord) {
             const currentYear = new Date().getFullYear();
             const thisYearData = playerRecord.filter(player => player['년도'] === currentYear);
@@ -136,8 +136,10 @@
                 }
         
                 const rankClass = (rank === 1) ? 'first-place-number' : 'other-place-number';
-                const boldGoalClass = topGoals[i]?.득점 === 4 ? 'bold-number' : '';
-                const boldAssistClass = topAssists[i]?.도움 === 4 ? 'bold-number' : '';
+                const boldGoalClass = (rank === 1) ? 'bold-number' : '';  // 1등 득점 굵게
+                const boldAssistClass = (rank === 1) ? 'bold-number' : '';  // 1등 도움 굵게
+                const boldAttackClass = (rank === 1) ? 'bold-number' : '';  // 1등 공격포인트 굵게
+                const boldMatchClass = (rank === 1) ? 'bold-number' : '';  // 1등 출전수 굵게
         
                 const row = document.createElement('tr');
         
@@ -147,9 +149,9 @@
                     <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAssists[i]?.이름 || '-'}</span></td>
                     <td><span class="stat-value ${boldAssistClass}">${topAssists[i]?.도움 || '-'} 도움</span></td>
                     <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAttackPoints[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value">${topAttackPoints[i]?.공격P || '-'} P</span></td>
+                    <td><span class="stat-value ${boldAttackClass}">${topAttackPoints[i]?.공격P || '-'} P</span></td>
                     <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topMatches[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value">${topMatches[i]?.경기수 || '-'} 경기</span></td>
+                    <td><span class="stat-value ${boldMatchClass}">${topMatches[i]?.경기수 || '-'} 경기</span></td>
                 `;
         
                 tableBody.appendChild(row);
