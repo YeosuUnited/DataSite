@@ -68,6 +68,9 @@
         .stat-value {
             color: blue;
         }        
+        .bold-number {
+            font-weight: bold;
+        }
     </style>
     <script>
         // 기존 자바스크립트 로직 유지
@@ -113,34 +116,42 @@
             }
         }
 
+        // 득점, 도움에서 숫자 "4"를 찾고 굵게 표시하기
         function createTable(playerRecord) {
             const currentYear = new Date().getFullYear();
             const thisYearData = playerRecord.filter(player => player['년도'] === currentYear);
-
+        
             const topGoals = getSortedPlayers(thisYearData, '득점').slice(0, 5);
             const topAssists = getSortedPlayers(thisYearData, '도움').slice(0, 5);
             const topAttackPoints = getSortedPlayers(thisYearData, '공격P').slice(0, 5);
             const topMatches = getSortedPlayers(thisYearData, '경기수').slice(0, 5);
-
+        
             const tableBody = document.querySelector('tbody');
             tableBody.innerHTML = '';
-
+        
             let rank = 1;
             for (let i = 0; i < 5; i++) {
                 if (i > 0 && topGoals[i]?.득점 !== topGoals[i - 1]?.득점) {
                     rank = i + 1;
                 }
-
+        
                 const rankClass = (rank === 1) ? 'first-place-number' : 'other-place-number';
+                const boldGoalClass = topGoals[i]?.득점 === 4 ? 'bold-number' : '';
+                const boldAssistClass = topAssists[i]?.도움 === 4 ? 'bold-number' : '';
+        
                 const row = document.createElement('tr');
-
+        
                 row.innerHTML = `
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topGoals[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topGoals[i]?.득점 || '-'} 골</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAssists[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topAssists[i]?.도움 || '-'} 도움</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAttackPoints[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topAttackPoints[i]?.공격P || '-'} P</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topMatches[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topMatches[i]?.경기수 || '-'} 경기</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topGoals[i]?.이름 || '-'}</span></td>
+                    <td><span class="stat-value ${boldGoalClass}">${topGoals[i]?.득점 || '-'} 골</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAssists[i]?.이름 || '-'}</span></td>
+                    <td><span class="stat-value ${boldAssistClass}">${topAssists[i]?.도움 || '-'} 도움</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAttackPoints[i]?.이름 || '-'}</span></td>
+                    <td><span class="stat-value">${topAttackPoints[i]?.공격P || '-'} P</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topMatches[i]?.이름 || '-'}</span></td>
+                    <td><span class="stat-value">${topMatches[i]?.경기수 || '-'} 경기</span></td>
                 `;
-
+        
                 tableBody.appendChild(row);
             }
         }
