@@ -30,11 +30,15 @@
         .top-number {
             color: red; /* 5 빨간색 */
         }
-        .first-place {
-            color: blue; /* 1등은 파란색 */
+        .first-place-number {
+            color: blue; /* 1등 숫자는 파란색 */
         }
-        .other-place {
-            color: gray; /* 나머지 순위는 회색 */
+        .other-place-number {
+            color: gray; /* 나머지 숫자는 회색 */
+        }
+        .player-name {
+            color: black; /* 이름은 검정색 */
+            margin-left: 5px; /* 이름과 숫자 간격 */
         }
         .stat-value {
             color: blue; /* 득점, 도움 등의 값은 파란색 */
@@ -104,19 +108,19 @@
                     rank = i + 1;
                 }
 
-                const rankClass = (rank === 1) ? 'first-place' : 'other-place'; // 1등과 나머지 색상 구분
+                const rankClass = (rank === 1) ? 'first-place-number' : 'other-place-number'; // 1등은 파란색, 나머지는 회색
                 const row = document.createElement('tr');
 
                 row.innerHTML = `
-                    <td><span class="${rankClass}">${rank}. ${topGoals[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topGoals[i]?.득점 || '-'} 골</span></td>
-                    <td><span class="${rankClass}">${rank}. ${topAssists[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topAssists[i]?.도움 || '-'} 도움</span></td>
-                    <td><span class="${rankClass}">${rank}. ${topAttackPoints[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topAttackPoints[i]?.공격P || '-'} P</span></td>
-                    <td><span class="${rankClass}">${rank}. ${topMatches[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topMatches[i]?.경기수 || '-'} 경기</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topGoals[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topGoals[i]?.득점 || '-'} 골</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAssists[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topAssists[i]?.도움 || '-'} 도움</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAttackPoints[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topAttackPoints[i]?.공격P || '-'} P</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topMatches[i]?.이름 || '-'}</span></td><td><span class="stat-value">${topMatches[i]?.경기수 || '-'} 경기</span></td>
                 `;
 
                 tableBody.appendChild(row);
-                }
             }
+        }
 
         // 동률 처리 함수
         function getSortedPlayers(playerRecord, key) {
