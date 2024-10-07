@@ -150,18 +150,19 @@
                 const boldAssistClass = (rank === 1) ? 'bold-number' : '';  // 1등 도움 굵게
                 const boldAttackClass = (rank === 1) ? 'bold-number' : '';  // 1등 공격포인트 굵게
                 const boldMatchClass = (rank === 1) ? 'bold-number' : '';  // 1등 출전수 굵게
+                const boldNameClass = (rank === 1) ? 'bold-number' : '';  // 1등 이름 굵게
         
                 const row = document.createElement('tr');
         
                 row.innerHTML = `
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topGoals[i]?.이름 || '-'}</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topGoals[i]?.이름 || '-'}</span></td>
                     <td><span class="stat-value ${boldGoalClass}">${topGoals[i]?.득점 || '-'} 골</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAssists[i]?.이름 || '-'}</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topAssists[i]?.이름 || '-'}</span></td>
                     <td><span class="stat-value ${boldAssistClass}">${topAssists[i]?.도움 || '-'} 도움</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAttackPoints[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value">${topAttackPoints[i]?.공격P || '-'} P</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topMatches[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value">${topMatches[i]?.경기수 || '-'} 경기</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topAttackPoints[i]?.이름 || '-'}</span></td>
+                    <td><span class="stat-value ${boldAttackClass}">${topAttackPoints[i]?.공격P || '-'} P</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topMatches[i]?.이름 || '-'}</span></td>
+                    <td><span class="stat-value ${boldMatchClass}">${topMatches[i]?.경기수 || '-'} 경기</span></td>
                 `;
         
                 tableBody.appendChild(row);
