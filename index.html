@@ -119,9 +119,7 @@
                     cachedData = JSON.parse(cached);
                     document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
                     updateTimeInfo();
-                    const cachedData = JSON.parse(localStorage.getItem('cachedData'));
-                    const data = cachedData?.playerRecord;
-                    createTable(data);
+                    createTable(cachedData.playerRecord);
                 } else {
                     document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
                 }
@@ -156,14 +154,14 @@
                 const row = document.createElement('tr');
         
                 row.innerHTML = `
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topGoals[i]?.이름 || '-'}</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topGoals[i]?.이름 || '-'}</span></td>
                     <td><span class="stat-value ${boldGoalClass}">${topGoals[i]?.득점 || '-'} 골</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topAssists[i]?.이름 || '-'}</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAssists[i]?.이름 || '-'}</span></td>
                     <td><span class="stat-value ${boldAssistClass}">${topAssists[i]?.도움 || '-'} 도움</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topAttackPoints[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value ${boldAttackClass}">${topAttackPoints[i]?.공격P || '-'} P</span></td>
-                    <td><span class="${rankClass}">${rank}</span> <span class="player-name ${boldNameClass}">${topMatches[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value ${boldMatchClass}">${topMatches[i]?.경기수 || '-'} 경기</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topAttackPoints[i]?.이름 || '-'}</span></td>
+                    <td><span class="stat-value">${topAttackPoints[i]?.공격P || '-'} P</span></td>
+                    <td><span class="${rankClass}">${rank}</span> <span class="player-name">${topMatches[i]?.이름 || '-'}</span></td>
+                    <td><span class="stat-value">${topMatches[i]?.경기수 || '-'} 경기</span></td>
                 `;
         
                 tableBody.appendChild(row);
