@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 페이지</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .table-container {
+            overflow-x: auto; /* 테이블 슬라이딩 기능 */
+        }
+    </style>
     <script>
         let cachedData = {};
         let lastUpdated = null;
@@ -42,10 +60,48 @@
                 
                 document.getElementById('status').innerText = '데이터가 성공적으로 업데이트되었습니다.';
                 updateTimeInfo();
+                createTable(playerRecord);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
             }
+        }
+
+        // 테이블을 동적으로 생성하는 함수
+        function createTable(playerRecord) {
+            const currentYear = new Date().getFullYear(); // 서버 시간 기준으로 현재 연도 가져옴
+            const thisYearData = playerRecord.filter(player => player['년도'] === currentYear); // 올해 데이터만 필터링
+
+            const topGoals = getSortedPlayers(thisYearData, '득점').slice(0, 3);
+            const topAssists = getSortedPlayers(thisYearData, '도움').slice(0, 3);
+            const topAttackPoints = getSortedPlayers(thisYearData, '공격P').slice(0, 3);
+            const topMatches = getSortedPlayers(thisYearData, '경기수').slice(0, 3);
+
+            const tableBody = document.querySelector('tbody');
+            tableBody.innerHTML = ''; // 기존 테이블 초기화
+
+            for (let i = 0; i < 3; i++) { // 상위 3명의 선수만 보여줌
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${i + 1}. ${topGoals[i]?.이름 || '-'}</td><td>${topGoals[i]?.득점 || '-'} 골</td>
+                    <td>${i + 1}. ${topAssists[i]?.이름 || '-'}</td><td>${topAssists[i]?.도움 || '-'} 도움</td>
+                    <td>${i + 1}. ${topAttackPoints[i]?.이름 || '-'}</td><td>${topAttackPoints[i]?.공격P || '-'} P</td>
+                    <td>${i + 1}. ${topMatches[i]?.이름 || '-'}</td><td>${topMatches[i]?.경기수 || '-'} 경기</td>
+                `;
+                
+                tableBody.appendChild(row);
+            }
+        }
+
+        // 동률 처리 함수
+        function getSortedPlayers(playerRecord, key) {
+            return [...playerRecord].sort((a, b) => {
+                if (b[key] !== a[key]) return b[key] - a[key]; // 주된 키로 정렬
+                if (b['도움'] !== a['도움']) return b['도움'] - a['도움']; // 동률이면 도움 기준 정렬
+                if (b['공격P'] !== a['공격P']) return b['공격P'] - a['공격P']; // 그래도 동률이면 공격포인트 기준 정렬
+                return b['경기수'] - a['경기수']; // 최종적으로 경기수 기준 정렬
+            });
         }
 
         // 최근 갱신 시간 표시
@@ -57,10 +113,6 @@
         window.onload = function() {
             fetchData(); // 페이지 로드 시 데이터 자동 갱신
         };
-
-         window.onpopstate = function() {
-        fetchData(); // 뒤로가기 시에도 데이터 갱신
-        };    
     </script>
 </head>
 <body>
@@ -77,5 +129,22 @@
     <!-- 상태 및 시간 정보 표시 -->
     <div id="status">데이터 상태: 로딩 중...</div>
     <div id="lastUpdate"></div>
+
+    <!-- 선수 기록 테이블 -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">최다 득점</th>
+                    <th colspan="2">최다 도움</th>
+                    <th colspan="2">최다 공격포인트</th>
+                    <th colspan="2">최다 출전수</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 동적으로 생성될 내용 -->
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
