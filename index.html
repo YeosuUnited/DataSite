@@ -14,7 +14,13 @@
         th, td {
             border: 1px solid black;
             padding: 8px;
-            text-align: center;
+        }
+        td {
+            text-align: left; /* 이름 왼쪽 정렬 */
+        }
+        td span.player-name, td span.stat-value {
+            border-left: none; /* 이름과 득점/도움 사이의 안쪽 선 제거 */
+            border-right: none; /* 이름과 득점/도움 사이의 안쪽 선 제거 */
         }
         th {
             background-color: #f2f2f2;
