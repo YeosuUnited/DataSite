@@ -18,7 +18,9 @@
         td {
             text-align: left; /* 이름 왼쪽 정렬 */
             border-top: 1px solid black; /* 상단 경계선 */
-            border-bottom: 1px solid black; /* 하단 경계선 */
+        }
+        tr:not(:last-child) td {
+            border-bottom: none; /* 각 행 사이의 가로줄 제거 */
         }
         td:first-child, td:nth-child(odd) {
             border-right: none; /* 이름과 기록 사이의 안쪽 선 제거 */
