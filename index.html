@@ -15,33 +15,36 @@
         th, td {
             padding: 8px;
         }
-        tr td {
-            border-bottom: none;
-        }
-        td {
-            text-align: left;
-        }
-        tr:not(:last-child) td {
-            border-bottom: none;
-        }
-        tr:last-child td {
-            border-bottom: 1px solid black;
-        }
-        td:first-child, td:nth-child(odd) {
-            border-right: none;
-        }
-        td:nth-child(even) {
-            text-align: center;
-            border-left: none;
-        }
+        /* 각 카테고리 간 구분선 유지 */
         th:nth-child(2), th:nth-child(4), th:nth-child(6) {
-            border-right: 1px solid black; /* 구분선 유지 */
+            border-right: 1px solid black;
         }
         th {
             background-color: #f2f2f2;
             text-align: left;
             color: blue;
             font-weight: normal;
+            border-bottom: 1px solid black; /* 최상단 가로줄 */
+        }
+        td {
+            text-align: left;
+        }
+        /* 마지막 행의 가로줄만 남기기 */
+        tbody tr:last-child td {
+            border-bottom: 1px solid black; /* 최하단 가로줄 */
+        }
+        /* 이름과 기록 값 사이의 안쪽 선 제거 */
+        td:nth-child(odd) {
+            border-right: none;
+        }
+        td:nth-child(even) {
+            text-align: center;
+            border-left: none;
+        }
+        /* 테이블의 가로줄 전부 제거 */
+        tbody tr td {
+            border-top: none;
+            border-bottom: none;
         }
         .table-container {
             overflow-x: auto;
@@ -64,16 +67,6 @@
         }
         .stat-value {
             color: blue;
-        }
-        /* 가로줄 제거 */
-        thead tr {
-            border-bottom: none;
-        }
-        thead th {
-            border-bottom: none;
-        }
-        tbody tr:first-child td, tbody tr:last-child td {
-            border-top: 1px solid black; /* 첫 번째와 마지막 줄만 경계선 */
         }
     </style>
     <script>
