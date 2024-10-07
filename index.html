@@ -7,77 +7,84 @@
     <style>
         table {
             width: 100%;
-            border-collapse: separate; /* collapse 대신 separate로 변경 */
-            border-spacing: 0; /* 셀 사이 간격 없앰 */
+            border-collapse: separate;
+            border-spacing: 0;
             margin-bottom: 20px;
-            min-width: 800px; /* 테이블 최소 너비 설정 */
+            min-width: 800px;
         }
         th, td {
-            border-top: 1px solid black; /* 상단 경계선 */
-            border-bottom: 1px solid black; /* 하단 경계선 */
             padding: 8px;
         }
         tr td {
-            border-bottom: none; /* 가로줄 완전히 제거 */
+            border-bottom: none;
         }
         td {
-            text-align: left; /* 이름 왼쪽 정렬 */
+            text-align: left;
         }
         tr:not(:last-child) td {
-            border-bottom: none; /* 각 행 사이의 가로줄 제거 */
+            border-bottom: none;
         }
         tr:last-child td {
-            border-bottom: 1px solid black; /* 마지막 행만 하단 경계선 유지 */
+            border-bottom: 1px solid black;
         }
         td:first-child, td:nth-child(odd) {
-            border-right: none; /* 이름과 기록 사이의 안쪽 선 제거 */
+            border-right: none;
         }
         td:nth-child(even) {
-            text-align: center; /* 기록 값은 가운데 정렬 */
-            border-left: none; /* 기록 값 사이의 안쪽 선 제거 */
+            text-align: center;
+            border-left: none;
         }
         th:nth-child(2), th:nth-child(4), th:nth-child(6) {
-            border-right: 1px solid black; /* 최상단 1행 구분선 추가 */
+            border-right: 1px solid black; /* 구분선 유지 */
         }
         th {
             background-color: #f2f2f2;
-            text-align: left; /* 왼쪽 정렬 */
-            color: blue; /* 파란색 텍스트 */
-            font-weight: normal; /* bold 제거 */
+            text-align: left;
+            color: blue;
+            font-weight: normal;
         }
         .table-container {
-            overflow-x: auto; /* 테이블 슬라이딩 기능 */
+            overflow-x: auto;
         }
         .top-label {
-            color: blue; /* TOP 파란색 */
+            color: blue;
         }
         .top-number {
-            color: red; /* 5 빨간색 */
+            color: red;
         }
         .first-place-number {
-            color: blue; /* 1등 숫자는 파란색 */
+            color: blue;
         }
         .other-place-number {
-            color: gray; /* 나머지 숫자는 회색 */
+            color: gray;
         }
         .player-name {
-            color: black; /* 이름은 검정색 */
-            margin-left: 5px; /* 이름과 숫자 간격 */
+            color: black;
+            margin-left: 5px;
         }
         .stat-value {
-            color: blue; /* 득점, 도움 등의 값은 파란색 */
+            color: blue;
+        }
+        /* 가로줄 제거 */
+        thead tr {
+            border-bottom: none;
+        }
+        thead th {
+            border-bottom: none;
+        }
+        tbody tr:first-child td, tbody tr:last-child td {
+            border-top: 1px solid black; /* 첫 번째와 마지막 줄만 경계선 */
         }
     </style>
     <script>
+        // 기존 자바스크립트 로직 유지
         let cachedData = {};
         let lastUpdated = null;
 
-        // 시간을 형식화하는 함수
         function formatTime(date) {
             return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
         }
 
-        // 데이터 갱신 및 캐싱하는 함수
         async function fetchData() {
             try {
                 document.getElementById('status').innerText = '데이터를 불러오는 중...';
@@ -113,18 +120,17 @@
             }
         }
 
-        // 테이블을 동적으로 생성하는 함수
         function createTable(playerRecord) {
-            const currentYear = new Date().getFullYear(); // 서버 시간 기준으로 현재 연도 가져옴
-            const thisYearData = playerRecord.filter(player => player['년도'] === currentYear); // 올해 데이터만 필터링
+            const currentYear = new Date().getFullYear();
+            const thisYearData = playerRecord.filter(player => player['년도'] === currentYear);
 
-            const topGoals = getSortedPlayers(thisYearData, '득점').slice(0, 5); // 5명까지 표시
+            const topGoals = getSortedPlayers(thisYearData, '득점').slice(0, 5);
             const topAssists = getSortedPlayers(thisYearData, '도움').slice(0, 5);
             const topAttackPoints = getSortedPlayers(thisYearData, '공격P').slice(0, 5);
             const topMatches = getSortedPlayers(thisYearData, '경기수').slice(0, 5);
 
             const tableBody = document.querySelector('tbody');
-            tableBody.innerHTML = ''; // 기존 테이블 초기화
+            tableBody.innerHTML = '';
 
             let rank = 1;
             for (let i = 0; i < 5; i++) {
@@ -132,7 +138,7 @@
                     rank = i + 1;
                 }
 
-                const rankClass = (rank === 1) ? 'first-place-number' : 'other-place-number'; // 1등은 파란색, 나머지는 회색
+                const rankClass = (rank === 1) ? 'first-place-number' : 'other-place-number';
                 const row = document.createElement('tr');
 
                 row.innerHTML = `
@@ -146,30 +152,25 @@
             }
         }
 
-        // 동률 처리 함수
         function getSortedPlayers(playerRecord, key) {
             return [...playerRecord].sort((a, b) => {
-                if (b[key] !== a[key]) return b[key] - a[key]; // 주된 키로 정렬
-                if (b['도움'] !== a['도움']) return b['도움'] - a['도움']; // 동률이면 도움 기준 정렬
-                if (b['공격P'] !== a['공격P']) return b['공격P'] - a['공격P']; // 그래도 동률이면 공격포인트 기준 정렬
-                return b['경기수'] - a['경기수']; // 최종적으로 경기수 기준 정렬
+                if (b[key] !== a[key]) return b[key] - a[key];
+                return b['경기수'] - a['경기수'];
             });
         }
 
-        // 최근 갱신 시간 표시
         function updateTimeInfo() {
             const lastUpdatedTime = new Date(lastUpdated);
             document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
         }
 
         window.onload = function() {
-            fetchData(); // 페이지 로드 시 데이터 자동 갱신
+            fetchData();
         };
     </script>
 </head>
 <body>
     <h1>메인 페이지에 오신 것을 환영합니다!</h1>
-    <!-- 네비게이션 바 -->
     <nav>
         <ul style="list-style: none; display: flex; justify-content: space-around; padding: 0;">
             <li><a href="MatchRecord.html">최근 전적</a></li>
@@ -178,11 +179,9 @@
         </ul>
     </nav>
 
-    <!-- 상태 및 시간 정보 표시 -->
     <div id="status">데이터 상태: 로딩 중...</div>
     <div id="lastUpdate"></div>
 
-    <!-- 선수 기록 테이블 -->
     <div class="table-container">
         <table>
             <thead>
