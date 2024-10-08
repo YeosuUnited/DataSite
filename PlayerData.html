@@ -48,6 +48,7 @@
         }
         .search-results li {
             margin-bottom: 5px;
+            cursor: pointer;
         }
     </style>
     <script>
@@ -61,16 +62,44 @@
             // 페이지 처음 접속 시 기본 문구 표시
             playerNameElement.textContent = "선수를 검색하세요";
 
+            function updatePlayerInfo(player) {
+                playerNameElement.textContent = player.이름;
+                playerNumberElement.textContent = `NO.${player.등번호}`;
+            }
+
             searchInputElement.addEventListener('input', function() {
                 const searchTerm = searchInputElement.value;
                 if (cachedData && cachedData.playerData) {
-                    const filteredPlayers = cachedData.playerData.filter(p => p.이름.startsWith(searchTerm)).slice(0, 5);
+                    const filteredPlayers = cachedData.playerData.filter(p => p.이름.includes(searchTerm)).slice(0, 5);
                     let resultsHtml = "<ul>";
                     filteredPlayers.forEach(player => {
-                        resultsHtml += `<li>${player.이름} - NO.${player.등번호}</li>`;
+                        resultsHtml += `<li data-player-name="${player.이름}">${player.이름} - NO.${player.등번호}</li>`;
                     });
                     resultsHtml += "</ul>";
                     searchResultsElement.innerHTML = resultsHtml;
+
+                    // 검색 결과 클릭 이벤트 추가
+                    document.querySelectorAll('#search-results li').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const playerName = this.getAttribute('data-player-name');
+                            const selectedPlayer = cachedData.playerData.find(p => p.이름 === playerName);
+                            if (selectedPlayer) {
+                                updatePlayerInfo(selectedPlayer);
+                            }
+                        });
+                    });
+                }
+            });
+
+            searchInputElement.addEventListener('change', function() {
+                const searchTerm = searchInputElement.value;
+                if (cachedData && cachedData.playerData) {
+                    const player = cachedData.playerData.find(p => p.이름.includes(searchTerm));
+                    if (player) {
+                        updatePlayerInfo(player);
+                    } else {
+                        alert('선수를 찾을 수 없습니다.');
+                    }
                 }
             });
         });
