@@ -66,6 +66,7 @@
                 playerNameElement.textContent = player.이름;
                 playerNumberElement.textContent = `NO.${player.등번호}`;
                 searchResultsElement.innerHTML = ""; // 검색 결과 닫기
+                searchInputElement.value = ""; // 검색창 비우기
             }
 
             searchInputElement.addEventListener('input', function() {
