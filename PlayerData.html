@@ -95,6 +95,8 @@
                             const selectedPlayer = cachedData.playerData.find(p => p.이름 === playerName);
                             if (selectedPlayer) {
                                 displayPlayerDetails(selectedPlayer);
+                                searchResultsElement.innerHTML = ""; // 검색 결과 닫기
+                                searchInputElement.value = ""; // 검색창 비우기
                             }
                         });
                     });
@@ -127,6 +129,8 @@
                     const player = cachedData.playerData.find(p => p.이름.includes(searchTerm));
                     if (player) {
                         displayPlayerDetails(player);
+                        searchResultsElement.innerHTML = ""; // 검색 결과 닫기
+                        searchInputElement.value = ""; // 검색창 비우기
                     } else {
                         alert('선수를 찾을 수 없습니다.');
                     }
