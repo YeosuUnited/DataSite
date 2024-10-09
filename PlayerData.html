@@ -241,7 +241,7 @@
                         `;
 
                         playerRecords.sort((a, b) => b.년도 - a.년도).forEach((record, index) => {
-                            const rowClass = index < 3 ? 'year-data' : 'other-year-data';
+                            const rowClass = index < 1 ? 'year-data' : 'other-year-data';
                             recordHtml += `
                                 <tr class="${rowClass}">
                                     <td>${record.년도}</td>
