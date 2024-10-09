@@ -104,16 +104,16 @@
             function displayPlayerDetails(player) {
                 playerDetailsElement.innerHTML = `
                     <div>
-                        <span class="label">이름: </span><span class="value">${player.이름}</span>, 등번호: <span class="value">NO.${player.등번호}</span>
+                        <span class="label">이름: </span><span class="value">${player.이름}</span> <span class="label">NO.${player.등번호}</span>
                     </div>
                     <div>
-                        <span class="label">포지션: </span><span class="value">${player.포지션}</span>, 서브포지션: <span class="value">${player.서브포지션}</span>
+                        <span class="label">포지션: </span><span class="value">${player.포지션}</span> <span class="label">${player.서브포지션}</span>
                     </div>
                     <div>
                         <span class="label">신체: </span><span class="value">${player.키}cm</span>, <span class="value">${player.몸무게}kg</span>
                     </div>
                     <div>
-                        <span class="label">출생: </span><span class="value">${player.출생}</span>
+                        <span class="label">출생: </span><span class="value">${player.생년월일}</span>
                     </div>
                     <div>
                         <span class="label">국적: </span><span class="value">${player.국적}</span>
