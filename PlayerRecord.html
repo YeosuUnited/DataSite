@@ -121,28 +121,22 @@
                         '<col style="width: 0px;">' +
                         '<col style="width: 10px;">' +
                         '<col style="width: 10px;">' +
-                        '<col style="width: 20px;">' +
-                        '<col style="width: 20px;">' +
                     '</colgroup>' +
                     '<tr>' +
                     `<th class="${currentSortColumn === '득점' ? 'highlight' : ''}" onclick="sortBy('득점', 1)">득점</th>` +
                     `<th class="${currentSortColumn === '도움' ? 'highlight' : ''}" onclick="sortBy('도움', 2)">도움</th>` +
-                    `<th class="${currentSortColumn === '공격포인트' ? 'highlight' : ''}" onclick="sortBy('공격포인트', 3)">공격포인트</th>` +
+                    `<th class="${currentSortColumn === '공격P' ? 'highlight' : ''}" onclick="sortBy('공격P', 3)">공격P</th>` +
                     `<th class="${currentSortColumn === '경기수' ? 'highlight' : ''}" onclick="sortBy('경기수', 4)">경기수</th>` +
                     `<th class="${currentSortColumn === 'MOM' ? 'highlight' : ''}" onclick="sortBy('MOM', 5)">MOM</th>` +
-                    `<th class="${currentSortColumn === '승' ? 'highlight' : ''}" onclick="sortBy('승', 6)">승</th>` +
-                    `<th class="${currentSortColumn === '패' ? 'highlight' : ''}" onclick="sortBy('패', 7)">패</th>` +
                     '</tr>';
         
                 sortedData.forEach(player => {
                     scrollableTableHtml += `<tr>
                                                 <td>${player.득점}</td>
                                                 <td>${player.도움}</td>
-                                                <td>${player.공격포인트}</td>
+                                                <td>${player.공격P}</td>
                                                 <td>${player.경기수}</td>
                                                 <td>${player.MOM}</td>
-                                                <td>${player.승}</td>
-                                                <td>${player.패}</td>
                                              </tr>`;
                 });
                 scrollableTableHtml += '</table>';
