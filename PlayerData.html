@@ -7,7 +7,7 @@
         .header {
             background-color: #2565D0;
             color: white;
-            height: 100px;
+            height: 66px;
             width: 100%;
             text-align: left;
             padding-left: 20px;
@@ -17,9 +17,10 @@
             justify-content: space-between;
             box-sizing: border-box;
             padding-right: 20px;
+            margin: 0;
         }
         .logo {
-            height: 80px;
+            height: 50px;
             cursor: pointer;
         }
         .search-box {
@@ -30,6 +31,12 @@
             height: 30px;
             font-size: 16px;
             padding: 5px;
+        }
+        .divider {
+            width: 100%;
+            height: 1px;
+            background-color: lightgray;
+            margin: 10px 0;
         }
         .search-results {
             background-color: white;
@@ -56,6 +63,9 @@
             padding: 20px;
             margin-top: 20px;
             font-size: 16px;
+        }
+        .player-details div {
+            margin-bottom: 10px;
         }
         .player-details span.label {
             color: gray;
@@ -105,6 +115,7 @@
 
             function displayPlayerDetails(player) {
                 playerDetailsElement.innerHTML = `
+                    <div class="divider"></div>
                     <div>
                         <span class="label">이름: </span><span class="value">${player.이름}</span> <span class="label">NO.${player.등번호}</span>
                     </div>
