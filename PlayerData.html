@@ -4,23 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         .header {
             background-color: #2565D0;
             color: white;
             height: 66px;
-            width: 100%;
+            width: 100vw;
             text-align: left;
             padding-left: 20px;
             font-size: 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-sizing: border-box;
             padding-right: 20px;
-            margin: 0;
         }
         .logo {
-            height: 30px;
+            height: 40px;
             cursor: pointer;
         }
         .search-box {
@@ -47,6 +50,7 @@
             padding: 10px;
             position: absolute;
             right: 20px;
+            display: none;
         }
         .search-results ul {
             list-style: none;
@@ -91,12 +95,18 @@
                 const searchTerm = searchInputElement.value;
                 if (cachedData && cachedData.playerData) {
                     const filteredPlayers = cachedData.playerData.filter(p => p.이름.includes(searchTerm)).slice(0, 5);
-                    let resultsHtml = "<ul>";
-                    filteredPlayers.forEach(player => {
-                        resultsHtml += `<li data-player-name="${player.이름}">${player.이름} - NO.${player.등번호}</li>`;
-                    });
-                    resultsHtml += "</ul>";
-                    searchResultsElement.innerHTML = resultsHtml;
+                    if (filteredPlayers.length > 0) {
+                        let resultsHtml = "<ul>";
+                        filteredPlayers.forEach(player => {
+                            resultsHtml += `<li data-player-name="${player.이름}">${player.이름} - NO.${player.등번호}</li>`;
+                        });
+                        resultsHtml += "</ul>";
+                        searchResultsElement.innerHTML = resultsHtml;
+                        searchResultsElement.style.display = 'block';
+                    } else {
+                        searchResultsElement.innerHTML = "";
+                        searchResultsElement.style.display = 'none';
+                    }
 
                     // 검색 결과 클릭 이벤트 추가
                     document.querySelectorAll('#search-results li').forEach(item => {
@@ -107,9 +117,13 @@
                                 displayPlayerDetails(selectedPlayer);
                                 searchResultsElement.innerHTML = ""; // 검색 결과 닫기
                                 searchInputElement.value = ""; // 검색창 비우기
+                                searchResultsElement.style.display = 'none';
                             }
                         });
                     });
+                } else {
+                    searchResultsElement.innerHTML = "";
+                    searchResultsElement.style.display = 'none';
                 }
             });
 
@@ -142,6 +156,7 @@
                         displayPlayerDetails(player);
                         searchResultsElement.innerHTML = ""; // 검색 결과 닫기
                         searchInputElement.value = ""; // 검색창 비우기
+                        searchResultsElement.style.display = 'none';
                     } else {
                         alert('선수를 찾을 수 없습니다.');
                     }
