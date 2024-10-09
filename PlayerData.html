@@ -38,7 +38,7 @@
         .divider {
             width: 100%;
             height: 10px;
-            background-color: #E9ECEF;
+            background-color: #E9ECEF; 
             margin: 0 auto;
             padding: 0;
         }
@@ -78,10 +78,52 @@
         .player-details span.value {
             color: black;
         }
+        .record-container {
+            margin-top: 20px;
+        }
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .record-header .title {
+            font-weight: bold;
+            color: black;
+        }
+        .record-header .subtitle {
+            color: gray;
+            font-size: 14px;
+        }
+        .record-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .record-table th, .record-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .record-table th {
+            background-color: #78A5EE;
+            color: white;
+        }
+        .record-table .summary {
+            background-color: #F1F6FE;
+            color: black;
+        }
+        .record-table .year-data {
+            background-color: #F1F6FE;
+            color: black;
+        }
+        .record-table .other-year-data {
+            background-color: white;
+            color: #8F8F9D;
+        }
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const cachedData = JSON.parse(localStorage.getItem('cachedData'));
+            const cachedData = localStorage.getItem('cachedData') ? JSON.parse(localStorage.getItem('cachedData')) : null;
             const searchInputElement = document.getElementById('search-input');
             const searchResultsElement = document.getElementById('search-results');
             const logoElement = document.getElementById('logo');
@@ -116,6 +158,7 @@
                             const selectedPlayer = cachedData.playerData.find(p => p.이름 === playerName);
                             if (selectedPlayer) {
                                 displayPlayerDetails(selectedPlayer);
+                                displayPlayerRecord(playerName);
                                 searchResultsElement.innerHTML = ""; // 검색 결과 닫기
                                 searchInputElement.value = ""; // 검색창 비우기
                                 searchResultsElement.style.display = 'none';
@@ -146,7 +189,80 @@
                     <div>
                         <span class="label">국적: </span><span class="value">${player.국적}</span>
                     </div>
+                    <div class="divider"></div>
                 `;
+            }
+
+            function displayPlayerRecord(playerName) {
+                if (cachedData && cachedData.playerRecord) {
+                    const playerRecords = cachedData.playerRecord.filter(record => record.이름 === playerName);
+                    if (playerRecords.length > 0) {
+                        let summary = {
+                            경기수: 0,
+                            득점: 0,
+                            도움: 0,
+                            공격P: 0,
+                            MOM: 0,
+                        };
+                        playerRecords.forEach(record => {
+                            summary.경기수 += parseInt(record.경기수);
+                            summary.득점 += parseInt(record.득점);
+                            summary.도움 += parseInt(record.도움);
+                            summary.공격P += parseInt(record.공격P);
+                            summary.MOM += parseInt(record.MOM);
+                        });
+
+                        let recordHtml = `
+                            <div class="record-container">
+                                <div class="record-header">
+                                    <span class="title">통산기록</span>
+                                    <span class="subtitle">최근 10년 데이터</span>
+                                </div>
+                                <table class="record-table">
+                                    <thead>
+                                        <tr>
+                                            <th>시즌</th>
+                                            <th>경기수</th>
+                                            <th>득점</th>
+                                            <th>도움</th>
+                                            <th>공격P</th>
+                                            <th>MOM</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="summary">
+                                            <td>통산</td>
+                                            <td>${summary.경기수}</td>
+                                            <td>${summary.득점}</td>
+                                            <td>${summary.도움}</td>
+                                            <td>${summary.공격P}</td>
+                                            <td>${summary.MOM}</td>
+                                        </tr>
+                        `;
+
+                        playerRecords.sort((a, b) => b.년도 - a.년도).forEach((record, index) => {
+                            const rowClass = index % 2 === 0 ? 'year-data' : 'other-year-data';
+                            recordHtml += `
+                                <tr class="${rowClass}">
+                                    <td>${record.년도}</td>
+                                    <td>${record.경기수}</td>
+                                    <td>${record.득점}</td>
+                                    <td>${record.도움}</td>
+                                    <td>${record.공격P}</td>
+                                    <td>${record.MOM}</td>
+                                </tr>
+                            `;
+                        });
+
+                        recordHtml += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+
+                        playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
+                    }
+                }
             }
 
             searchInputElement.addEventListener('change', function() {
@@ -155,6 +271,7 @@
                     const player = cachedData.playerData.find(p => p.이름.includes(searchTerm));
                     if (player) {
                         displayPlayerDetails(player);
+                        displayPlayerRecord(player.이름);
                         searchResultsElement.innerHTML = ""; // 검색 결과 닫기
                         searchInputElement.value = ""; // 검색창 비우기
                         searchResultsElement.style.display = 'none';
