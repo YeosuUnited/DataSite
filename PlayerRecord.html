@@ -6,15 +6,14 @@
     <title>선수 기록 보기</title>
     <style>
         .table-container {
-            width: 100%; /* 테이블이 화면 전체 너비를 차지하도록 수정 */
-            margin: 0; /* 여백을 제거 */
+            width: 100%;
+            margin: 0;
             display: flex;
             overflow: hidden;
         }
 
-        /* 이름 열을 고정한 테이블 */
         .fixed-column {
-            width: 80px; /* 너비 자동으로 설정 */
+            width: 80px;
             border-collapse: collapse;
             background-color: white;
         }
@@ -23,97 +22,84 @@
             padding: 10px;
             text-align: center;
             border: 1px solid lightgray;
-            background-color: white; /* 1열(이름 열)은 항상 흰색 */
+            background-color: white;
         }
 
-        /* 슬라이드 가능한 나머지 테이블 */
         .scrollable-table-container {
-            width: 100%; /* 나머지 표도 화면 전체 너비 차지 */
+            width: 100%;
             overflow-x: auto;
         }
 
         .scrollable-table {
-            width: 100%; /* 테이블이 화면 양 끝에 붙도록 설정 */
+            width: 50%;
             border-collapse: collapse;
             background-color: white;
-            min-width: 800px; /* 최소 너비는 유지 */
+            min-width: 400px;
         }
 
         .scrollable-table th, .scrollable-table td {
             width: 10px;
             text-align: center;
-            text-overflow: ellipsis; /* 넘치는 텍스트는 ...로 표시 */
-            white-space: nowrap; /* 줄바꿈을 하지 않도록 설정 */
-            overflow: hidden; /* 셀 너비를 넘어가는 내용은 숨김 */
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
             border: 1px solid lightgray;
-            background-color: #e0e0e0; /* 기본적으로 회색 */
+            background-color: #e0e0e0;
         }
 
         .scrollable-table th {
             position: sticky;
             top: 0;
             font-weight: normal;
-            background-color: white; /* 슬라이드 테이블의 헤더는 흰색 */
+            background-color: white;
         }
 
         .scrollable-table td.selected, .scrollable-table th.selected {
-            background-color: white; /* 선택된 열은 흰색 */
-            color: #6495ED; /* 선택된 열의 글자를 진한 파란색으로 변경 */
+            background-color: white;
+            color: #6495ED;
         }
-
     </style>
     <script>
-        let currentSortColumn = '득점'; // 기본 정렬 기준
-        let currentSortDirection = 'desc'; // 기본 내림차순
+        let currentSortColumn = '득점';
+        let currentSortDirection = 'desc';
 
-       function sortTable(a, b) {
-            // 1순위: 득점(Goals)
+        function sortTable(a, b) {
             if (a.득점 !== b.득점) {
                 return b.득점 - a.득점;
             }
-            // 2순위: 도움(Assists)
             if (a.도움 !== b.도움) {
                 return b.도움 - a.도움;
             }
-            // 3순위: 공격포인트(Attack Points)
             if (a.공격포인트 !== b.공격포인트) {
                 return b.공격포인트 - a.공격포인트;
             }
-            // 4순위: 경기수(Matches)
             return b.경기수 - a.경기수;
         }
 
-
         function highlightSelectedColumn(columnIndex) {
-            // 모든 셀의 선택 효과 제거
             const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
             allCells.forEach(cell => {
                 cell.classList.remove('selected');
-                cell.style.backgroundColor = '#e0e0e0'; // 선택되지 않은 셀의 배경색을 진한 회색으로 설정
-                cell.style.color = ''; // 글자 색 초기화
+                cell.style.backgroundColor = '#e0e0e0';
+                cell.style.color = '';
             });
-        
-            // 선택된 열의 셀에 selected 클래스 추가 및 스타일 적용
+
             const selectedCells = document.querySelectorAll(`.scrollable-table td:nth-child(${columnIndex}), .scrollable-table th:nth-child(${columnIndex})`);
             selectedCells.forEach(cell => {
                 cell.classList.add('selected');
-                cell.style.backgroundColor = 'white'; // 선택된 열의 배경을 흰색으로 설정
-                cell.style.color = '#6495ED'; // 선택된 열의 글자 색을 진한 파란색으로 설정 (Cornflower Blue)
+                cell.style.backgroundColor = 'white';
+                cell.style.color = '#6495ED';
             });
         }
 
-
-
         function displayPlayerRecord(sortedData) {
             if (sortedData) {
-                // 고정된 이름 열 테이블
                 let fixedColumnHtml = '<table class="fixed-column"><tr><th>이름</th></tr>';
                 sortedData.forEach(player => {
                     fixedColumnHtml += `<tr><td>${player.이름}</td></tr>`;
                 });
                 fixedColumnHtml += '</table>';
-        
-                // 슬라이드 가능한 나머지 테이블
+
                 let scrollableTableHtml = '<table class="scrollable-table">' +
                     '<colgroup>' +
                         '<col style="width: 20px;">' +
@@ -129,7 +115,7 @@
                     `<th class="${currentSortColumn === '경기수' ? 'highlight' : ''}" onclick="sortBy('경기수', 4)">경기수</th>` +
                     `<th class="${currentSortColumn === 'MOM' ? 'highlight' : ''}" onclick="sortBy('MOM', 5)">MOM</th>` +
                     '</tr>';
-        
+
                 sortedData.forEach(player => {
                     scrollableTableHtml += `<tr>
                                                 <td>${player.득점}</td>
@@ -140,11 +126,10 @@
                                              </tr>`;
                 });
                 scrollableTableHtml += '</table>';
-        
+
                 document.getElementById('fixedColumn').innerHTML = fixedColumnHtml;
                 document.getElementById('scrollableTable').innerHTML = scrollableTableHtml;
-        
-                // 테이블 렌더링 후 높이 맞추기
+
                 requestAnimationFrame(() => {
                     matchRowHeights();
                 });
@@ -153,85 +138,73 @@
             }
         }
 
-        // 테이블 변경을 감지하고 높이 맞추는 함수
         function observeTableChanges() {
             const targetNode = document.getElementById('scrollableTable');
             const config = { childList: true, subtree: true };
 
             const observer = new MutationObserver(() => {
-                matchRowHeights(); // 테이블 변경 후 높이 맞추기
+                matchRowHeights();
             });
 
             observer.observe(targetNode, config);
         }
 
-        // 정렬 후 테이블 렌더링과 높이 맞추기
         function sortBy(column, columnIndex) {
             const cachedData = JSON.parse(localStorage.getItem('cachedData'));
             const data = cachedData?.playerRecord;
-        
+            const currentYear = new Date().getFullYear();
+
             if (data) {
-                // 내림차순으로 고정된 다중 정렬
-                const sortedData = data.sort((a, b) => {
+                const filteredData = data.filter(player => player.년도 === currentYear);
+                const sortedData = filteredData.sort((a, b) => {
                     if (a[column] !== b[column]) {
-                        return b[column] - a[column]; // 첫 번째 기준에 따른 내림차순
+                        return b[column] - a[column];
                     }
-                    // 다중 정렬 기준 (득점 -> 도움 -> 공격포인트 -> 경기수)
-                    return sortTable(a, b); // 득점이 같을 때 다중 정렬 적용
+                    return sortTable(a, b);
                 });
-        
-                // 정렬된 데이터를 다시 테이블에 표시
+
                 displayPlayerRecord(sortedData);
-        
-                // 선택된 열 강조
                 highlightSelectedColumn(columnIndex);
             }
         }
 
-
-        
         function matchRowHeights() {
             const fixedRows = document.querySelectorAll('.fixed-column tr');
             const scrollableRows = document.querySelectorAll('.scrollable-table tr');
 
             fixedRows.forEach((row, index) => {
-                const fixedHeight = row.getBoundingClientRect().height; // 고정된 이름 열의 높이 계산
-                const scrollableHeight = scrollableRows[index].getBoundingClientRect().height; // 나머지 테이블의 높이 계산
+                const fixedHeight = row.getBoundingClientRect().height;
+                const scrollableHeight = scrollableRows[index].getBoundingClientRect().height;
                 const maxHeight = Math.max(fixedHeight, scrollableHeight);
 
-                row.style.height = `${maxHeight}px`; // 동일한 높이 적용
-                scrollableRows[index].style.height = `${maxHeight}px`; // 동일한 높이 적용
+                row.style.height = `${maxHeight}px`;
+                scrollableRows[index].style.height = `${maxHeight}px`;
             });
         }
 
         window.onload = function() {
             const cachedData = JSON.parse(localStorage.getItem('cachedData'));
             const data = cachedData?.playerRecord;
-        
+            const currentYear = new Date().getFullYear();
+
             if (data) {
-                // 득점 기준으로 자동 정렬
-                const sortedData = data.sort((a, b) => sortTable(a, b));
-        
-                // 정렬된 데이터를 테이블에 표시
+                const filteredData = data.filter(player => player.년도 === currentYear);
+                const sortedData = filteredData.sort((a, b) => sortTable(a, b));
                 displayPlayerRecord(sortedData);
-        
-                // 득점 열 강조
                 highlightSelectedColumn(1);
-        
-                observeTableChanges(); // 테이블 변경을 감지하고 높이 맞추기
+                observeTableChanges();
             } else {
                 document.getElementById('playerData').innerText = '캐시된 데이터를 찾을 수 없습니다.';
             }
         };
     </script>
-    
 </head>
 <body>
     <h1>선수 기록</h1>
     <div class="table-container">
-        <div id="fixedColumn"></div> <!-- 이름 열 -->
+        <div id="fixedColumn"></div>
         <div class="scrollable-table-container">
-            <div id="scrollableTable"></div> <!-- 나머지 기록 -->
+            <div id="scrollableTable"></div>
         </div>
     </div>
 </body>
