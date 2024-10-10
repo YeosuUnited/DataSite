@@ -75,7 +75,25 @@
             overflow-x: auto;
         }
     </style>
+    <!-- Firebase App 및 Realtime Database SDK 로드 -->
+    <script src="https://www.gstatic.com/firebasejs/9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9/firebase-database.js"></script>
+    
     <script>
+          // Firebase 구성
+          const firebaseConfig = {
+            apiKey: "AIzaSyCkLR_eSYvtMwZ-9xr8jdrMczXuT4e-bQE",
+            authDomain: "yeosuunitedinseoul.firebaseapp.com",
+            databaseURL: "https://yeosuunitedinseoul-default-rtdb.firebaseio.com",
+            projectId: "yeosuunitedinseoul",
+            storageBucket: "yeosuunitedinseoul.appspot.com",
+            messagingSenderId: "302961291486",
+            appId: "1:302961291486:web:16b65f39c8a2d9a0da124f"
+          };
+        
+          // Firebase 초기화
+          firebase.initializeApp(firebaseConfig);
+        
         // 기존 자바스크립트 로직 유지
         let cachedData = {};
         let lastUpdated = null;
