@@ -116,21 +116,21 @@
                     document.getElementById('status').innerText = '데이터를 불러오는 중...';
                     
                     // Firebase에서 데이터 가져오기
-                    const playerRecordRef = firebase.database().ref('players');
-                    const snapshot = await playerRecordRef.once('value');
-                    const playerRecord = snapshot.val();
+                    const playerDataRef = firebase.database().ref('players');
+                    const snapshot = await playerDataRef.once('value');
+                    const players = snapshot.val();
 
-                    if (!playerRecord) {
+                    if (!players) {
                         throw new Error('데이터가 비어 있습니다.');
                     }
 
-                    cachedData = { playerRecord };
+                    cachedData = { players };
                     lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
             
                     updateTimeInfo();
-                    createTable(playerRecord);
+                    createTable(players);
             
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -150,17 +150,17 @@
                 cachedData = JSON.parse(cached);
                 document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
                 updateTimeInfo();
-                createTable(cachedData.playerRecord);
+                createTable(cachedData.players);
             } else {
                 document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
             }
         }
 
         // 1등의 값만 굵게 표시하는 함수
-        function createTable(playerRecord) {
+        function createTable(players) {
             try {
                 const currentYear = new Date().getFullYear();
-                const thisYearData = Object.values(playerRecord).map(player => ({
+                const thisYearData = Object.values(players).map(player => ({
                     name: player.name,
                     ...player.years[currentYear.toString()] || {}
                 })).filter(player => player.goals !== undefined);
@@ -226,8 +226,8 @@
             }
         }
 
-        function getSortedPlayers(playerRecord, key) {
-            return [...playerRecord].sort((a, b) => {
+        function getSortedPlayers(players, key) {
+            return [...players].sort((a, b) => {
                 if (b[key] !== a[key]) return b[key] - a[key];
                 return b['matches'] - a['matches'];
             });
