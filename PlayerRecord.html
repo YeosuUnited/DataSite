@@ -150,13 +150,17 @@
         }
 
         function sortBy(column, columnIndex) {
-            const data = cachedData?.playerRecord;
+            const data = cachedData?.players;
             const currentYear = new Date().getFullYear();
 
             if (data) {
                 const filteredData = Object.values(data).map(player => ({
                     name: player.name,
-                    ...player.years[currentYear.toString()] || {}
+                    goals: player.years[currentYear]?.goals || 0,
+                    assists: player.years[currentYear]?.assists || 0,
+                    attackP: player.years[currentYear]?.attackP || 0,
+                    matches: player.years[currentYear]?.matches || 0,
+                    MOM: player.years[currentYear]?.MOM || 0
                 }));
                 const sortedData = filteredData.sort((a, b) => {
                     if (a[column] !== b[column]) {
@@ -192,7 +196,11 @@
             if (data) {
                 const filteredData = Object.values(data).map(player => ({
                     name: player.name,
-                    ...player.years[currentYear.toString()] || {}
+                    goals: player.years[currentYear]?.goals || 0,
+                    assists: player.years[currentYear]?.assists || 0,
+                    attackP: player.years[currentYear]?.attackP || 0,
+                    matches: player.years[currentYear]?.matches || 0,
+                    MOM: player.years[currentYear]?.MOM || 0
                 }));
                 const sortedData = filteredData.sort((a, b) => sortTable(a, b));
                 displayPlayerRecord(sortedData);
