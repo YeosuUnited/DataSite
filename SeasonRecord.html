@@ -46,12 +46,13 @@
             border: 1px solid lightgray;
             background-color: #e0e0e0;
         }
-
+        
         .scrollable-table th {
             position: sticky;
             top: 0;
             font-weight: normal;
             background-color: white;
+            cursor: pointer; /* 클릭 가능한 손 모양 커서 추가 */
         }
 
         .scrollable-table td.selected, .scrollable-table th.selected {
@@ -104,11 +105,11 @@
                         '<col style="width: 10px;">' +
                     '</colgroup>' +
                     '<tr>' +
-                    `<th class="${currentSortColumn === 'goals' ? 'highlight' : ''}" onclick="sortBy('goals', 1)">득점</th>` +
-                    `<th class="${currentSortColumn === 'assists' ? 'highlight' : ''}" onclick="sortBy('assists', 2)">도움</th>` +
-                    `<th class="${currentSortColumn === 'attackP' ? 'highlight' : ''}" onclick="sortBy('attackP', 3)">공격P</th>` +
-                    `<th class="${currentSortColumn === 'matches' ? 'highlight' : ''}" onclick="sortBy('matches', 4)">경기수</th>` +
-                    `<th class="${currentSortColumn === 'MOM' ? 'highlight' : ''}" onclick="sortBy('MOM', 5)">MOM</th>` +
+                    `<th onclick="sortBy('goals', 1)">득점</th>` +
+                    `<th onclick="sortBy('assists', 2)">도움</th>` +
+                    `<th onclick="sortBy('attackP', 3)">공격P</th>` +
+                    `<th onclick="sortBy('matches', 4)">경기수</th>` +
+                    `<th onclick="sortBy('MOM', 5)">MOM</th>` +
                     '</tr>';
 
                 sortedData.forEach(player => {
