@@ -134,11 +134,12 @@
 
 
     function sortBy(column, columnIndex) {
-    if (currentSortColumn === column) {
-        currentSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
-    } else {
+        currentSortDirection = (currentSortColumn === column && currentSortDirection === 'desc') ? 'asc' : 'desc';
         currentSortColumn = column;
-        currentSortDirection = 'desc';
+    
+        const sortedData = sortData(getFilteredData(cachedData.players));
+        displayPlayerRecord(sortedData);
+        highlightSelectedColumn(columnIndex);
     }
 
     const data = cachedData?.players;
@@ -168,6 +169,29 @@
         highlightSelectedColumn(columnIndex);
     }
 }
+        function getFilteredData(data) {
+    const currentYear = new Date().getFullYear();
+    return Object.keys(data).map(number => {
+        const player = data[number];
+        return {
+            number: number,
+            name: player.name,
+            goals: player.years[currentYear]?.goals || 0,
+            assists: player.years[currentYear]?.assists || 0,
+            attackP: player.years[currentYear]?.attackP || 0,
+            matches: player.years[currentYear]?.matches || 0,
+            MOM: player.years[currentYear]?.MOM || 0
+        };
+    });
+}
+
+function sortData(data) {
+    return data.sort((a, b) => {
+        const aValue = a[currentSortColumn] || 0;
+        const bValue = b[currentSortColumn] || 0;
+        return currentSortDirection === 'desc' ? bValue - aValue : aValue - bValue;
+    });
+}
 
     function matchRowHeights() {
         const fixedRows = document.querySelectorAll('.fixed-column tr');
@@ -184,26 +208,12 @@
     }
 
     window.onload = function() {
-    cachedData = JSON.parse(localStorage.getItem('cachedData'));
-    const data = cachedData?.players;  // players로 직접 접근
+    const rawData = localStorage.getItem('cachedData');
+    cachedData = rawData ? JSON.parse(rawData) : null;
 
-    const currentYear = new Date().getFullYear();
-
-    if (data) {
-        const filteredData = Object.keys(data).map(number => {
-            const player = data[number];
-            return {
-                number: number,  // 등번호 포함
-                name: player.name,
-                goals: player.years[currentYear]?.goals || 0,
-                assists: player.years[currentYear]?.assists || 0,
-                attackP: player.years[currentYear]?.attackP || 0,
-                matches: player.years[currentYear]?.matches || 0,
-                MOM: player.years[currentYear]?.MOM || 0
-            };
-        });
-
-        const sortedData = filteredData.sort((a, b) => sortTable(a, b));
+    if (cachedData?.players) {
+        const filteredData = getFilteredData(cachedData.players);
+        const sortedData = sortData(filteredData);
         displayPlayerRecord(sortedData);
         highlightSelectedColumn(1);
     } else {
