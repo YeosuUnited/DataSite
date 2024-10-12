@@ -106,23 +106,12 @@
             try {
                 document.getElementById('status').innerText = '데이터를 불러오는 중...';
                 
-                const [playerRecordResponse, matchRecordResponse, playerDataResponse] = await Promise.all([
-                    fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerRecord'),
-                    fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=MatchRecord'),
-                    fetch('https://script.google.com/macros/s/AKfycbwr4inHtj2P_4NNIVBJCiPFWESOfa_pSKEdSJHjLIes0K_FjL25CYBky3VUsyOUi-9e/exec?sheet=PlayerData')
-                ]);
-        
-                if (!playerRecordResponse.ok || !matchRecordResponse.ok || !playerDataResponse.ok) {
-                    throw new Error('데이터 응답 실패');
-                }
-        
-                const [playerRecord, matchRecord, playerData] = await Promise.all([
-                    playerRecordResponse.json(),
-                    matchRecordResponse.json(),
-                    playerDataResponse.json()
-                ]);
-        
-                cachedData = { playerRecord, matchRecord, playerData };
+                // Firebase에서 데이터 가져오기
+                const playerRecordRef = firebase.database().ref('players');
+                const snapshot = await playerRecordRef.once('value');
+                const playerRecord = snapshot.val();
+
+                cachedData = { playerRecord };
                 lastUpdated = new Date().getTime();
                 localStorage.setItem('cachedData', JSON.stringify(cachedData));
                 localStorage.setItem('lastUpdated', lastUpdated);
@@ -150,12 +139,15 @@
         // 1등의 값만 굵게 표시하는 함수
         function createTable(playerRecord) {
             const currentYear = new Date().getFullYear();
-            const thisYearData = playerRecord.filter(player => player['년도'] === currentYear);
+            const thisYearData = Object.values(playerRecord).map(player => ({
+                name: player.name,
+                ...player.years[currentYear.toString()] || {}
+            })).filter(player => player.goals !== undefined);
         
-            const topGoals = getSortedPlayers(thisYearData, '득점').slice(0, 5);
-            const topAssists = getSortedPlayers(thisYearData, '도움').slice(0, 5);
-            const topAttackPoints = getSortedPlayers(thisYearData, '공격P').slice(0, 5);
-            const topMatches = getSortedPlayers(thisYearData, '경기수').slice(0, 5);
+            const topGoals = getSortedPlayers(thisYearData, 'goals').slice(0, 5);
+            const topAssists = getSortedPlayers(thisYearData, 'assists').slice(0, 5);
+            const topAttackPoints = getSortedPlayers(thisYearData, 'attackP').slice(0, 5);
+            const topMatches = getSortedPlayers(thisYearData, 'matches').slice(0, 5);
         
             const tableBody = document.querySelector('tbody');
             tableBody.innerHTML = '';
@@ -164,22 +156,22 @@
         
             for (let i = 0; i < 5; i++) {
                 // 득점 순위 처리
-                if (i > 0 && topGoals[i]?.득점 !== topGoals[i - 1]?.득점) {
+                if (i > 0 && topGoals[i]?.goals !== topGoals[i - 1]?.goals) {
                     rankGoals = i + 1;
                 }
                 
                 // 도움 순위 처리
-                if (i > 0 && topAssists[i]?.도움 !== topAssists[i - 1]?.도움) {
+                if (i > 0 && topAssists[i]?.assists !== topAssists[i - 1]?.assists) {
                     rankAssists = i + 1;
                 }
         
                 // 공격 포인트 순위 처리
-                if (i > 0 && topAttackPoints[i]?.공격P !== topAttackPoints[i - 1]?.공격P) {
+                if (i > 0 && topAttackPoints[i]?.attackP !== topAttackPoints[i - 1]?.attackP) {
                     rankAttack = i + 1;
                 }
         
                 // 출전수 순위 처리
-                if (i > 0 && topMatches[i]?.경기수 !== topMatches[i - 1]?.경기수) {
+                if (i > 0 && topMatches[i]?.matches !== topMatches[i - 1]?.matches) {
                     rankMatches = i + 1;
                 }
         
@@ -196,14 +188,14 @@
                 const row = document.createElement('tr');
         
                 row.innerHTML = `
-                    <td><span class="${rankGoalsClass}">${rankGoals}</span> <span class="player-name ${boldGoalClass}">${topGoals[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value ${boldGoalClass}">${topGoals[i]?.득점 || '-'} 골</span></td>
-                    <td><span class="${rankAssistsClass}">${rankAssists}</span> <span class="player-name ${boldAssistClass}">${topAssists[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value ${boldAssistClass}">${topAssists[i]?.도움 || '-'} 도움</span></td>
-                    <td><span class="${rankAttackClass}">${rankAttack}</span> <span class="player-name ${boldAttackClass}">${topAttackPoints[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value ${boldAttackClass}">${topAttackPoints[i]?.공격P || '-'} P</span></td>
-                    <td><span class="${rankMatchesClass}">${rankMatches}</span> <span class="player-name ${boldMatchClass}">${topMatches[i]?.이름 || '-'}</span></td>
-                    <td><span class="stat-value ${boldMatchClass}">${topMatches[i]?.경기수 || '-'} 경기</span></td>
+                    <td><span class="${rankGoalsClass}">${rankGoals}</span> <span class="player-name ${boldGoalClass}">${topGoals[i]?.name || '-'}</span></td>
+                    <td><span class="stat-value ${boldGoalClass}">${topGoals[i]?.goals || '-'} 골</span></td>
+                    <td><span class="${rankAssistsClass}">${rankAssists}</span> <span class="player-name ${boldAssistClass}">${topAssists[i]?.name || '-'}</span></td>
+                    <td><span class="stat-value ${boldAssistClass}">${topAssists[i]?.assists || '-'} 도움</span></td>
+                    <td><span class="${rankAttackClass}">${rankAttack}</span> <span class="player-name ${boldAttackClass}">${topAttackPoints[i]?.name || '-'}</span></td>
+                    <td><span class="stat-value ${boldAttackClass}">${topAttackPoints[i]?.attackP || '-'} P</span></td>
+                    <td><span class="${rankMatchesClass}">${rankMatches}</span> <span class="player-name ${boldMatchClass}">${topMatches[i]?.name || '-'}</span></td>
+                    <td><span class="stat-value ${boldMatchClass}">${topMatches[i]?.matches || '-'} 경기</span></td>
                 `;
         
                 tableBody.appendChild(row);
@@ -213,7 +205,7 @@
         function getSortedPlayers(playerRecord, key) {
             return [...playerRecord].sort((a, b) => {
                 if (b[key] !== a[key]) return b[key] - a[key];
-                return b['경기수'] - a['경기수'];
+                return b['matches'] - a['matches'];
             });
         }
 
