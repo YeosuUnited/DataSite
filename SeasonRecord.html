@@ -152,15 +152,6 @@
         highlightSelectedColumn(columnIndex);
     }
 
-    // 데이터 필터링 및 정렬 수행
-    const filteredData = getFilteredData(cachedData.players);
-    const sortedData = filteredData.sort((a, b) => sortTable(a, b));
-
-    // 정렬된 데이터 표시 및 열 강조
-    displayPlayerRecord(sortedData);
-    highlightSelectedColumn(columnIndex);
-}
-
     const data = cachedData?.players;
     const currentYear = new Date().getFullYear();
 
