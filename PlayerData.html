@@ -138,8 +138,8 @@
         searchInputElement.addEventListener('input', function() {
             const searchTerm = searchInputElement.value.trim().toLowerCase();
                 if (cachedData && cachedData.players) {
-                    const filteredPlayers = Object.values(cachedData.players)
-                        .filter(p => p.name.toLowerCase().includes(searchTerm))
+                    const filteredPlayers = Object.entries(cachedData.players)
+                        .filter(([_, player]) => player.name.toLowerCase().includes(searchTerm))
                         .slice(0, 5);
                     if (filteredPlayers.length > 0) {
                         let resultsHtml = "<ul>";
@@ -161,16 +161,26 @@
         
             // 검색 결과 클릭 이벤트 리스너 (이벤트 위임 방식)
             searchResultsElement.addEventListener('click', function(event) {
-                if (event.target.tagName === 'LI') {
-                    const playerName = event.target.getAttribute('data-player-name');
-                    const selectedPlayer = Object.values(cachedData.players).find(p => p.name === playerName);
-                    if (selectedPlayer) {
-                        displayPlayerDetails(selectedPlayer);
-                        displayPlayerRecord(selectedPlayer);
-                        searchResultsElement.innerHTML = ""; // 검색 결과 닫기
-                        searchInputElement.value = ""; // 검색창 비우기
+                const searchTerm = searchInputElement.value.trim().toLowerCase();
+                if (cachedData && cachedData.players) {
+                        const filteredPlayers = Object.entries(cachedData.players)
+                            .filter(([_, player]) => player.name.toLowerCase().includes(searchTerm))
+                            .slice(0, 5);
+                    if (filteredPlayers.length > 0) {
+                        let resultsHtml = "<ul>";
+                        filteredPlayers.forEach(([_, player]) => {
+                            resultsHtml += `<li data-player-name="${player.name}">${player.name} - NO.${player.number}</li>`;
+                        });
+                        resultsHtml += "</ul>";
+                        searchResultsElement.innerHTML = resultsHtml;
+                        searchResultsElement.style.display = 'block';
+                    } else {
+                        searchResultsElement.innerHTML = "";
                         searchResultsElement.style.display = 'none';
                     }
+                } else {
+                    searchResultsElement.innerHTML = "";
+                    searchResultsElement.style.display = 'none';
                 }
             });
         });
