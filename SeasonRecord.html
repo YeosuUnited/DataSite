@@ -183,12 +183,18 @@
 
 function sortData(data) {
     return data.sort((a, b) => {
-        const aValue = a[currentSortColumn] || 0;
-        const bValue = b[currentSortColumn] || 0;
-        return currentSortDirection === 'desc' ? bValue - aValue : aValue - bValue;
+        const compare = (key) => (b[key] || 0) - (a[key] || 0);
+
+        // 득점, 도움, 공격P, 출전수 순으로 정렬
+        return (
+            compare('goals') ||  // 득점 우선
+            compare('assists') || // 도움 순위
+            compare('attackP') || // 공격포인트 순위
+            compare('matches')    // 출전수 순위
+        );
     });
 }
-
+        
     function matchRowHeights() {
         const fixedRows = document.querySelectorAll('.fixed-column tr');
         const scrollableRows = document.querySelectorAll('.scrollable-table tr');
