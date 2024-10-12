@@ -66,12 +66,18 @@
     let cachedData;
 
     function sortTable(a, b) {
-        const column = currentSortColumn;
-        if (a[column] !== b[column]) {
-            return currentSortDirection === 'desc' ? b[column] - a[column] : a[column] - b[column];
-        }
-        return 0;
+    const column = currentSortColumn;
+    if (a[column] !== b[column]) {
+        return currentSortDirection === 'desc' ? b[column] - a[column] : a[column] - b[column];
     }
+
+    // 동점일 경우 우선순위 정렬 (득점 → 도움 → 공격P → 출전수)
+    return (
+        b['assists'] - a['assists'] ||
+        b['attackP'] - a['attackP'] ||
+        b['matches'] - a['matches']
+    );
+}
 
     function highlightSelectedColumn(columnIndex) {
         const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
@@ -132,15 +138,23 @@
     }
 }
 
-
     function sortBy(column, columnIndex) {
-        currentSortDirection = (currentSortColumn === column && currentSortDirection === 'desc') ? 'asc' : 'desc';
+    // 현재 정렬된 열과 방향을 설정
+    if (currentSortColumn === column) {
+        currentSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
+    } else {
         currentSortColumn = column;
-    
-        const sortedData = sortData(getFilteredData(cachedData.players));
-        displayPlayerRecord(sortedData);
-        highlightSelectedColumn(columnIndex);
+        currentSortDirection = 'desc'; // 기본 정렬 방향
     }
+
+    // 데이터 필터링 및 정렬 수행
+    const filteredData = getFilteredData(cachedData.players);
+    const sortedData = filteredData.sort((a, b) => sortTable(a, b));
+
+    // 정렬된 데이터 표시 및 열 강조
+    displayPlayerRecord(sortedData);
+    highlightSelectedColumn(columnIndex);
+}
 
     const data = cachedData?.players;
     const currentYear = new Date().getFullYear();
@@ -185,29 +199,29 @@ function sortData(data) {
     return data.sort((a, b) => {
         const compare = (key) => (b[key] || 0) - (a[key] || 0);
 
-        // 득점, 도움, 공격P, 출전수 순으로 정렬
+        // 득점 -> 도움 -> 공격P -> 출전수 순으로 정렬
         return (
-            compare('goals') ||  // 득점 우선
-            compare('assists') || // 도움 순위
-            compare('attackP') || // 공격포인트 순위
-            compare('matches')    // 출전수 순위
+            compare('goals') ||  
+            compare('assists') || 
+            compare('attackP') || 
+            compare('matches')
         );
     });
 }
         
     function matchRowHeights() {
-        const fixedRows = document.querySelectorAll('.fixed-column tr');
-        const scrollableRows = document.querySelectorAll('.scrollable-table tr');
+    const fixedRows = document.querySelectorAll('.fixed-column tr');
+    const scrollableRows = document.querySelectorAll('.scrollable-table tr');
 
-        fixedRows.forEach((row, index) => {
-            const fixedHeight = row.getBoundingClientRect().height;
-            const scrollableHeight = scrollableRows[index].getBoundingClientRect().height;
-            const maxHeight = Math.max(fixedHeight, scrollableHeight);
+    fixedRows.forEach((row, index) => {
+        const fixedHeight = row.getBoundingClientRect().height;
+        const scrollableHeight = scrollableRows[index].getBoundingClientRect().height;
+        const maxHeight = Math.max(fixedHeight, scrollableHeight);
 
-            row.style.height = `${maxHeight}px`;
-            scrollableRows[index].style.height = `${maxHeight}px`;
-        });
-    }
+        row.style.height = `${maxHeight}px`;
+        scrollableRows[index].style.height = `${maxHeight}px`;
+    });
+}
 
     window.onload = function() {
     const rawData = localStorage.getItem('cachedData');
