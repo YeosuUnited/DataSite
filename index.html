@@ -109,7 +109,6 @@
         async function fetchData() {
             try {
                 document.getElementById('status').innerText = '데이터를 불러오는 중...';
-                document.getElementById('debug').innerText = '디버깅: Firebase에서 데이터 요청 시작';
                 
                 // Firebase에서 데이터 가져오기
                 const playerRecordRef = firebase.database().ref('players');
@@ -120,24 +119,20 @@
                     throw new Error('데이터가 비어 있습니다.');
                 }
 
-                document.getElementById('debug').innerText = '디버깅: 데이터 수신 성공';
                 cachedData = { playerRecord };
                 lastUpdated = new Date().getTime();
                 localStorage.setItem('cachedData', JSON.stringify(cachedData));
                 localStorage.setItem('lastUpdated', lastUpdated);
         
-                document.getElementById('status').innerText = '데이터가 성공적으로 업데이트되었습니다.';
                 updateTimeInfo();
                 createTable(playerRecord);
         
             } catch (error) {
                 console.error('Error fetching data:', error);
-                document.getElementById('debug').innerText = `디버깅: 오류 발생 - ${error.message}`;
                 
                 // 캐싱된 데이터가 있으면 캐싱된 데이터 사용
                 const cached = localStorage.getItem('cachedData');
                 if (cached) {
-                    document.getElementById('debug').innerText += '\n디버깅: 캐시된 데이터 사용 중';
                     cachedData = JSON.parse(cached);
                     document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
                     updateTimeInfo();
@@ -151,14 +146,12 @@
         // 1등의 값만 굵게 표시하는 함수
         function createTable(playerRecord) {
             try {
-                document.getElementById('debug').innerText = '디버깅: 테이블 생성 시작';
                 const currentYear = new Date().getFullYear();
                 const thisYearData = Object.values(playerRecord).map(player => ({
                     name: player.name,
                     ...player.years[currentYear.toString()] || {}
                 })).filter(player => player.goals !== undefined);
                 
-                document.getElementById('debug').innerText += '\n디버깅: 올해 데이터 필터링 완료';
                 const topGoals = getSortedPlayers(thisYearData, 'goals').slice(0, 5);
                 const topAssists = getSortedPlayers(thisYearData, 'assists').slice(0, 5);
                 const topAttackPoints = getSortedPlayers(thisYearData, 'attackP').slice(0, 5);
