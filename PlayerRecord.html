@@ -60,20 +60,20 @@
         }
     </style>
     <script>
-        let currentSortColumn = '득점';
+        let currentSortColumn = 'goals';
         let currentSortDirection = 'desc';
 
         function sortTable(a, b) {
-            if (a.득점 !== b.득점) {
-                return b.득점 - a.득점;
+            if (a.goals !== b.goals) {
+                return b.goals - a.goals;
             }
-            if (a.도움 !== b.도움) {
-                return b.도움 - a.도움;
+            if (a.assists !== b.assists) {
+                return b.assists - a.assists;
             }
-            if (a.공격포인트 !== b.공격포인트) {
-                return b.공격포인트 - a.공격포인트;
+            if (a.attackP !== b.attackP) {
+                return b.attackP - a.attackP;
             }
-            return b.경기수 - a.경기수;
+            return b.matches - a.matches;
         }
 
         function highlightSelectedColumn(columnIndex) {
@@ -96,7 +96,7 @@
             if (sortedData) {
                 let fixedColumnHtml = '<table class="fixed-column"><tr><th>이름</th></tr>';
                 sortedData.forEach(player => {
-                    fixedColumnHtml += `<tr><td>${player.이름}</td></tr>`;
+                    fixedColumnHtml += `<tr><td>${player.name}</td></tr>`;
                 });
                 fixedColumnHtml += '</table>';
 
@@ -109,19 +109,19 @@
                         '<col style="width: 10px;">' +
                     '</colgroup>' +
                     '<tr>' +
-                    `<th class="${currentSortColumn === '득점' ? 'highlight' : ''}" onclick="sortBy('득점', 1)">득점</th>` +
-                    `<th class="${currentSortColumn === '도움' ? 'highlight' : ''}" onclick="sortBy('도움', 2)">도움</th>` +
-                    `<th class="${currentSortColumn === '공격P' ? 'highlight' : ''}" onclick="sortBy('공격P', 3)">공격P</th>` +
-                    `<th class="${currentSortColumn === '경기수' ? 'highlight' : ''}" onclick="sortBy('경기수', 4)">경기수</th>` +
+                    `<th class="${currentSortColumn === 'goals' ? 'highlight' : ''}" onclick="sortBy('goals', 1)">득점</th>` +
+                    `<th class="${currentSortColumn === 'assists' ? 'highlight' : ''}" onclick="sortBy('assists', 2)">도움</th>` +
+                    `<th class="${currentSortColumn === 'attackP' ? 'highlight' : ''}" onclick="sortBy('attackP', 3)">공격P</th>` +
+                    `<th class="${currentSortColumn === 'matches' ? 'highlight' : ''}" onclick="sortBy('matches', 4)">경기수</th>` +
                     `<th class="${currentSortColumn === 'MOM' ? 'highlight' : ''}" onclick="sortBy('MOM', 5)">MOM</th>` +
                     '</tr>';
 
                 sortedData.forEach(player => {
                     scrollableTableHtml += `<tr>
-                                                <td>${player.득점}</td>
-                                                <td>${player.도움}</td>
-                                                <td>${player.공격P}</td>
-                                                <td>${player.경기수}</td>
+                                                <td>${player.goals}</td>
+                                                <td>${player.assists}</td>
+                                                <td>${player.attackP}</td>
+                                                <td>${player.matches}</td>
                                                 <td>${player.MOM}</td>
                                              </tr>`;
                 });
@@ -150,12 +150,14 @@
         }
 
         function sortBy(column, columnIndex) {
-            const cachedData = JSON.parse(localStorage.getItem('cachedData'));
             const data = cachedData?.playerRecord;
             const currentYear = new Date().getFullYear();
 
             if (data) {
-                const filteredData = data.filter(player => player.년도 === currentYear);
+                const filteredData = Object.values(data).map(player => ({
+                    name: player.name,
+                    ...player.years[currentYear.toString()] || {}
+                }));
                 const sortedData = filteredData.sort((a, b) => {
                     if (a[column] !== b[column]) {
                         return b[column] - a[column];
@@ -188,7 +190,10 @@
             const currentYear = new Date().getFullYear();
 
             if (data) {
-                const filteredData = data.filter(player => player.년도 === currentYear);
+                const filteredData = Object.values(data).map(player => ({
+                    name: player.name,
+                    ...player.years[currentYear.toString()] || {}
+                }));
                 const sortedData = filteredData.sort((a, b) => sortTable(a, b));
                 displayPlayerRecord(sortedData);
                 highlightSelectedColumn(1);
