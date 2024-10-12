@@ -107,39 +107,52 @@
         }
 
         async function fetchData() {
-            try {
-                document.getElementById('status').innerText = '데이터를 불러오는 중...';
-                
-                // Firebase에서 데이터 가져오기
-                const playerRecordRef = firebase.database().ref('players');
-                const snapshot = await playerRecordRef.once('value');
-                const playerRecord = snapshot.val();
+            const now = new Date().getTime();
+            const cachedLastUpdated = localStorage.getItem('lastUpdated');
+            
+            // 서버시간 기준 1분 이상 차이나면 데이터를 다시 받아옴
+            if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
+                try {
+                    document.getElementById('status').innerText = '데이터를 불러오는 중...';
+                    
+                    // Firebase에서 데이터 가져오기
+                    const playerRecordRef = firebase.database().ref('players');
+                    const snapshot = await playerRecordRef.once('value');
+                    const playerRecord = snapshot.val();
 
-                if (!playerRecord) {
-                    throw new Error('데이터가 비어 있습니다.');
-                }
+                    if (!playerRecord) {
+                        throw new Error('데이터가 비어 있습니다.');
+                    }
 
-                cachedData = { playerRecord };
-                lastUpdated = new Date().getTime();
-                localStorage.setItem('cachedData', JSON.stringify(cachedData));
-                localStorage.setItem('lastUpdated', lastUpdated);
-        
-                updateTimeInfo();
-                createTable(playerRecord);
-        
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                
-                // 캐싱된 데이터가 있으면 캐싱된 데이터 사용
-                const cached = localStorage.getItem('cachedData');
-                if (cached) {
-                    cachedData = JSON.parse(cached);
-                    document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
+                    cachedData = { playerRecord };
+                    lastUpdated = now;
+                    localStorage.setItem('cachedData', JSON.stringify(cachedData));
+                    localStorage.setItem('lastUpdated', lastUpdated);
+            
                     updateTimeInfo();
-                    createTable(cachedData.playerRecord);
-                } else {
-                    document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+                    createTable(playerRecord);
+            
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    
+                    // 캐싱된 데이터가 있으면 캐싱된 데이터 사용
+                    useCachedData();
                 }
+            } else {
+                // 캐싱된 데이터가 있으면 캐싱된 데이터 사용
+                useCachedData();
+            }
+        }
+
+        function useCachedData() {
+            const cached = localStorage.getItem('cachedData');
+            if (cached) {
+                cachedData = JSON.parse(cached);
+                document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
+                updateTimeInfo();
+                createTable(cachedData.playerRecord);
+            } else {
+                document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
             }
         }
 
@@ -208,7 +221,6 @@
             
                     tableBody.appendChild(row);
                 }
-                document.getElementById('debug').innerText += '\n디버깅: 테이블 생성 완료';
             } catch (error) {
                 document.getElementById('debug').innerText += `\n디버깅: 테이블 생성 중 오류 발생 - ${error.message}`;
             }
@@ -222,7 +234,7 @@
         }
 
         function updateTimeInfo() {
-            const lastUpdatedTime = new Date(lastUpdated);
+            const lastUpdatedTime = new Date(parseInt(lastUpdated));
             document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
         }
 
