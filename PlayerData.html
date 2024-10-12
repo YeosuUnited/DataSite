@@ -135,9 +135,9 @@
             });
 
             searchInputElement.addEventListener('input', function() {
-                const searchTerm = searchInputElement.value;
+                const searchTerm = searchInputElement.value.trim().toLowerCase();
                 if (cachedData && cachedData.players) {
-                    const filteredPlayers = Object.values(cachedData.players).filter(p => p.name.includes(searchTerm)).slice(0, 5);
+                    const filteredPlayers = Object.values(cachedData.players).filter(p => p.name.toLowerCase().includes(searchTerm)).slice(0, 5);
                     if (filteredPlayers.length > 0) {
                         let resultsHtml = "<ul>";
                         filteredPlayers.forEach(player => {
