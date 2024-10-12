@@ -91,9 +91,9 @@
 
     function displayPlayerRecord(sortedData) {
     if (sortedData) {
-        let fixedColumnHtml = '<table class="fixed-column"><tr><th>등번호</th><th>이름</th></tr>';
+        let fixedColumnHtml = '<table class="fixed-column"><tr><th>이름</th></tr>';
         sortedData.forEach(player => {
-            fixedColumnHtml += `<tr><td>${player.number}</td><td>${player.name}</td></tr>`;
+            fixedColumnHtml += `<tr><td>${player.name}</td></tr>`;
         });
         fixedColumnHtml += '</table>';
 
@@ -171,18 +171,14 @@
         
         function getFilteredData(data) {
     const currentYear = new Date().getFullYear();
-    return Object.keys(data).map(number => {
-        const player = data[number];
-        return {
-            number: number,
-            name: player.name,
-            goals: player.years[currentYear]?.goals || 0,
-            assists: player.years[currentYear]?.assists || 0,
-            attackP: player.years[currentYear]?.attackP || 0,
-            matches: player.years[currentYear]?.matches || 0,
-            MOM: player.years[currentYear]?.MOM || 0
-        };
-    });
+    return Object.values(data).map(player => ({
+        name: player.name,
+        goals: player.years[currentYear]?.goals || 0,
+        assists: player.years[currentYear]?.assists || 0,
+        attackP: player.years[currentYear]?.attackP || 0,
+        matches: player.years[currentYear]?.matches || 0,
+        MOM: player.years[currentYear]?.MOM || 0
+    }));
 }
 
 function sortData(data) {
