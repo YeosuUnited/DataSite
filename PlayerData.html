@@ -123,21 +123,24 @@
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const cachedData = localStorage.getItem('cachedData') ? JSON.parse(localStorage.getItem('cachedData')) : null;
-            const searchInputElement = document.getElementById('search-input');
-            const searchResultsElement = document.getElementById('search-results');
-            const logoElement = document.getElementById('logo');
-            const playerDetailsElement = document.getElementById('player-details');
+    const cachedData = localStorage.getItem('cachedData') ? JSON.parse(localStorage.getItem('cachedData')) : null;
+    const searchInputElement = document.getElementById('search-input');
+    const searchResultsElement = document.getElementById('search-results');
+    const logoElement = document.getElementById('logo');
+    const playerDetailsElement = document.getElementById('player-details');
 
-            // 로고 클릭 시 index 화면으로 이동
-            logoElement.addEventListener('click', function() {
-                window.location.href = 'index.html';
-            });
+    // 로고 클릭 시 index 화면으로 이동
+    logoElement.addEventListener('click', function() {
+        window.location.href = 'index.html';
+    });
 
-            searchInputElement.addEventListener('input', function() {
-                const searchTerm = searchInputElement.value.trim().toLowerCase();
+    // 검색 입력 이벤트 리스너
+        searchInputElement.addEventListener('input', function() {
+            const searchTerm = searchInputElement.value.trim().toLowerCase();
                 if (cachedData && cachedData.players) {
-                    const filteredPlayers = Object.values(cachedData.players).filter(p => p.name.toLowerCase().includes(searchTerm)).slice(0, 5);
+                    const filteredPlayers = Object.values(cachedData.players)
+                        .filter(p => p.name.toLowerCase().includes(searchTerm))
+                        .slice(0, 5);
                     if (filteredPlayers.length > 0) {
                         let resultsHtml = "<ul>";
                         filteredPlayers.forEach(player => {
@@ -150,26 +153,27 @@
                         searchResultsElement.innerHTML = "";
                         searchResultsElement.style.display = 'none';
                     }
-
-                    // 검색 결과 클릭 이벤트 추가
-                    document.querySelectorAll('#search-results li').forEach(item => {
-                        item.addEventListener('click', function() {
-                            const playerName = this.getAttribute('data-player-name');
-                            const selectedPlayer = Object.values(cachedData.players).find(p => p.name === playerName);
-                            if (selectedPlayer) {
-                                displayPlayerDetails(selectedPlayer);
-                                displayPlayerRecord(selectedPlayer);
-                                searchResultsElement.innerHTML = ""; // 검색 결과 닫기
-                                searchInputElement.value = ""; // 검색창 비우기
-                                searchResultsElement.style.display = 'none';
-                            }
-                        });
-                    });
                 } else {
                     searchResultsElement.innerHTML = "";
                     searchResultsElement.style.display = 'none';
                 }
             });
+        
+            // 검색 결과 클릭 이벤트 리스너 (이벤트 위임 방식)
+            searchResultsElement.addEventListener('click', function(event) {
+                if (event.target.tagName === 'LI') {
+                    const playerName = event.target.getAttribute('data-player-name');
+                    const selectedPlayer = Object.values(cachedData.players).find(p => p.name === playerName);
+                    if (selectedPlayer) {
+                        displayPlayerDetails(selectedPlayer);
+                        displayPlayerRecord(selectedPlayer);
+                        searchResultsElement.innerHTML = ""; // 검색 결과 닫기
+                        searchInputElement.value = ""; // 검색창 비우기
+                        searchResultsElement.style.display = 'none';
+                    }
+                }
+            });
+        });
 
             function displayPlayerDetails(player) {
                 playerDetailsElement.innerHTML = `
@@ -205,11 +209,11 @@
                     const yearRecords = Object.entries(player.years);
 
                     yearRecords.forEach(([year, record]) => {
-                        summary.경기수 += parseInt(record.matches);
-                        summary.득점 += parseInt(record.goals);
-                        summary.도움 += parseInt(record.assists);
-                        summary.공격P += parseInt(record.attackP);
-                        summary.MOM += parseInt(record.MOM);
+                        summary.경기수 += parseInt(record.matches, 10);
+                        summary.득점 += parseInt(record.goals, 10);
+                        summary.도움 += parseInt(record.assists, 10);
+                        summary.공격P += parseInt(record.attackP, 10);
+                        summary.MOM += parseInt(record.MOM, 10);
                     });
 
                     let recordHtml = `
@@ -273,7 +277,10 @@
                         displayPlayerRecord(player);
                         searchResultsElement.innerHTML = ""; // 검색 결과 닫기
                         searchInputElement.value = ""; // 검색창 비우기
-                        searchResultsElement.style.display = 'none';
+                        if (searchTerm === "") {
+                            searchResultsElement.style.display = 'none';
+                            return;
+                        }
                     } else {
                         alert('선수를 찾을 수 없습니다.');
                     }
