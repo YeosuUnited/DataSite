@@ -62,18 +62,13 @@
     <script>
         let currentSortColumn = 'goals';
         let currentSortDirection = 'desc';
+        let cachedData;  // 전역 변수로 선언하여 접근성을 보장합니다.
 
-        function sortTable(a, b) {
-            if (a.goals !== b.goals) {
-                return b.goals - a.goals;
+        function sortTable(a, b, column) {
+            if (a[column] !== b[column]) {
+                return currentSortDirection === 'desc' ? b[column] - a[column] : a[column] - b[column];
             }
-            if (a.assists !== b.assists) {
-                return b.assists - a.assists;
-            }
-            if (a.attackP !== b.attackP) {
-                return b.attackP - a.attackP;
-            }
-            return b.matches - a.matches;
+            return 0;
         }
 
         function highlightSelectedColumn(columnIndex) {
@@ -149,10 +144,13 @@
             observer.observe(targetNode, config);
         }
 
-        function sortBy(column, columnIndex) {
+            function sortBy(column, columnIndex) {
+            currentSortColumn = column;
+            currentSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';  // 클릭 시 정렬 방향 변경
+    
             const data = cachedData?.players;
             const currentYear = new Date().getFullYear();
-
+    
             if (data) {
                 const filteredData = Object.values(data).map(player => ({
                     name: player.name,
@@ -162,13 +160,9 @@
                     matches: player.years[currentYear]?.matches || 0,
                     MOM: player.years[currentYear]?.MOM || 0
                 }));
-                const sortedData = filteredData.sort((a, b) => {
-                    if (a[column] !== b[column]) {
-                        return b[column] - a[column];
-                    }
-                    return sortTable(a, b);
-                });
-
+    
+                const sortedData = filteredData.sort((a, b) => sortTable(a, b, column));
+    
                 displayPlayerRecord(sortedData);
                 highlightSelectedColumn(columnIndex);
             }
