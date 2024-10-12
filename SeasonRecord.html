@@ -139,12 +139,17 @@
 }
 
     function sortBy(column, columnIndex) {
-    // 현재 정렬된 열과 방향을 설정
-    if (currentSortColumn === column) {
-        currentSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
-    } else {
+        // 항상 내림차순 정렬
         currentSortColumn = column;
-        currentSortDirection = 'desc'; // 기본 정렬 방향
+        currentSortDirection = 'desc'; 
+    
+        // 데이터 필터링 및 정렬 수행
+        const filteredData = getFilteredData(cachedData.players);
+        const sortedData = filteredData.sort((a, b) => sortTable(a, b));
+    
+        // 정렬된 데이터 표시 및 열 강조
+        displayPlayerRecord(sortedData);
+        highlightSelectedColumn(columnIndex);
     }
 
     // 데이터 필터링 및 정렬 수행
