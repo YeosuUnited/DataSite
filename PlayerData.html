@@ -159,47 +159,38 @@
             }
         });
 
-        // 검색 결과 클릭 이벤트 리스너
+        // 검색 결과 클릭 이벤트 리스너 수정
         searchResultsElement.addEventListener('click', function(event) {
-            const searchTerm = searchInputElement.value.trim().toLowerCase();
-            if (cachedData && cachedData.players) {
-                const filteredPlayers = Object.entries(cachedData.players)
-                    .filter(([_, player]) => player.name.toLowerCase().includes(searchTerm))
-                    .slice(0, 5);
-                if (filteredPlayers.length > 0) {
-                    let resultsHtml = "<ul>";
-                    filteredPlayers.forEach(([_, player]) => {
-                        resultsHtml += `<li data-player-name="${player.name}">${player.name} - NO.${player.number}</li>`;
-                    });
-                    resultsHtml += "</ul>";
-                    searchResultsElement.innerHTML = resultsHtml;
-                    searchResultsElement.style.display = 'block';
-                } else {
-                    searchResultsElement.innerHTML = "";
-                    searchResultsElement.style.display = 'none';
+            if (event.target && event.target.tagName === 'LI') {
+                const playerName = event.target.getAttribute('data-player-name');
+                if (cachedData && cachedData.players) {
+                    const player = Object.values(cachedData.players).find(p => p.name === playerName);
+                    if (player) {
+                        displayPlayerDetails(player);
+                        displayPlayerRecord(player);
+                        searchResultsElement.innerHTML = ""; // 검색 결과 닫기
+                        searchResultsElement.style.display = 'none'; // 검색 결과 숨기기
+                        searchInputElement.value = ""; // 검색창 비우기
+                    }
                 }
-            } else {
-                searchResultsElement.innerHTML = "";
-                searchResultsElement.style.display = 'none';
             }
         });
 
         // 검색창에서 Enter 키 입력 시 선수 세부 정보 표시
-        searchInputElement.addEventListener('change', function() {
-            const searchTerm = searchInputElement.value;
-            if (cachedData && cachedData.players) {
-                const player = Object.values(cachedData.players).find(p => p.name.includes(searchTerm));
-                if (player) {
-                    displayPlayerDetails(player);
-                    displayPlayerRecord(player);
-                    searchResultsElement.innerHTML = ""; // 검색 결과 닫기
-                    searchInputElement.value = ""; // 검색창 비우기
-                    if (searchTerm === "") {
-                        searchResultsElement.style.display = 'none';
-                        return;
+        searchInputElement.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                const searchTerm = searchInputElement.value;
+                if (cachedData && cachedData.players) {
+                    const player = Object.values(cachedData.players).find(p => p.name.includes(searchTerm));
+                    if (player) {
+                        displayPlayerDetails(player);
+                        displayPlayerRecord(player);
+                        searchResultsElement.innerHTML = ""; // 검색 결과 닫기
+                        searchResultsElement.style.display = 'none'; // 검색 결과 숨기기
+                        searchInputElement.value = ""; // 검색창 비우기
+                    } else {
+                        alert('선수를 찾을 수 없습니다.');
                     }
-                } else {
-                    alert('선수를 찾을 수 없습니다.');
                 }
             }
         });
