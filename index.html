@@ -70,7 +70,9 @@
             overflow-x: auto;
             cursor: grab;
             user-select: none;
-            padding-left: 70px; /* 왼쪽 여백 추가 */
+            padding-left: 70px;
+            padding-right: 70px;
+            box-sizing: border-box; /* 패딩을 폭 계산에 포함 */
         }
 
         .card-container {
@@ -339,24 +341,36 @@
                 try {
                     document.getElementById('status').innerText = '데이터를 불러오는 중...';
 
-                    const response = await fetch('https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json');
-                    if (!response.ok) {
-                        throw new Error('네트워크 응답에 문제가 있습니다.');
-                    }
-                    const data = await response.json();
-                    const players = data.players;
+                    // 3개의 JSON 파일을 병렬로 가져오기
+                    const urls = [
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json'
+                    ];
 
-                    if (!players) {
-                        throw new Error('데이터가 비어 있습니다.');
-                    }
+                    const [playersResponse, allTimeResponse, thisYearResponse] = await Promise.all(
+                        urls.map(url => fetch(url).then(response => {
+                            if (!response.ok) {
+                                throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
+                            }
+                            return response.json();
+                        }))
+                    );
 
-                    cachedData = { players };
-                    lastUpdated = now;
+                    // 각각의 데이터를 네이밍
+                    const players = playersResponse || {}; 
+                    const thisyear = thisYearResponse || {};
+                    const alltime = allTimeResponse || {};
+
+                    // 로컬 스토리지에 캐싱
+                    const cachedData = { players, alltime, thisyear };
+                    const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
 
+                    // 데이터 렌더링
                     updateTimeInfo();
-                    createCards(players);
+                    createCards(players, thisyear); // 예시: players 데이터 활용
 
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -380,20 +394,39 @@
                 cachedData = JSON.parse(cached);
                 document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
                 updateTimeInfo();
-                createCards(cachedData.players);
+                createCards(cachedData.players, cachedData.thisyear);
             } else {
                 document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
             }
         }
 
-        function createCards(players) {
+        function createCards(players, thisyear) {
+            if (!thisyear || typeof thisyear !== 'object') {
+                console.error("thisyear 데이터가 없습니다:", thisyear);
+                thisyear = {}; // 기본값으로 빈 객체 설정
+            }
+
             const currentYear = new Date().getFullYear();
-            const thisYearData = Object.values(players).map(player => ({
-                name: player.name,
-                number: player.number,
-                posi: player.posi,
-                ...player.years[currentYear.toString()] || {}
-            })).filter(player => player.goals !== undefined);
+            const season = currentYear.toString();
+            console.log("현재 시즌:", season);
+
+            const thisYearData = Object.entries(thisyear).map(([playerNumber, record]) => {
+                const seasonRecord = record[season] || {}; // 현재 연도 데이터 가져오기
+                console.log("seasonRecord:", seasonRecord);
+
+                const playerProfile = players[playerNumber] || {};
+                return {
+                    number: playerNumber,
+                    name: playerProfile.name || "Unknown",
+                    posi: playerProfile.posi || "N/A",
+                    goals: seasonRecord.goals || 0,
+                    assists: seasonRecord.assists || 0,
+                    attackP: seasonRecord.attackP || 0,
+                    matches: seasonRecord.matches || 0
+                };
+            });
+
+            console.log("결합된 데이터:", thisYearData); // 디버깅용
 
             const topGoals = getSortedPlayers(thisYearData, 'goals').slice(0, 5);
             const topAssists = getSortedPlayers(thisYearData, 'assists').slice(0, 5);
@@ -412,7 +445,7 @@
 
             players.forEach((player, index) => {
                 if (index === 0) {
-                    // 1등의 특별 스타일
+                    // 1등 특별 스타일
                     const firstPlace = document.createElement('div');
                     firstPlace.className = 'first-place';
 
@@ -420,7 +453,7 @@
                     badge.src = 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/first.PNG';
                     badge.alt = '1등 배지';
                     badge.className = 'badge';
-                    card.appendChild(badge);
+                    firstPlace.appendChild(badge);
 
                     const imageContainer = document.createElement('div');
                     imageContainer.className = 'player-image-container';
@@ -440,21 +473,21 @@
 
                     const playerName = document.createElement('span');
                     playerName.className = 'player-name';
-                    playerName.textContent = player.name || '-';
+                    playerName.textContent = player.name;
 
                     const playerPosition = document.createElement('span');
                     playerPosition.className = 'player-position-first';
-                    playerPosition.textContent = player.posi ? player.posi : 'N/A'; // 포지션 값이 없으면 'N/A'
+                    playerPosition.textContent = player.posi;
 
                     playerNameContainer.appendChild(playerName);
                     playerNameContainer.appendChild(playerPosition);
 
                     const statValue = document.createElement('div');
                     statValue.className = 'stat-value';
-                    statValue.textContent = `${player[key] || '-'} ${unit}`;
+                    statValue.textContent = `${player[key]} ${unit}`;
 
                     firstPlace.appendChild(imageContainer);
-                    firstPlace.appendChild(playerNameContainer); // 이름+포지션 컨테이너 추가
+                    firstPlace.appendChild(playerNameContainer);
                     firstPlace.appendChild(statValue);
 
                     card.appendChild(firstPlace);
@@ -475,32 +508,30 @@
                         playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
                     };
 
-                    // 이름과 포지션을 포함하는 컨테이너 생성
                     const nameAndPositionContainer = document.createElement('div');
                     nameAndPositionContainer.style.display = 'flex';
                     nameAndPositionContainer.style.flexDirection = 'column';
 
                     const playerName = document.createElement('span');
                     playerName.className = 'player-name';
-                    playerName.textContent = player.name || '-';
+                    playerName.textContent = player.name;
 
                     const playerPosition = document.createElement('span');
                     playerPosition.className = 'player-position';
-                    playerPosition.textContent = player.posi || 'N/A'; // 포지션 값이 없을 경우 'N/A' 표시
+                    playerPosition.textContent = player.posi;
 
                     nameAndPositionContainer.appendChild(playerName);
                     nameAndPositionContainer.appendChild(playerPosition);
 
                     const statValue = document.createElement('span');
                     statValue.className = 'stat-value-right';
-                    statValue.textContent = `${player[key] || '-'} ${unit}`;
+                    statValue.textContent = `${player[key]} ${unit}`;
 
-                    // 등수, 사진, 이름+포지션을 한 줄로 정렬
                     const inlineContainer = document.createElement('div');
                     inlineContainer.className = 'inline-container';
                     inlineContainer.appendChild(rank);
                     inlineContainer.appendChild(playerImage);
-                    inlineContainer.appendChild(nameAndPositionContainer); // 이름+포지션 추가
+                    inlineContainer.appendChild(nameAndPositionContainer);
 
                     playerInfo.appendChild(inlineContainer);
                     playerInfo.appendChild(statValue);
