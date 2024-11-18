@@ -137,8 +137,8 @@
         // 검색 입력 이벤트 리스너
         searchInputElement.addEventListener('input', function() {
             const searchTerm = searchInputElement.value.trim().toLowerCase();
-            if (cachedData && cachedData.players) {
-                const filteredPlayers = Object.entries(cachedData.players)
+            if (cachedData) {
+                const filteredPlayers = Object.entries(cachedData)
                     .filter(([_, player]) => player.name.toLowerCase().includes(searchTerm))
                     .slice(0, 5);
                 if (filteredPlayers.length > 0) {
@@ -164,7 +164,7 @@
             if (event.target && event.target.tagName === 'LI') {
                 const playerName = event.target.getAttribute('data-player-name');
                 if (cachedData && cachedData.players) {
-                    const player = Object.values(cachedData.players).find(p => p.name === playerName);
+                    const player = Object.values(cachedData).find(p => p.name === playerName);
                     if (player) {
                         displayPlayerDetails(player);
                         displayPlayerRecord(player);
@@ -219,7 +219,9 @@
         }
 
         function displayPlayerRecord(player) {
-            if (player.years) {
+            const allRecords = { ...cachedData.alltime[player.id], ...cachedData.thisyear[player.id] };
+
+            if (allRecords) {
                 let summary = {
                     경기수: 0,
                     득점: 0,
@@ -227,8 +229,10 @@
                     공격P: 0,
                     MOM: 0,
                 };
-                const yearRecords = Object.entries(player.years);
 
+                const yearRecords = Object.entries(allRecords);
+
+                // 통산 기록 계산
                 yearRecords.forEach(([year, record]) => {
                     summary.경기수 += parseInt(record.matches, 10);
                     summary.득점 += parseInt(record.goals, 10);
