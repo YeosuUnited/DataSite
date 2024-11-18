@@ -138,8 +138,8 @@
             /* 배지 스타일 추가 */
         .card .badge {
             position: absolute;
-            top: 7px; /* 카드 상단에 걸쳐서 위치 */
-            left: 7px; /* 카드 왼쪽에 걸쳐서 위치 */
+            top: 26px; /* 카드 상단에 걸쳐서 위치 */
+            left: -16px; /* 카드 왼쪽에 걸쳐서 위치 */
             width: 40px; /* 배지 크기 */
             height: auto;
             z-index: 2; /* 다른 요소 위에 표시 */
@@ -234,7 +234,7 @@
             font-size: 0.9em; /* 포지션 글씨 크기 */
             font-weight: normal;
             color: gray; /* 포지션 글씨 색상 */
-            margin-top: 13px; /* 높이 */
+            margin-top: 13px;  이름과의 높이 
         }
 
         .player-name {
@@ -409,11 +409,9 @@
 
             const currentYear = new Date().getFullYear();
             const season = currentYear.toString();
-            console.log("현재 시즌:", season);
 
             const thisYearData = Object.entries(thisyear).map(([playerNumber, record]) => {
                 const seasonRecord = record[season] || {}; // 현재 연도 데이터 가져오기
-                console.log("seasonRecord:", seasonRecord);
 
                 const playerProfile = players[playerNumber] || {};
                 return {
@@ -427,16 +425,16 @@
                 };
             });
 
-            console.log("결합된 데이터:", thisYearData); // 디버깅용
-
             const topGoals = getSortedPlayers(thisYearData, 'goals').slice(0, 5);
-            const topAssists = getSortedPlayers(thisYearData, 'assists').slice(0, 5);
-            const topAttackPoints = getSortedPlayers(thisYearData, 'attackP').slice(0, 5);
-            const topMatches = getSortedPlayers(thisYearData, 'matches').slice(0, 5);
-
             createCard(document.getElementById('goal-card'), topGoals, 'goals', '골');
+
+            const topAssists = getSortedPlayers(thisYearData, 'assists').slice(0, 5);
             createCard(document.getElementById('assist-card'), topAssists, 'assists', '도움');
+
+            const topAttackPoints = getSortedPlayers(thisYearData, 'attackP').slice(0, 5);
             createCard(document.getElementById('attack-point-card'), topAttackPoints, 'attackP', 'P');
+
+            const topMatches = getSortedPlayers(thisYearData, 'matches').slice(0, 5);
             createCard(document.getElementById('match-card'), topMatches, 'matches', '경기');
         }
 
@@ -498,7 +496,7 @@
                     playerInfo.className = 'player-info';
 
                     const rank = document.createElement('span');
-                    rank.textContent = index + 1;
+                    rank.textContent = player.rank;
                     rank.className = 'rank-number';
 
                     const playerImage = document.createElement('img');
@@ -545,12 +543,33 @@
         }
 
 
-        function getSortedPlayers(players, key) {
-            return [...players].sort((a, b) => {
-                if (b[key] !== a[key]) return b[key] - a[key];
-                return b['matches'] - a['matches'];
+        function getSortedPlayers(data, key) {
+            const sorted = [...data].sort((a, b) => {
+                if (b[key] !== a[key]) return b[key] - a[key]; // 주요 키 기준 내림차순
+                return b['matches'] - a['matches']; // 동률일 경우 경기 수 기준 내림차순
             });
+
+            let rank = 0; // 현재 순위
+            let prevValue = null; // 이전 값 저장
+            let skipCount = 0; // 건너뛸 순위 수
+
+            sorted.forEach((data, index) => {
+                if (prevValue !== null && data[key] === prevValue) {
+                    // 현재 값이 이전 값과 같으면 동일 순위
+                    data.rank = rank; // 동일 순위 유지
+                    skipCount++; // 동률 수 증가
+                } else {
+                    // 값이 달라지면 새로운 순위
+                    rank += skipCount + 1; // 동률 수만큼 건너뛰고 다음 순위로
+                    data.rank = rank; // 새로운 순위 설정
+                    skipCount = 0; // 동률 수 초기화
+                }
+                prevValue = data[key]; // 이전 값 업데이트
+            });
+
+            return sorted;
         }
+
 
         function updateTimeInfo() {
             const lastUpdatedTime = new Date(parseInt(lastUpdated));
