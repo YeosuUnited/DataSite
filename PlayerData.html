@@ -122,6 +122,75 @@
         }
     </style>
     <script>
+        async function fetchData() {
+            const now = new Date().getTime();
+            const cachedLastUpdated = localStorage.getItem('lastUpdated');
+
+            if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
+                try {
+                    document.getElementById('status').innerText = '데이터를 불러오는 중...';
+
+                    // 3개의 JSON 파일을 병렬로 가져오기
+                    const urls = [
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json'
+                    ];
+
+                    const [playersResponse, allTimeResponse, thisYearResponse] = await Promise.all(
+                        urls.map(url => fetch(url).then(response => {
+                            if (!response.ok) {
+                                throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
+                            }
+                            return response.json();
+                        }))
+                    );
+
+                    // 각각의 데이터를 네이밍
+                    const players = playersResponse || {};
+                    const alltime = allTimeResponse || {};
+                    const thisyear = thisYearResponse || {};
+
+                    // 로컬 스토리지에 캐싱
+                    const cachedData = { players, alltime, thisyear };
+                    const lastUpdated = now;
+                    localStorage.setItem('cachedData', JSON.stringify(cachedData));
+                    localStorage.setItem('lastUpdated', lastUpdated);
+
+                    // 데이터 렌더링
+                    document.getElementById('status').innerText = '데이터 로딩 완료.';
+                    updateTimeInfo(lastUpdated);
+
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    useCachedData();
+                }
+            } else {
+                useCachedData();
+            }
+        }
+
+        function useCachedData() {
+            const cached = localStorage.getItem('cachedData');
+            if (cached) {
+                const data = JSON.parse(cached);
+                document.getElementById('status').innerText = '서버 문제로 캐싱된 데이터를 사용 중입니다.';
+                const lastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
+                updateTimeInfo(lastUpdated);
+            } else {
+                document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다. 캐싱된 데이터가 없습니다.';
+            }
+        }
+
+        function updateTimeInfo(lastUpdated) {
+            const lastUpdatedTime = new Date(lastUpdated);
+            document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
+        }
+
+        function formatTime(date) {
+            return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+        }
+
     document.addEventListener("DOMContentLoaded", function() {
         const cachedData = localStorage.getItem('cachedData') ? JSON.parse(localStorage.getItem('cachedData')) : null;
         const searchInputElement = document.getElementById('search-input');
@@ -135,10 +204,10 @@
         });
 
         // 검색 입력 이벤트 리스너
-        searchInputElement.addEventListener('input', function() {
+        searchInputElement.addEventListener('input', function () {
             const searchTerm = searchInputElement.value.trim().toLowerCase();
-            if (cachedData) {
-                const filteredPlayers = Object.entries(cachedData)
+            if (cachedData && cachedData.players) {
+                const filteredPlayers = Object.entries(cachedData.players)
                     .filter(([_, player]) => player.name.toLowerCase().includes(searchTerm))
                     .slice(0, 5);
                 if (filteredPlayers.length > 0) {
@@ -159,18 +228,19 @@
             }
         });
 
+
         // 검색 결과 클릭 이벤트 리스너 수정
-        searchResultsElement.addEventListener('click', function(event) {
+        searchResultsElement.addEventListener('click', function (event) {
             if (event.target && event.target.tagName === 'LI') {
                 const playerName = event.target.getAttribute('data-player-name');
                 if (cachedData && cachedData.players) {
-                    const player = Object.values(cachedData).find(p => p.name === playerName);
+                    const player = Object.values(cachedData.players).find(p => p.name === playerName);
                     if (player) {
                         displayPlayerDetails(player);
                         displayPlayerRecord(player);
                         searchResultsElement.innerHTML = ""; // 검색 결과 닫기
                         searchResultsElement.style.display = 'none'; // 검색 결과 숨기기
-                searchInputElement.style.display = 'none'; // 검색창 숨기기
+                        searchInputElement.style.display = ""; // 검색창 숨기기
                         searchInputElement.value = ""; // 검색창 비우기
                     }
                 }
@@ -219,8 +289,7 @@
         }
 
         function displayPlayerRecord(player) {
-            const allRecords = { ...cachedData.alltime[player.id] || {}, ...cachedData.thisyear[player.id] || {} };
-
+            const allRecords = { ...cachedData.alltime?.[player.number] || {}, ...cachedData.thisyear?.[player.number] || {} };
             if (Object.keys(allRecords).length === 0) {
                 return; // 기록이 없으면 함수 종료
             }
@@ -297,6 +366,10 @@
             playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
         }
 
+        window.onload = function () {
+            fetchData();
+        };
+
     });
 </script>
 </head>
@@ -309,5 +382,8 @@
     </div>
     <div id="search-results" class="search-results"></div>
     <div id="player-details" class="player-details"></div>
+
+    <div id="status">데이터 상태: 로딩 중...</div>
+    <div id="lastUpdate"></div>
 </body>
 </html>
