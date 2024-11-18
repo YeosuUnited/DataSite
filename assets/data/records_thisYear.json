@@ -1,1 +1,256 @@
-
+{
+  "players": {
+    "2": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 11        
+      }
+    },
+    "3": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 1
+      }
+    },
+    "4": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 6
+      }
+    },
+    "6": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 3
+      }
+    },
+    "7": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 7
+      }
+    },
+    "8": {
+        "2024": {
+          "MOM": 0,
+          "assists": 1,
+          "attackP": 1,
+          "goals": 0,
+          "matches": 4
+      }
+    },
+    "9": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 4,
+          "goals": 4,
+          "matches": 17
+      }
+    },
+    "10": {
+        "2024": {
+          "MOM": 0,
+          "assists": 2,
+          "attackP": 3,
+          "goals": 1,
+          "matches": 17
+      }
+    },
+    "11": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 3
+      }
+    },
+    "12": {
+        "2024": {
+          "MOM": 0,
+          "assists": 2,
+          "attackP": 5,
+          "goals": 3,
+          "matches": 9
+      }
+    },
+    "13": {
+        "2024": {
+          "MOM": 0,
+          "assists": 1,
+          "attackP": 1,
+          "goals": 0,
+          "matches": 7
+      }
+    },
+    "14": {
+        "2024": {
+          "MOM": 0,
+          "assists": 1,
+          "attackP": 4,
+          "goals": 3,
+          "matches": 9        
+      }
+    },
+    "15": {
+        "2024": {
+          "MOM": 0,
+          "assists": 1,
+          "attackP": 3,
+          "goals": 2,
+          "matches": 14
+      }
+    },
+    "16": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 6
+      }
+    },
+    "18": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 5
+      }
+    },
+    "20": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 2
+      }
+    },
+    "21": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 8
+      }
+    },
+    "23": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 6
+      }
+    },
+    "26": {
+        "2024": {
+          "MOM": 0,
+          "assists": 1,
+          "attackP": 1,
+          "goals": 0,
+          "matches": 3
+      }
+    },
+    "27": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 1
+      }
+    },
+    "29": {
+        "2024": {
+          "MOM": 0,
+          "assists": 1,
+          "attackP": 1,
+          "goals": 0,
+          "matches": 6
+      }
+    },
+    "30": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 7
+      }
+    },
+    "31": {
+        "2024": {
+          "MOM": 0,
+          "assists": 4,
+          "attackP": 7,
+          "goals": 3,
+          "matches": 21
+      }
+    },
+    "39": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 2
+      }
+    },
+    "66": {
+        "2024": {
+          "MOM": 0,
+          "assists": 2,
+          "attackP": 4,
+          "goals": 2,
+          "matches": 14
+      }
+    },
+    "77": {
+        "2024": {
+          "MOM": 0,
+          "assists": 1,
+          "attackP": 2,
+          "goals": 1,
+          "matches": 4
+      }
+    },
+    "88": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 3
+      }
+    },
+    "99": {
+        "2024": {
+          "MOM": 0,
+          "assists": 0,
+          "attackP": 0,
+          "goals": 0,
+          "matches": 13
+      }
+    }
+  }
+}
