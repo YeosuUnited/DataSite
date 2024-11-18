@@ -219,79 +219,84 @@
         }
 
         function displayPlayerRecord(player) {
-            const allRecords = { ...cachedData.alltime[player.id], ...cachedData.thisyear[player.id] };
+            const allRecords = { ...cachedData.alltime[player.id] || {}, ...cachedData.thisyear[player.id] || {} };
 
-            if (allRecords) {
-                let summary = {
-                    경기수: 0,
-                    득점: 0,
-                    도움: 0,
-                    공격P: 0,
-                    MOM: 0,
-                };
+            if (Object.keys(allRecords).length === 0) {
+                return; // 기록이 없으면 함수 종료
+            }
 
-                const yearRecords = Object.entries(allRecords);
+            let summary = {
+                경기수: 0,
+                득점: 0,
+                도움: 0,
+                공격P: 0,
+                MOM: 0,
+            };
 
-                // 통산 기록 계산
-                yearRecords.forEach(([year, record]) => {
-                    summary.경기수 += parseInt(record.matches, 10);
-                    summary.득점 += parseInt(record.goals, 10);
-                    summary.도움 += parseInt(record.assists, 10);
-                    summary.공격P += parseInt(record.attackP, 10);
-                    summary.MOM += parseInt(record.MOM, 10);
-                });
+            const yearRecords = Object.entries(allRecords);
 
-                let recordHtml = `
-                    <div class="record-container">
-                        <div class="record-header">
-                            <span class="title">통산기록</span>
-                            <span class="subtitle">최근 10년 데이터</span>
-                        </div>
-                        <table class="record-table">
-                            <thead>
-                                <tr>
-                                    <th>시즌</th>
-                                    <th>경기수</th>
-                                    <th>득점</th>
-                                    <th>도움</th>
-                                    <th>공격P</th>
-                                    <th>MOM</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="summary">
-                                    <td>통산</td>
-                                    <td>${summary.경기수}</td>
-                                    <td>${summary.득점}</td>
-                                    <td>${summary.도움}</td>
-                                    <td>${summary.공격P}</td>
-                                    <td>${summary.MOM}</td>
-                                </tr>
-                `;
+            // 통산 기록 계산
+            yearRecords.forEach(([year, record]) => {
+                summary.경기수 += parseInt(record.matches, 10);
+                summary.득점 += parseInt(record.goals, 10);
+                summary.도움 += parseInt(record.assists, 10);
+                summary.공격P += parseInt(record.attackP, 10);
+                summary.MOM += parseInt(record.MOM, 10);
+            });
 
-                yearRecords.sort((a, b) => b[0] - a[0]).forEach(([year, record], index) => {
+            let recordHtml = `
+        <div class="record-container">
+            <div class="record-header">
+                <span class="title">통산기록</span>
+                <span class="subtitle">최근 10년 데이터</span>
+            </div>
+            <table class="record-table">
+                <thead>
+                    <tr>
+                        <th>시즌</th>
+                        <th>경기수</th>
+                        <th>득점</th>
+                        <th>도움</th>
+                        <th>공격P</th>
+                        <th>MOM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="summary">
+                        <td>통산</td>
+                        <td>${summary.경기수}</td>
+                        <td>${summary.득점}</td>
+                        <td>${summary.도움}</td>
+                        <td>${summary.공격P}</td>
+                        <td>${summary.MOM}</td>
+                    </tr>
+    `;
+
+            yearRecords
+                .sort((a, b) => parseInt(b[0], 10) - parseInt(a[0], 10))
+                .forEach(([year, record], index) => {
                     const rowClass = index < 1 ? 'year-data' : 'other-year-data';
                     recordHtml += `
-                        <tr class="${rowClass}">
-                            <td>${year}</td>
-                            <td>${record.matches}</td>
-                            <td>${record.goals}</td>
-                            <td>${record.assists}</td>
-                            <td>${record.attackP}</td>
-                            <td>${record.MOM}</td>
-                        </tr>
-                    `;
+                <tr class="${rowClass}">
+                    <td>${year}</td>
+                    <td>${record.matches}</td>
+                    <td>${record.goals}</td>
+                    <td>${record.assists}</td>
+                    <td>${record.attackP}</td>
+                    <td>${record.MOM}</td>
+                </tr>
+            `;
                 });
 
-                recordHtml += `
-                            </tbody>
-                        </table>
-                    </div>
-                `;
+            recordHtml += `
+                </tbody>
+            </table>
+        </div>
+    `;
 
-                playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
-            }
+            playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
         }
+
     });
 </script>
 </head>
