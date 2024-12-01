@@ -134,10 +134,11 @@
                     const urls = [
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json'
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_thisYear.json'
                     ];
 
-                    const [playersResponse, allTimeResponse, thisYearResponse] = await Promise.all(
+                    const [playersResponse, recordAllResponse, recordThisResponse, matchesThisResponse] = await Promise.all(
                         urls.map(url => fetch(url).then(response => {
                             if (!response.ok) {
                                 throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
@@ -147,12 +148,13 @@
                     );
 
                     // 각각의 데이터를 네이밍
-                    const players = playersResponse || {};
-                    const alltime = allTimeResponse || {};
-                    const thisyear = thisYearResponse || {};
+                    const players = playersResponse || {}; 
+                    const recordThis = recordThisResponse || {};
+                    const recordAll = recordAllResponse || {};
+                    const matchesThis = matchesThisResponse || {};
 
                     // 로컬 스토리지에 캐싱
-                    const cachedData = { players, alltime, thisyear };
+                    const cachedData = { players, recordThis, recordAll, matchesThis };
                     const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
@@ -289,7 +291,7 @@
         }
 
         function displayPlayerRecord(player) {
-            const allRecords = { ...cachedData.alltime?.[player.number] || {}, ...cachedData.thisyear?.[player.number] || {} };
+            const allRecords = { ...cachedData.recordAll?.[player.number] || {}, ...cachedData.recordThis?.[player.number] || {} };
             if (Object.keys(allRecords).length === 0) {
                 return; // 기록이 없으면 함수 종료
             }
