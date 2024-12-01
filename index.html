@@ -412,7 +412,7 @@
             const currentYear = new Date().getFullYear();
             const season = currentYear.toString();
 
-            const thisYearData = Object.entries(recordThis).map(([playerNumber, record]) => {
+            const thisYearData = Object.entries(thisyear).map(([playerNumber, record]) => {
                 const seasonRecord = record[season] || {}; // 현재 연도 데이터 가져오기
 
                 const playerProfile = players[playerNumber] || {};
