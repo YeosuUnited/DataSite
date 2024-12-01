@@ -346,10 +346,11 @@
                     const urls = [
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json'
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_thisYear.json'
                     ];
 
-                    const [playersResponse, allTimeResponse, thisYearResponse] = await Promise.all(
+                    const [playersResponse, recordAllResponse, recordThisResponse, matchesThisResponse] = await Promise.all(
                         urls.map(url => fetch(url).then(response => {
                             if (!response.ok) {
                                 throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
@@ -360,18 +361,19 @@
 
                     // 각각의 데이터를 네이밍
                     const players = playersResponse || {}; 
-                    const thisyear = thisYearResponse || {};
-                    const alltime = allTimeResponse || {};
+                    const recordThis = recordThisResponse || {};
+                    const recordAll = recordAllResponse || {};
+                    const matchesThis = matchesThisResponse || {};
 
                     // 로컬 스토리지에 캐싱
-                    const cachedData = { players, alltime, thisyear };
+                    const cachedData = { players, recordThis, recordAll, matchesThis };
                     const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
 
                     // 데이터 렌더링
                     updateTimeInfo();
-                    createCards(players, thisyear); // 예시: players 데이터 활용
+                    createCards(players, recordThis); // 예시: players 데이터 활용
 
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -395,22 +397,22 @@
                 cachedData = JSON.parse(cached);
                 document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
                 updateTimeInfo();
-                createCards(cachedData.players, cachedData.thisyear);
+                createCards(cachedData.players, cachedData.recordThis);
             } else {
                 document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
             }
         }
 
         function createCards(players, thisyear) {
-            if (!thisyear || typeof thisyear !== 'object') {
-                console.error("thisyear 데이터가 없습니다:", thisyear);
-                thisyear = {}; // 기본값으로 빈 객체 설정
+            if (!recordThis || typeof recordThis !== 'object') {
+                console.error("recordThis 데이터가 없습니다:", recordThis);
+                recordThis = {}; // 기본값으로 빈 객체 설정
             }
 
             const currentYear = new Date().getFullYear();
             const season = currentYear.toString();
 
-            const thisYearData = Object.entries(thisyear).map(([playerNumber, record]) => {
+            const thisYearData = Object.entries(recordThis).map(([playerNumber, record]) => {
                 const seasonRecord = record[season] || {}; // 현재 연도 데이터 가져오기
 
                 const playerProfile = players[playerNumber] || {};
@@ -459,6 +461,15 @@
 
                     const playerImage = document.createElement('img');
                     playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
+                                        fetch(playerImage.src, { method: 'HEAD' })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    playerImage.src = playerImage.src.replace('.png', '.PNG');
+                                                }
+                                            })
+                                            .catch(() => {
+                                                playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+                                            });
                     playerImage.alt = player.name;
                     playerImage.className = 'player-image';
                     playerImage.onerror = () => {
