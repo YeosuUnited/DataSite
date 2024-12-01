@@ -460,7 +460,7 @@
                     imageContainer.className = 'player-image-container';
 
                     const playerImage = document.createElement('img');
-                    playerImage.src = await validateImage(`https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`);
+                    playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
                     playerImage.alt = player.name;
                     playerImage.className = 'player-image';
                     playerImage.onerror = () => {
@@ -542,15 +542,6 @@
             });
 
             container.appendChild(card);
-        }
-
-        async function validateImage(url) {
-            try {
-                const response = await fetch(url, { method: 'HEAD' });
-                return response.ok ? url : url.replace('.png', '.PNG');
-            } catch {
-                return 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png';
-            }
         }
 
         function getSortedPlayers(data, key) {
