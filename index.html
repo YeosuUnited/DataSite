@@ -347,10 +347,11 @@
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_thisYear.json'
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_recentTen.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json'
                     ];
 
-                    const [playersResponse, recordAllResponse, recordThisResponse, matchesThisResponse] = await Promise.all(
+                    const [playersResponse, recordAllResponse, recordThisResponse, matchesTenResponse, matchesTotalResponse] = await Promise.all(
                         urls.map(url => fetch(url).then(response => {
                             if (!response.ok) {
                                 throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
@@ -363,10 +364,11 @@
                     const players = playersResponse || {}; 
                     const recordAll = recordAllResponse || {};
                     const recordThis = recordThisResponse || {};                    
-                    const matchesThis = matchesThisResponse || {};
+                    const matchesTen = matchesTenResponse || {};
+                    const matchesTotal = matchesTotalResponse || {};
 
                     // 로컬 스토리지에 캐싱
-                    const cachedData = { players, recordThis, recordAll, matchesThis };
+                    const cachedData = { players, recordThis, recordAll, matchesTen, matchesTotal };
                     const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
