@@ -4,6 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>경기 기록 보기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .header {
+            background-color: #2565D0;
+            color: white;
+            height: 66px;
+            width: 100vw;
+            text-align: left;
+            padding-left: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-right: 20px;
+        }
+
+        .logo {
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 25px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .toggle-button {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #aaa;
+            background-color: white;
+            color: #000;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .toggle-button.active {
+                background-color: #2565D0;
+                color: white;
+                font-weight: bold;
+                border: none;
+            }
+
+        .recent-matches {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+
+        .match-box {
+            width: 100%;
+            background-color: #f1f1f1;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            align-items: start;
+            gap: 10px;
+        }
+
+            .match-box .date-time {
+                font-size: 0.9em;
+                color: #333;
+                align-self: start;
+            }
+
+            .match-box .opponent-location {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .match-box .opponent {
+                font-size: 1.2em;
+                font-weight: bold;
+                text-align: left;
+            }
+
+            .match-box .location {
+                font-size: 0.8em;
+                color: gray;
+                text-align: left;
+                margin-top: 5px;
+            }
+
+            .match-box .score {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-weight: bold;
+                font-size: 1.2em;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                gap: 5px;
+                text-align: center;
+            }
+
+        .popup-button {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            background-color: #f1f1f1;
+            color: black;
+            border: 1px solid #aaa;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background-color: white;
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            z-index: 1000;
+            padding: 20px;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+            .popup .close-button {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: white;
+                color: black;
+                border: 1px solid #aaa;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                cursor: pointer;
+            }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+    </style>
     <script>
         async function fetchData() {
             const now = new Date().getTime();
@@ -13,7 +179,6 @@
                 try {
                     document.getElementById('status').innerText = '데이터를 불러오는 중...';
 
-                    // 3개의 JSON 파일을 병렬로 가져오기
                     const urls = [
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
@@ -31,22 +196,20 @@
                         }))
                     );
 
-                    // 각각의 데이터를 네이밍
-                    const players = playersResponse || {}; 
+                    const players = playersResponse || {};
                     const recordThis = recordThisResponse || {};
                     const recordAll = recordAllResponse || {};
                     const matchesTotal = matchesTotalResponse || {};
                     const matchesTen = matchesTenResponse || {};
 
-                    // 로컬 스토리지에 캐싱
                     const cachedData = { players, recordThis, recordAll, matchesTotal, matchesTen };
                     const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
 
-                    // 데이터 렌더링
                     document.getElementById('status').innerText = '데이터 로딩 완료.';
                     updateTimeInfo(lastUpdated);
+                    renderRecentMatches(matchesTen);
 
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -64,6 +227,7 @@
                 document.getElementById('status').innerText = '서버 문제로 캐싱된 데이터를 사용 중입니다.';
                 const lastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
                 updateTimeInfo(lastUpdated);
+                renderRecentMatches(data.matchesTen);
             } else {
                 document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다. 캐싱된 데이터가 없습니다.';
             }
@@ -75,47 +239,113 @@
         }
 
         function formatTime(date) {
-            return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            const period = hours < 12 ? '오전' : '오후';
+            const formattedHours = hours % 12 || 12;
+            return `${period} ${formattedHours}시${minutes ? ` ${minutes}분` : ''}`;
         }
 
-    document.addEventListener("DOMContentLoaded", function() {
-        const cachedData = localStorage.getItem('cachedData') ? JSON.parse(localStorage.getItem('cachedData')) : null;
-        const searchInputElement = document.getElementById('search-input');
-        const searchResultsElement = document.getElementById('search-results');
-        const logoElement = document.getElementById('logo');
-        const playerDetailsElement = document.getElementById('player-details');
-        
-        function displayMatchRecord() {
-            const cachedData = JSON.parse(localStorage.getItem('cachedData'));
-            const data = cachedData?.matchRecord;
+        function renderRecentMatches(matches) {
+            const matchContainer = document.getElementById('recentMatches');
+            matchContainer.innerHTML = '';
+            Object.entries(matches).forEach(([key, match]) => {
+                const matchBox = document.createElement('div');
+                matchBox.className = 'match-box';
 
-            if (data) {
-                let html = '<table border="1"><tr><th>번호</th><th>날짜</th><th>경기장이름</th><th>경기종류</th><th>상대팀</th><th>승</th><th>패</th></tr>';
+                const [date, time] = key.split('_');
+                const formattedDate = `${date.slice(0, 4)}-${date.slice(5, 7)}-${date.slice(8, 10)} ${formatTime(new Date(`${date}T${time}:00`))}`;
 
-                data.forEach(match => {
-                    html += `<tr>
-                                <td>${match.번호}</td>
-                                <td>${match.날짜}</td>
-                                <td>${match.경기장이름}</td>
-                                <td>${match.경기종류}</td>
-                                <td>${match.상대팀}</td>
-                                <td>${match.승}</td>
-                                <td>${match.패}</td>
-                             </tr>`;
-                });
-                html += '</table>';
+                let matchType = '';
+                if (match.type === "1") {
+                    matchType = '풋살';
+                } else if (match.type === "2") {
+                    matchType = '자체전';
+                }
 
-                document.getElementById('matchData').innerHTML = html;
-            } else {
-                document.getElementById('matchData').innerText = '캐시된 데이터를 찾을 수 없습니다.';
+                let scoreText = '';
+                if (match.type === "0") {
+                    const usScore = match.score.us;
+                    const themScore = match.score.them;
+                    const result = usScore > themScore ? '승' : usScore < themScore ? '패' : '무';
+                    scoreText = `<span>${usScore}</span> : <span>${themScore}</span> (<span>${result}</span>)`;
+                }
+
+                matchBox.innerHTML = `
+                            <div class="date-time">${formattedDate}</div>
+                            <div class="opponent-location">
+                                <div class="opponent">${match.opponent}</div>
+                                <div class="location">${match.location}</div>
+                                ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
+                            </div>
+                            <button class="popup-button">기록</button>
+                        `;
+                matchContainer.appendChild(matchBox);
+            });
+        }
+
+        function openPopup() {
+            document.querySelector('.popup').style.display = 'block';
+            document.querySelector('.overlay').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.querySelector('.popup').style.display = 'none';
+            document.querySelector('.overlay').style.display = 'none';
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const logoElement = document.getElementById('logo');
+            const recentButton = document.getElementById('recentButton');
+            const allButton = document.getElementById('allButton');
+
+            logoElement.addEventListener('click', function () {
+                window.location.href = 'index.html';
+            });
+
+            function toggleButton(clickedButton, otherButton) {
+                clickedButton.classList.add('active');
+                otherButton.classList.remove('active');
             }
-        }
 
-        window.onload = displayMatchRecord;
+            recentButton.addEventListener('click', function () {
+                toggleButton(recentButton, allButton);
+            });
+
+            allButton.addEventListener('click', function () {
+                toggleButton(allButton, recentButton);
+            });
+
+            recentButton.classList.add('active');
+            window.onload = fetchData;
+
+            document.getElementById('recentMatches').addEventListener('click', function (event) {
+                if (event.target.classList.contains('popup-button')) {
+                    openPopup();
+                }
+            });
+
+            document.querySelector('.close-button').addEventListener('click', closePopup);
+            document.querySelector('.overlay').addEventListener('click', closePopup);
+        });
     </script>
-</head>    
+</head>
 <body>
-    <h1>경기 기록</h1>
+    <div class="header">
+        <img id="logo" src="https://github.com/YeosuUnited/DataSite/blob/main/Home_Icon.png?raw=true" alt="Home Icon" class="logo">
+    </div>
+    <div class="button-container">
+        <button id="recentButton" class="toggle-button">최근 10경기</button>
+        <button id="allButton" class="toggle-button">모든 경기</button>
+    </div>
+    <div id="recentMatches" class="recent-matches"></div>
+    <div class="overlay"></div>
+    <div class="popup">
+        <button class="close-button">x</button>
+        <p>팝업 내용입니다.</p>
+    </div>
     <div id="matchData">캐싱데이터 불러오는 중...</div>
+    <div id="status">데이터 상태: 로딩 중...</div>
+    <div id="lastUpdate"></div>
 </body>
 </html>
