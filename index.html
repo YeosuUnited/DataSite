@@ -347,11 +347,11 @@
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_recentTen.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json'
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_recentTen.json'                        
                     ];
 
-                    const [playersResponse, recordAllResponse, recordThisResponse, matchesTenResponse, matchesTotalResponse] = await Promise.all(
+                    const [playersResponse, recordAllResponse, recordThisResponse, matchesTotalResponse, matchesTenResponse] = await Promise.all(
                         urls.map(url => fetch(url).then(response => {
                             if (!response.ok) {
                                 throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
@@ -363,12 +363,12 @@
                     // 각각의 데이터를 네이밍
                     const players = playersResponse || {}; 
                     const recordAll = recordAllResponse || {};
-                    const recordThis = recordThisResponse || {};                    
-                    const matchesTen = matchesTenResponse || {};
+                    const recordThis = recordThisResponse || {};
                     const matchesTotal = matchesTotalResponse || {};
+                    const matchesTen = matchesTenResponse || {};
 
                     // 로컬 스토리지에 캐싱
-                    const cachedData = { players, recordThis, recordAll, matchesTen, matchesTotal };
+                    const cachedData = { players, recordThis, recordAll, matchesTotal, matchesTen };
                     const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
