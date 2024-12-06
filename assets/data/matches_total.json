@@ -1,0 +1,93 @@
+{    
+    "2024-06-22_10:00": {
+        "type": "0",
+        "opponent": "sk브로드밴드",
+        "score": {
+            "us": 7,
+            "them": 0
+        },
+        "location": "과천관문축구장",
+        "comment": ""
+    },
+    "2024-06-15_08:00": {
+        "type": "0",
+        "opponent": "fc르미느",
+        "score": {
+            "us": 1,
+            "them": 2
+        },
+        "location": "영롱갈대1구장",
+        "comment": ""
+    },
+    "2024-05-25_08:00": {
+        "type": "1",
+        "opponent": "MA",
+        "score": {
+            "us": 0,
+            "them": 0
+        },
+        "location": "이촌동",
+        "comment": ""
+    },
+    "2024-05-18_08:00": {
+        "type": "1",
+        "opponent": "하자고FC",
+        "score": {
+            "us": 0,
+            "them": 0
+        },
+        "location": "용산더베이스6구장",
+        "mom": "김언수",
+        "comment": ""
+    },
+    "2024-05-11_08:00": {
+        "type": "0",
+        "opponent": "FC호성",
+        "score": {
+            "us": 3,
+            "them": 2
+        },
+        "location": "군포시민운동장",
+        "comment": ""
+    },
+    "2024-05-04_10:00": {
+        "type": "1",
+        "opponent": "fc laf",
+        "score": {
+            "us": 0,
+            "them": 0
+        },
+        "location": "중대부고4구장",
+        "comment": ""
+    },
+    "2024-04-20_08:00": {
+        "type": "1",
+        "opponent": "마스날fc",
+        "score": {
+            "us": 0,
+            "them": 0
+        },
+        "location": "서서울호수공원",
+        "comment": ""
+    },
+    "2024-03-30_10:00": {
+        "type": "1",
+        "opponent": "fc미드리",
+        "score": {
+            "us": 0,
+            "them": 0
+        },
+        "location": "중대부고",
+        "comment": ""
+    },
+    "2024-03-16_11:00": {
+        "type": "0",
+        "opponent": "지기컴퍼니",
+        "score": {
+            "us": 2,
+            "them": 3
+        },
+        "location": "수도공고",
+        "comment": ""
+    }
+}
