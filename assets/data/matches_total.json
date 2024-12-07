@@ -89,5 +89,15 @@
         },
         "location": "수도공고",
         "comment": ""
+    },
+    "2024-02-16_11:00": {
+        "type": "1",
+        "opponent": "fc강남콩",
+        "score": {
+            "us": 2,
+            "them": 3
+        },
+        "location": "도곡로꼬풋살장",
+        "comment": ""
     }
 }
