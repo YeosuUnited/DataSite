@@ -122,6 +122,8 @@
         }
     </style>
     <script>
+        let cachedData = null; // 캐싱 데이터를 저장
+        
         async function fetchData() {
             const now = new Date().getTime();
             const cachedLastUpdated = localStorage.getItem('lastUpdated');
