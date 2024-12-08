@@ -136,27 +136,32 @@
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_recentTen.json'
                     ];
 
-                    const [playersResponse, recordAllResponse, recordThisResponse, matchesTotalResponse, matchesTenResponse] = await Promise.all(
-                        urls.map(url => fetch(url).then(response => {
-                            if (!response.ok) {
-                                throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
-                            }
-                            return response.json();
-                        }))
+                    const responses = await Promise.allSettled(
+                        urls.map(url =>
+                            fetch(url)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        console.error(`네트워크 오류 발생: ${url}`);
+                                        throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
+                                    }
+                                    return response.json();
+                                })
+                        )
                     );
+                    
+                    // 응답 데이터를 개별적으로 처리
+                    const data = {
+                        players: responses[0].status === 'fulfilled' ? responses[0].value : {},
+                        recordAll: responses[1].status === 'fulfilled' ? responses[1].value : {},
+                        recordThis: responses[2].status === 'fulfilled' ? responses[2].value : {},
+                        matchesTotal: responses[3].status === 'fulfilled' ? responses[3].value : {},
+                    };
 
-                    // 각각의 데이터를 네이밍
-                    const players = playersResponse || {}; 
-                    const recordThis = recordThisResponse || {};
-                    const recordAll = recordAllResponse || {};
-                    const matchesTotal = matchesTotalResponse || {};
-                    const matchesTen = matchesTenResponse || {};
-
-                    // 로컬 스토리지에 캐싱
-                    const cachedData = { players, recordThis, recordAll, matchesTotal, matchesTen };
+                    // 데이터를 캐싱 변수에 저장
+                    cachedData = data;
+                    
                     const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
