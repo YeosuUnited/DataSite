@@ -543,6 +543,15 @@
             }
         }
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const logo = document.getElementById('logo');
+            if (logo) {
+                logo.addEventListener('click', function () {
+                    window.location.href = 'index.html'; // 이동할 페이지 경로
+                });
+            }
+        });
+
         window.onload = async function () {
             const prevYearButton = document.getElementById('prevYear');
             const nextYearButton = document.getElementById('nextYear');
@@ -590,6 +599,14 @@
             } catch (error) {
                 console.error('데이터 로드 실패:', error);
                 statusElement.textContent = '데이터 로드 실패.';
+            }
+
+            // 로고 클릭 이벤트 추가
+            const logo = document.getElementById('logo');
+            if (logo) {
+                logo.addEventListener('click', function () {
+                    window.location.href = 'index.html'; // 이동할 페이지 경로
+                });
             }
         };
 
