@@ -691,11 +691,11 @@
                     const usScore = match.score.us;
                     const themScore = match.score.them;
                     const result = usScore > themScore ? "승" : usScore < themScore ? "패" : "무";
-                    scoreText = ` - <strong>${usScore} : ${themScore}</strong> (${result})`;
+                    scoreText = `<span style="font-size: 0.9em;"><strong>${usScore} : ${themScore}</strong> (${result})</span>`;
                 }
 
                 historyList += `<li>
-                                    ${date} - <span style="color: gray; font-size: 0.9em;">${time} / ${location}</span>
+                                    <span style="font-size: 0.9em;">${date}</span> - <span style="color: gray; font-size: 0.8em;">${time} / ${location}</span>
                                     ${scoreText}
                                 </li> `; });
 
@@ -716,7 +716,7 @@
             let commentList = "<ul class='recent-matches-popup'>";
             if (comments.length > 0) {
                 comments.forEach(comment => {
-                    commentList += `<li>${comment}</li>`;
+                    commentList += `<li><span style="font-size: 0.9em;">${comment}</span></li>`;
                 });
             } else {
                 commentList += "<li>없음</li>"; // comment가 없는 경우
@@ -853,14 +853,28 @@
 
                 // 결과를 표시
                 searchResults.innerHTML = results.length
-                    ? results.map(opponent => `<div style="padding: 5px 15px; border: 2px solid #ddd; border-radius: 5px; margin-bottom: 5px; margin-left: -5px; margin-right: 27px; cursor: pointer;">${opponent}</div>`).join('')
-                    : '<div style="padding: 5px 10px; color: gray;">검색 결과가 없습니다.</div>';
-            });
+                    ? results.map(opponent => ` 
+                        <div style="
+                            padding: 5px 0px; 
+                            border: 2px solid #ddd; 
+                            border-radius: 5px; 
+                            margin-bottom: 5px; 
+                            cursor: pointer; 
+                            width: 90%; 
+                            max-width: 800px; 
+                            text-align: center; 
+                            margin: 0 auto;">${opponent}</div>`).join('')
+                    : `<div style="
+                            padding: 5px 10px; 
+                            color: gray; 
+                            text-align: center;">검색 결과가 없습니다.</div>`;
+                                                });
 
             // 검색 결과 클릭 이벤트
             searchResults.addEventListener('click', function (event) {
                 if (event.target && event.target.tagName === 'DIV') {
                     const selectedTeam = event.target.innerText.trim(); // 선택한 팀 이름
+                    if (selectedTeam === "검색 결과가 없습니다.") return; // 클릭 방지
                     searchResults.innerHTML = ''; // 검색 결과 숨기기
                     searchInput.value = selectedTeam; // 검색창에 선택된 팀 이름 표시
 
@@ -984,10 +998,12 @@
     </div>
     <div id="recentMatchesContainer" class="matches-defaultBox"></div>
     <div id="allMatchesContainer" class="matches-defaultBox"></div>
-    <div id="searchContainer" style="display:none; text-align:center; margin-top: 20px; margin-left: 20px">
-        <input id="searchInput" type="text" placeholder="상대팀 이름 검색"
-               style="width: 80%; height: 40px; font-size: 16px; border-radius: 20px; border: 1px solid #ccc; padding-left: 15px;">
-        <div id="searchResults" style="margin-top: 10px; text-align:left; padding: 10px;"></div>
+    <div style="display: flex; justify-content: center; margin-top: 20px;">
+        <div id="searchContainer" style="display: none; width: 80%; max-width: 400px;">
+            <input id="searchInput" type="text" placeholder="상대팀 이름 검색"
+                   style="width: 100%; height: 40px; font-size: 16px; border-radius: 20px; border: 1px solid #ccc; padding-left: 15px;">
+            <div id="searchResults" style="margin-top: 10px; text-align:left; padding: 5px;"></div>
+        </div>
     </div>
     <div id="teamHistoryContainer" style="display:none; margin-top: 0px; padding: 10px; border: 1px solid #ccc; border-radius: 10px; background-color: #f9f9f9;"></div>
     <div class="overlay" onclick="closePopup()"></div>
