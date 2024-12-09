@@ -883,6 +883,50 @@
                 }
             });
 
+            // 검색창에서 Enter 키 이벤트 처리
+            searchInput.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // 기본 엔터 동작 방지 (폼 제출 등)
+                    const query = searchInput.value.trim().toLowerCase();
+                    if (!query) {
+                        searchResults.innerHTML = '<div style="color: gray; text-align: center;">검색어를 입력해주세요.</div>';
+                        return;
+                    }
+
+                    // 상대 팀 검색 및 결과 표시
+                    const results = Array.from(
+                        new Set(
+                            Object.values(cachedData.matchesTotal)
+                                .filter(match => match.opponent && match.opponent.toLowerCase().includes(query))
+                                .map(match => match.opponent)
+                        )
+                    );
+
+                    if (results.length === 1) {
+                        // 결과가 하나일 때
+                        searchResults.innerHTML = ''; // 검색 결과 숨기기
+                        searchInput.value = results[0]; // 검색창에 첫 번째 결과 표시
+                        showTeamHistory(results[0]); // 해당 팀 히스토리 불러오기
+                    } else if (results.length > 1) {
+                        searchResults.innerHTML = results
+                            .map(opponent => `
+                    <div style="
+                        padding: 5px 0px;
+                        border: 2px solid #ddd;
+                        border-radius: 5px;
+                        margin-bottom: 5px;
+                        cursor: pointer;
+                        width: 90%;
+                        max-width: 800px;
+                        text-align: center;
+                        margin: 0 auto;">${opponent}</div>
+                `).join('');
+                    } else {
+                        searchResults.innerHTML = '<div style="color: gray; text-align: center;">검색 결과가 없습니다.</div>';
+                    }
+                }
+            });
+
             // 최근 10경기에서 "기록" 버튼 처리
             document.getElementById('recentMatchesContainer').addEventListener('click', function (event) {
                 if (event.target.classList.contains('popup-button')) {
