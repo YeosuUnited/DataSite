@@ -347,16 +347,5 @@
     },
     "location": "도곡로꼬풋살장",
     "comment": ""
-  },
-  "match_21": {
-    "type": "풋살",
-    "opponent": "테스트1",
-    "score": {
-      "us": 0,
-      "them": 0
-    },
-    "date": "2024-12-14T20:35",
-    "location": "테스트1",
-    "comment": "테스트1"
   }
 }
