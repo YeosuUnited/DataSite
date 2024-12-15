@@ -445,11 +445,10 @@
                 try {
                     document.getElementById('status').innerText = '데이터를 불러오는 중...';
 
-                    // 3개의 JSON 파일을 병렬로 가져오기
+                    // JSON 파일 가져오기
                     const urls = [
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json',
                     ];
 
@@ -469,9 +468,8 @@
                     // 응답 데이터를 개별적으로 처리
                     const data = {
                         players: responses[0].status === 'fulfilled' ? responses[0].value : {},
-                        recordAll: responses[1].status === 'fulfilled' ? responses[1].value : {},
-                        recordThis: responses[2].status === 'fulfilled' ? responses[2].value : {},
-                        matchesTotal: responses[3].status === 'fulfilled' ? responses[3].value : {},
+                        recordsAll: responses[1].status === 'fulfilled' ? responses[1].value : {},
+                        matchesTotal: responses[2].status === 'fulfilled' ? responses[2].value : {},
                     };
 
                     // 데이터를 캐싱 변수에 저장
@@ -481,9 +479,18 @@
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
 
+                    // 올해 데이터 필터링
+                    const currentYear = new Date().getFullYear();
+                    const thisYearRecords = filterCurrentYearData(data.recordsAll, currentYear);
+
+                    if (Object.keys(thisYearRecords).length === 0) {
+                        console.error("올해 데이터가 없습니다.");
+                        return;
+                    }
+
                     // 데이터 렌더링
                     updateTimeInfo();
-                    createCards(players, recordThis); // 예시: players 데이터 활용
+                    createCards(data.players, thisYearRecords);
 
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -496,6 +503,23 @@
 
         let lastUpdated = null;
 
+        function filterCurrentYearData(allTimeRecords, currentYear) {
+            const season = currentYear.toString();
+
+            if (!allTimeRecords || typeof allTimeRecords !== 'object') {
+                console.error("올바르지 않은 데이터 형식:", allTimeRecords);
+                return {};
+            }
+
+            // 현재 연도의 데이터를 필터링
+            return Object.entries(allTimeRecords).reduce((filteredData, [playerNumber, yearlyRecords]) => {
+                if (yearlyRecords[season]) {
+                    filteredData[playerNumber] = yearlyRecords[season];
+                }
+                return filteredData;
+            }, {});
+        }
+
         function formatTime(date) {
             return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
         }
@@ -505,34 +529,38 @@
             if (cached) {
                 cachedData = JSON.parse(cached);
                 document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
+
+                const currentYear = new Date().getFullYear();
+                const thisYearRecords = filterCurrentYearData(cachedData.recordsAll, currentYear);
+
+                if (Object.keys(thisYearRecords).length === 0) {
+                    console.error("올해 데이터가 없습니다 (캐싱된 데이터).");
+                    return;
+                }
+
                 updateTimeInfo();
-                createCards(cachedData.players, cachedData.recordThis);
+                createCards(cachedData.players, thisYearRecords);
             } else {
                 document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
             }
         }
 
-        function createCards(players, thisyear) {
-            if (!thisyear || typeof thisyear !== 'object') {
-                console.error("thisyear 데이터가 없습니다:", thisyear);
-                thisyear = {}; // 기본값으로 빈 객체 설정
+        function createCards(players, thisYearRecords) {
+            if (!thisYearRecords || typeof thisYearRecords !== 'object') {
+                console.error("thisYearRecords 데이터가 없습니다:", thisYearRecords);
+                return;
             }
 
-            const currentYear = new Date().getFullYear();
-            const season = currentYear.toString();
-
-            const thisYearData = Object.entries(thisyear).map(([playerNumber, record]) => {
-                const seasonRecord = record[season] || {}; // 현재 연도 데이터 가져오기
-
+            const thisYearData = Object.entries(thisYearRecords).map(([playerNumber, record]) => {
                 const playerProfile = players[playerNumber] || {};
                 return {
                     number: playerNumber,
                     name: playerProfile.name || "Unknown",
                     posi: playerProfile.posi || "N/A",
-                    goals: seasonRecord.goals || 0,
-                    assists: seasonRecord.assists || 0,
-                    attackP: seasonRecord.attackP || 0,
-                    matches: seasonRecord.matches || 0
+                    goals: record.goals || 0,
+                    assists: record.assists || 0,
+                    attackP: record.attackP || 0,
+                    matches: record.matches || 0
                 };
             });
 
