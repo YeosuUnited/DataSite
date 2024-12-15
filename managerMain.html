@@ -1,1 +1,723 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 기존 스타일 유지 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
 
+        .header {
+            background-color: #2565D0;
+            color: #e5e5e5;
+            height: 66px;
+            width: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo {
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 처음엔 2열 */
+            grid-gap: 20px;
+            max-width: 800px;
+            width: 100%;
+            height: 300px;
+            padding: 20px;
+            align-items: center; /* 세로(수직) 정렬 */
+        }
+
+            /* 첫 화면 버튼 스타일 (grid 상태) */
+            .button-container .action-button {
+                background-color: #4071e3; /* 첫 화면 배경색 */
+                color: #f4f4f4; /* 첫 화면 글자색 */
+                font-size: 24px; /* 첫 화면 글꼴 크기 */
+                padding: 40px; /* 첫 화면 버튼 크기 */
+                height: 140px;
+                /* 중앙 정렬을 위한 Flexbox 추가 */
+                display: flex; /* Flexbox 활성화 */
+                justify-content: center; /* 가로(수평) 정렬 */
+                align-items: center; /* 세로(수직) 정렬 */
+                text-align: center; /* 텍스트가 여러 줄일 경우 가운데 정렬 */
+            }
+
+            /* 가로 1열 버튼 스타일 (horizontal-layout 상태) */
+            .button-container.horizontal-layout .action-button {
+                background-color: #4CAF50; /* 가로 1열 배경색 */
+                height: 40px;
+                color: #f4f4f4; /* 가로 1열 글자색 */
+                font-size: 1.5em; /* 가로 1열 글꼴 크기 */
+                padding: 5px 0px 5px 0px; /* 위 오른쪽 아래 왼쪽 안쪽 여백*/
+                border-radius: 5px; /* 가로 1열 버튼 모서리 */
+                width: 100%;
+            }
+
+                /* 가로 1열에서 .style2 버튼만 주황색 유지 */
+                .button-container.horizontal-layout .action-button.style2 {
+                    background-color: #f0960e; /* 선수 추가/수정 버튼 주황색 */
+                }
+
+            .button-container.horizontal-layout {
+                display: flex; /* 클릭 후 가로 정렬 */
+                justify-content: space-between;
+                font-size: 0.5em;
+                align-items: center;
+                height: 50px;
+                padding: 5px;
+                background-color: #ffffff;
+            }
+
+        .action-button {
+            background-color: #4071e3;
+            color: #f4f4f4;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+            .action-button:hover {
+                background-color: #305ec1;
+                transform: scale(1.05);
+            }
+            .action-button:active {
+                background-color: #2046a8;
+            }
+
+            .action-button.style1 {
+                background-color: #4CAF50; /* 초록색 */
+            }
+
+                .action-button.style1:hover {
+                    background-color: #419946;
+                }
+
+            .action-button.style2 {
+                background-color: #f0960e; /* 주황색 */
+            }
+
+                .action-button.style2:hover {
+                    background-color: #ca7e0b;
+                }
+
+        @media (max-width: 768px) {
+            .action-button {
+                font-size: 1em;
+                padding: 30px;
+            }
+
+            .button-container.horizontal-layout .action-button {
+                flex: 1;
+                margin: 0 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-button {
+                font-size: 0.8em;
+                padding: 20px;
+            }
+
+            .button-container.horizontal-layout .action-button {
+                flex: 1;
+                margin: 0 3px;
+            }
+        }
+
+        .match-form {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+            .match-form label {
+                display: block;
+                margin-bottom: 10px;
+                font-size: 1.2em;
+                font-weight: bold;
+            }
+
+            .match-form input, .match-form select, .match-form textarea {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 20px;
+                font-size: 1em;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            .match-form table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+
+                .match-form table th, .match-form table td {
+                    border: 1px solid #ccc;
+                    padding: 10px;
+                    text-align: center;
+                }
+
+                .match-form table th {
+                    background-color: #f4f4f4;
+                }
+
+        #match-types {
+            display: flex; /* 항목을 가로로 정렬 */
+            align-items: center; /* 세로 가운데 정렬 */
+            gap: 20px; /* 항목 간 간격을 넓힘 */
+            margin-bottom: 20px;
+        }
+
+            #match-types label {
+                display: inline-flex; /* 텍스트와 버튼을 한 줄로 정렬 */
+                align-items: center; /* 버튼과 텍스트를 세로로 가운데 정렬 */
+                gap: 8px; /* 버튼과 텍스트 사이 간격 */
+                white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+                font-size: 1em; /* 텍스트 크기 유지 */
+            }
+
+            #match-types input[type="radio"] {
+                transform: scale(1); /* 체크박스 크기 확대 */
+                margin: 0; /* 여백 제거 */
+                vertical-align: middle; /* 텍스트와 버튼 세로 가운데 정렬 */
+            }
+
+        /* 테이블 셀 스타일 수정 */
+        #player-list td {
+            padding: 10px;
+            text-align: center;
+        }
+
+            #player-list td:first-child { /* 이름 열은 왼쪽 정렬 */
+                text-align: left;
+            }
+
+        #player-list span {
+            color: gray;
+            font-size: 0.9em; /* 이름보다 살짝 작은 크기 */
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html">
+            <img id="logo" src="https://github.com/YeosuUnited/DataSite/blob/main/assets/images/homeIcon.png?raw=true" alt="Home Icon" class="logo">
+        </a>
+        <span class="header-title">관리자 페이지</span>
+    </div>
+    <div class="button-container" id="button-container">
+        <button class="action-button style1" id="add-match-button">경기 추가</button>
+        <button class="action-button style1">경기 수정</button>
+        <button class="action-button style2">선수 추가</button>
+        <button class="action-button style2">선수 수정</button>
+    </div>
+    <div id="status">데이터 상태: 로딩 중...</div>
+    <div id="lastUpdate"></div>
+
+    <!-- 경기 추가 화면 -->
+    <div id="match-form-container" class="match-form" style="display: none;">
+        <h2>경기 추가</h2>
+        <form id="match-form">
+            <label>경기 종류</label>
+            <div id="match-types">
+                <label>축구 <input type="radio" name="match-type" value="축구"></label>
+                <label>풋살 <input type="radio" name="match-type" value="풋살"></label>
+                <label>자체전 <input type="radio" name="match-type" value="자체전"></label>
+            </div>
+
+            <label>상대팀 이름</label>
+            <input type="text" id="opponent-name" placeholder="상대이름 입력">
+
+            <label>상대팀 점수</label>
+            <input type="text" id="opponent-score" placeholder="상대팀 점수 입력">
+
+            <label>날짜/시간</label>
+            <input type="datetime-local" id="match-date">
+
+            <label>장소</label>
+            <input type="text" id="match-location" placeholder="경기장소 입력">
+
+            <label>참가 선수</label>
+            <table>
+                <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>출전</th>
+                        <th>득점</th>
+                        <th>도움</th>
+                    </tr>
+                </thead>
+                <tbody id="player-list"></tbody>
+            </table>
+
+            <label>코멘트</label>
+            <textarea id="match-comment" placeholder="코멘트 입력"></textarea>
+
+            <button type="button" id="submit-match">추가하기</button>
+        </form>
+    </div>
+
+    <script>
+        let cachedData = null; // 캐싱 데이터를 저장
+
+        async function fetchData() {
+            const now = new Date().getTime();
+            const cachedLastUpdated = localStorage.getItem('lastUpdated');
+
+            console.log(`[fetchData] 실행: 현재 시간 - ${now}, 캐시된 마지막 업데이트 시간 - ${cachedLastUpdated}`);
+
+            if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
+                try {
+                    document.getElementById('status').innerText = '데이터를 불러오는 중...';
+                    console.log('[fetchData] 데이터 새로 요청 중...');
+
+                    // 3개의 JSON 파일을 병렬로 가져오기
+                    const urls = [
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json',
+                    ];
+
+                    const responses = await Promise.allSettled(
+                        urls.map((url, index) =>
+                            fetch(url)
+                                .then(response => {
+                                    console.log(`[fetchData] URL ${index + 1} (${url}) 응답 상태: ${response.status}`);
+                                    if (!response.ok) {
+                                        console.error(`네트워크 오류 발생: ${url}`);
+                                        throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
+                                    }
+                                    return response.json();
+                                })
+                        )
+                    );
+
+                    // 응답 데이터를 개별적으로 처리
+                    const data = {
+                        players: responses[0].status === 'fulfilled' ? responses[0].value : {},
+                        recordAll: responses[1].status === 'fulfilled' ? responses[1].value : {},
+                        matchesTotal: responses[3].status === 'fulfilled' ? responses[2].value : {},
+                    };
+
+                    // 데이터를 캐싱 변수에 저장
+                    cachedData = data;
+
+                    const lastUpdated = now;
+                    localStorage.setItem('cachedData', JSON.stringify(cachedData));
+                    localStorage.setItem('lastUpdated', lastUpdated);
+
+                    // 데이터 렌더링
+                    updateTimeInfo();
+
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    useCachedData();
+                }
+            } else {
+                useCachedData();
+            }
+        }
+
+        function formatTime(date) {
+            return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+        }
+
+        function useCachedData() {
+            const cached = localStorage.getItem('cachedData');
+            if (cached) {
+                cachedData = JSON.parse(cached);
+                document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
+                updateTimeInfo();
+
+                // createCards 호출 제거
+                console.log('[useCachedData] 캐싱된 데이터:', cachedData);
+            } else {
+                document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+            }
+        }
+
+        function updateTimeInfo() {
+            const lastUpdated = localStorage.getItem('lastUpdated'); // localStorage에서 값 가져오기
+            if (lastUpdated) {
+                const lastUpdatedTime = new Date(parseInt(lastUpdated, 10)); // 10진수로 변환
+                document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
+            } else {
+                console.warn("[updateTimeInfo] lastUpdated 값이 없습니다.");
+                document.getElementById('lastUpdate').innerText = '최근 데이터 갱신 시간: 없음';
+            }
+        }
+
+        // 선수 데이터를 테이블에 추가하는 함수
+        function populatePlayerList(players) {
+            const playerList = document.getElementById("player-list");
+            playerList.innerHTML = ""; // 기존 내용 초기화
+
+            if (!players || Object.keys(players).length === 0) {
+                console.warn("[populatePlayerList] 선수 데이터가 비어있습니다.", players);
+                const emptyRow = document.createElement("tr");
+                const emptyCell = document.createElement("td");
+                emptyCell.colSpan = 4;
+                emptyCell.textContent = "선수 데이터가 없습니다.";
+                emptyRow.appendChild(emptyCell);
+                playerList.appendChild(emptyRow);
+                return;
+            }
+
+            // 등번호 오름차순으로 정렬
+            const sortedPlayers = Object.keys(players).sort((a, b) => parseInt(a) - parseInt(b));
+
+            sortedPlayers.forEach((number) => {
+                const player = players[number];
+                const row = document.createElement("tr");
+
+                // 선수 이름 셀
+                const nameCell = document.createElement("td");
+                nameCell.style.textAlign = "left"; // 왼쪽 정렬
+                nameCell.innerHTML = `
+            ${player.name} <span style="color: gray; font-size: 0.9em;">No.${number}</span>
+        `;
+                row.appendChild(nameCell);
+
+                // 출전 여부 (체크박스)
+                const playingCell = document.createElement("td");
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.name = `playing_${number}`;
+                playingCell.appendChild(checkbox);
+                row.appendChild(playingCell);
+
+                // 득점 입력란
+                const goalsCell = document.createElement("td");
+                const goalsInput = document.createElement("input");
+                goalsInput.type = "number";
+                goalsInput.name = `goals_${number}`;
+                goalsInput.placeholder = "0";
+                goalsInput.style.width = "50px";
+                goalsCell.appendChild(goalsInput);
+                row.appendChild(goalsCell);
+
+                // 도움 입력란
+                const assistsCell = document.createElement("td");
+                const assistsInput = document.createElement("input");
+                assistsInput.type = "number";
+                assistsInput.name = `assists_${number}`;
+                assistsInput.placeholder = "0";
+                assistsInput.style.width = "50px";
+                assistsCell.appendChild(assistsInput);
+                row.appendChild(assistsCell);
+
+                // 행 추가
+                playerList.appendChild(row);
+            });
+        }
+
+        document.querySelectorAll('input[name="match-type"]').forEach((radio) => {
+            radio.addEventListener('change', function () {
+                const selectedType = this.value;
+                const opponentScoreField = document.getElementById('opponent-score'); // 상대팀 점수 입력 필드
+                const opponentScoreLabel = opponentScoreField.previousElementSibling; // 상대팀 점수 라벨
+                const playerList = document.getElementById('player-list');
+
+                if (selectedType === '풋살' || selectedType === '자체전') {
+                    // 상대팀 점수 숨기기
+                    opponentScoreField.style.display = 'none';
+                    opponentScoreLabel.style.display = 'none';
+
+                    // 선수 목록에서 득점과 도움 숨기기
+                    playerList.querySelectorAll('tr').forEach((row) => {
+                        const goalsCell = row.querySelector('td:nth-child(3)');
+                        const assistsCell = row.querySelector('td:nth-child(4)');
+                        if (goalsCell) goalsCell.style.display = 'none';
+                        if (assistsCell) assistsCell.style.display = 'none';
+                    });
+                } else if (selectedType === '축구') {
+                    // 상대팀 점수 표시
+                    opponentScoreField.style.display = '';
+                    opponentScoreLabel.style.display = '';
+
+                    // 선수 목록에서 득점과 도움 표시
+                    playerList.querySelectorAll('tr').forEach((row) => {
+                        const goalsCell = row.querySelector('td:nth-child(3)');
+                        const assistsCell = row.querySelector('td:nth-child(4)');
+                        if (goalsCell) goalsCell.style.display = '';
+                        if (assistsCell) assistsCell.style.display = '';
+                    });
+                }
+            });
+        });
+
+        // 페이지 로드 시 선수 목록을 불러오는 이벤트 추가
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchData().then(() => {
+                console.log("[DOMContentLoaded] 캐싱된 데이터 확인:", cachedData);
+                if (cachedData && cachedData.players) {
+                    populatePlayerList(cachedData.players);
+                } else {
+                    console.error("[DOMContentLoaded] 선수 데이터가 없습니다.");
+                }
+            });
+        });
+
+        // 경기 데이터를 저장하는 함수
+        async function saveMatchData(matchData) {
+            try {
+                const token = "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"; // GitHub Personal Access Token
+                const filePath = "assets/data/matches_total.json";
+                const repoOwner = "YeosuUnited";
+                const repoName = "DataSite";
+
+                // 기존 데이터 가져오기
+                const getResponse = await fetch(
+                    `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`,
+                    {
+                        headers: {
+                            Authorization: `token ${token}`,
+                        },
+                    }
+                );
+
+                if (!getResponse.ok) {
+                    throw new Error("기존 파일을 가져오는 데 실패했습니다.");
+                }
+
+                const fileData = await getResponse.json();
+                const currentContent = JSON.parse(base64ToUtf8(fileData.content));
+
+                // 새로운 match 데이터를 기존 데이터에 추가
+                const tempContent = {
+                    ...currentContent,
+                    temp: matchData, // 임시로 키를 temp로 추가
+                };
+
+                // 1. date 기준으로 오름차순 정렬 (가장 오래된 데이터부터 키를 생성)
+                const sortedByOldest = Object.entries(tempContent).sort(([, a], [, b]) =>
+                    new Date(a.date) - new Date(b.date)
+                );
+
+                // 2. "match_숫자" 키 재설정
+                const rekeyedContent = {};
+                sortedByOldest.forEach(([key, value], index) => {
+                    const newKey = `match_${String(index + 1).padStart(5, '0')}`;
+                    rekeyedContent[newKey] = value;
+                });
+
+                // 3. date 기준으로 내림차순 정렬
+                const finalSortedContent = Object.fromEntries(
+                    Object.entries(rekeyedContent).sort(([, a], [, b]) =>
+                        new Date(b.date) - new Date(a.date)
+                    )
+                );
+
+                console.log("최종 정렬된 데이터:", finalSortedContent);
+
+                // 정렬된 데이터를 Base64로 변환
+                const updatedFileContent = utf8ToBase64(JSON.stringify(finalSortedContent, null, 2));
+
+                // 업데이트된 데이터를 GitHub에 저장
+                const updateResponse = await fetch(
+                    `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            Authorization: `token ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            message: "경기 데이터를 추가 및 정렬합니다.",
+                            content: updatedFileContent,
+                            sha: fileData.sha,
+                        }),
+                    }
+                );
+
+                if (!updateResponse.ok) {
+                    throw new Error("파일 업데이트에 실패했습니다.");
+                }
+
+                alert("경기 데이터가 성공적으로 저장되었습니다!");
+                console.log("파일 업데이트 성공:", await updateResponse.json());
+            } catch (error) {
+                console.error("Error saving match data:", error);
+                alert("경기 데이터를 저장하는 중 오류가 발생했습니다.");
+            }
+        }
+
+        // 선수 데이터를 수집하여 반환하는 함수
+        function collectPlayerData() {
+            const playerList = document.getElementById("player-list").querySelectorAll("tr");
+            const players = [];
+            let totalGoals = 0;
+
+            playerList.forEach(row => {
+                const playerName = row.querySelector("td:first-child").innerText.split(' ')[0].trim();
+                const isPlaying = row.querySelector("input[type='checkbox']").checked;
+                const playerGoals = parseInt(row.querySelector("input[name^='goals']").value, 10) || 0;
+
+                if (isPlaying) players.push(playerName);
+                totalGoals += playerGoals; // 득점 합산
+            });
+
+            return { players, totalGoals };
+        }
+
+
+        document.getElementById('add-match-button').addEventListener('click', function () {
+            const buttonContainer = document.getElementById('button-container');
+            buttonContainer.classList.remove('grid');
+            buttonContainer.classList.add('horizontal-layout');
+
+            document.getElementById('match-form-container').style.display = 'block';
+        });
+
+        document.getElementById('submit-match').addEventListener('click', async function () {
+            try {
+                // 경기 종류
+                const selectedType = document.querySelector('input[name="match-type"]:checked')?.value;
+                if (!selectedType) return alert('경기 종류를 선택해주세요');
+
+                // 경기 날짜 유효성 체크
+                const matchDate = document.getElementById('match-date').value;
+                console.log("Match Date: ", matchDate);  // 추가된 로그로 matchDate 확인
+                if (!matchDate || isNaN(new Date(matchDate))) {
+                    alert('유효한 경기 날짜를 입력해주세요');
+                    return;
+                }
+
+                // 상대팀 이름
+                const opponentName = document.getElementById('opponent-name').value;
+                if (!opponentName) return alert('상대팀 이름을 입력하세요');
+
+                // 날짜 및 시간 처리
+                const matchDateTime = new Date(matchDate);
+                if (isNaN(matchDateTime.getTime())) {
+                    alert('유효한 날짜를 입력해주세요');
+                    console.error('Invalid Date:', matchDate);  // 에러 로그 추가
+                    return;
+                }
+
+                // "YYYY-MM-DD_HH:MM" 형식으로 matchKey 생성
+                const year = matchDateTime.getFullYear();
+                const month = (matchDateTime.getMonth() + 1).toString().padStart(2, '0');
+                const day = matchDateTime.getDate().toString().padStart(2, '0');
+                const hours = matchDateTime.getHours().toString().padStart(2, '0');
+                const minutes = matchDateTime.getMinutes().toString().padStart(2, '0');
+
+                const matchKey = `${year}-${month}-${day}_${hours}:${minutes}`;
+                console.log('생성된 matchKey:', matchKey);
+
+                // 상대팀 점수와 우리팀 점수
+                let opponentScore = 0;
+                let usScore = 0;
+
+                // "풋살" 또는 "자체전"일 경우 점수를 0으로 처리
+                if (selectedType === "풋살" || selectedType === "자체전") {
+                    opponentScore = 0;
+                    usScore = 0;
+                } else {
+                    opponentScore = parseInt(document.getElementById('opponent-score').value || '0', 10);
+                    usScore = parseInt(document.getElementById('us-score').value || '0', 10);  // 우리팀 점수
+                }
+
+                // 선수 데이터 수집
+                const { players, totalGoals } = collectPlayerData();
+
+                // 득점과 어시스트 배열 생성
+                const goalPlayers = [];   // 골 넣은 선수들
+                const assistPlayers = []; // 어시스트 한 선수들
+
+                players.forEach((player, index) => {
+                    // #goals_${index} 요소가 존재하는지 확인 후 처리
+                    const goalsInput = document.querySelector(`#goals_${index}`);
+                    const assistsInput = document.querySelector(`#assists_${index}`);
+
+                    const goals = goalsInput ? parseInt(goalsInput.value || '0', 10) : 0; // input이 없으면 0으로 처리
+                    const assists = assistsInput ? parseInt(assistsInput.value || '0', 10) : 0; // input이 없으면 0으로 처리
+
+                    // 골을 넣은 만큼 이름 추가
+                    for (let i = 0; i < goals; i++) {
+                        goalPlayers.push(player);
+                    }
+
+                    // 어시스트 한 만큼 이름 추가
+                    for (let i = 0; i < assists; i++) {
+                        assistPlayers.push(player);
+                    }
+                });
+
+                // 경기 데이터 객체 구성
+                const matchData = {
+                    date: matchDate, // matchDate 추가
+                    type: selectedType,
+                    opponent: opponentName,
+                    players,
+                    score: { us: usScore, them: opponentScore },  // 점수를 0으로 처리한 것 반영
+                    location: document.getElementById('match-location').value,
+                    goals: goalPlayers,    // 골 넣은 선수들
+                    assists: assistPlayers, // 어시스트 한 선수들
+                    mom: "",
+                    comment: document.getElementById('match-comment').value,
+                };
+
+                console.log("matchData 객체:", matchData);
+
+                // 서버에 데이터 저장
+                await saveMatchData(matchData);
+
+                // 초기화: 폼 리셋
+                document.getElementById('match-form').reset();
+
+                // 선수 목록 초기화
+                const playerList = document.getElementById('player-list');
+                playerList.innerHTML = '';
+
+                // 상태 및 UI 초기화
+                const buttonContainer = document.getElementById('button-container');
+                buttonContainer.classList.remove('horizontal-layout');
+                buttonContainer.classList.add('grid');
+
+                // 경기 추가 폼 숨기기
+                document.getElementById('match-form-container').style.display = 'none';
+            } catch (error) {
+                console.error('Error during match submission:', error);
+                alert('경기 데이터를 저장하는 중 오류가 발생했습니다.');
+            }
+        });
+
+        // UTF-8 문자열을 Base64로 변환
+        function utf8ToBase64(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+        }
+
+        // Base64 문자열을 UTF-8로 변환
+        function base64ToUtf8(str) {
+            return decodeURIComponent(escape(atob(str)));
+        }
+
+    </script>
+</body>
+</html>
