@@ -134,25 +134,38 @@
                     const urls = [
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json'
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json',
                     ];
 
-                    const [playersResponse, allTimeResponse, thisYearResponse] = await Promise.all(
-                        urls.map(url => fetch(url).then(response => {
-                            if (!response.ok) {
-                                throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
-                            }
-                            return response.json();
-                        }))
+                    const responses = await Promise.allSettled(
+                        urls.map(url =>
+                            fetch(url)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        console.error(`네트워크 오류 발생: ${url}`);
+                                        throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
+                                    }
+                                    return response.json();
+                                })
+                        )
                     );
 
-                    // 각각의 데이터를 네이밍
-                    const players = playersResponse || {};
-                    const alltime = allTimeResponse || {};
-                    const thisyear = thisYearResponse || {};
+                    // 각 응답 데이터를 분리하여 처리
+                    const playersData = responses[0].status === 'fulfilled' ? responses[0].value : null;
+                    const recordAllData = responses[1].status === 'fulfilled' ? responses[1].value : null;
+                    const matchesTotalData = responses[2].status === 'fulfilled' ? responses[2].value : null;
 
-                    // 로컬 스토리지에 캐싱
-                    const cachedData = { players, alltime, thisyear };
+                    if (!playersData || !recordAllData || !matchesTotalData) {
+                        throw new Error('필수 데이터 중 일부가 로드되지 않았습니다.');
+                    }
+
+                    // 캐싱 데이터 저장
+                    cachedData = {
+                        players: playersData,
+                        recordAll: recordAllData,
+                        matchesTotal: matchesTotalData,
+                    };
+
                     const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
@@ -289,7 +302,7 @@
         }
 
         function displayPlayerRecord(player) {
-            const allRecords = { ...cachedData.alltime?.[player.number] || {}, ...cachedData.thisyear?.[player.number] || {} };
+            const allRecords = { ...cachedData.recordAll?.[player.number] || {} };
             if (Object.keys(allRecords).length === 0) {
                 return; // 기록이 없으면 함수 종료
             }
@@ -299,7 +312,6 @@
                 득점: 0,
                 도움: 0,
                 공격P: 0,
-                MOM: 0,
             };
 
             const yearRecords = Object.entries(allRecords);
@@ -310,58 +322,54 @@
                 summary.득점 += parseInt(record.goals, 10);
                 summary.도움 += parseInt(record.assists, 10);
                 summary.공격P += parseInt(record.attackP, 10);
-                summary.MOM += parseInt(record.MOM, 10);
             });
 
             let recordHtml = `
-        <div class="record-container">
-            <div class="record-header">
-                <span class="title">통산기록</span>
-                <span class="subtitle">최근 10년 데이터</span>
-            </div>
-            <table class="record-table">
-                <thead>
-                    <tr>
-                        <th>시즌</th>
-                        <th>경기수</th>
-                        <th>득점</th>
-                        <th>도움</th>
-                        <th>공격P</th>
-                        <th>MOM</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="summary">
-                        <td>통산</td>
-                        <td>${summary.경기수}</td>
-                        <td>${summary.득점}</td>
-                        <td>${summary.도움}</td>
-                        <td>${summary.공격P}</td>
-                        <td>${summary.MOM}</td>
-                    </tr>
-    `;
+                                <div class="record-container">
+                                    <div class="record-header">
+                                        <span class="title">통산기록</span>
+                                        <span class="subtitle">최근 10년 데이터</span>
+                                    </div>
+                                    <table class="record-table">
+                                        <thead>
+                                            <tr>
+                                                <th>시즌</th>
+                                                <th>경기수</th>
+                                                <th>득점</th>
+                                                <th>도움</th>
+                                                <th>공격P</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="summary">
+                                                <td>통산</td>
+                                                <td>${summary.경기수}</td>
+                                                <td>${summary.득점}</td>
+                                                <td>${summary.도움}</td>
+                                                <td>${summary.공격P}</td>
+                                            </tr>
+                            `;
 
             yearRecords
                 .sort((a, b) => parseInt(b[0], 10) - parseInt(a[0], 10))
                 .forEach(([year, record], index) => {
                     const rowClass = index < 1 ? 'year-data' : 'other-year-data';
                     recordHtml += `
-                <tr class="${rowClass}">
-                    <td>${year}</td>
-                    <td>${record.matches}</td>
-                    <td>${record.goals}</td>
-                    <td>${record.assists}</td>
-                    <td>${record.attackP}</td>
-                    <td>${record.MOM}</td>
-                </tr>
-            `;
-                });
+                                        <tr class="${rowClass}">
+                                            <td>${year}</td>
+                                            <td>${record.matches}</td>
+                                            <td>${record.goals}</td>
+                                            <td>${record.assists}</td>
+                                            <td>${record.attackP}</td>
+                                        </tr>
+                                    `;
+                                });
 
-            recordHtml += `
-                </tbody>
-            </table>
-        </div>
-    `;
+                    recordHtml += `
+                                    </tbody>
+                                        </table>
+                                    </div>
+                                    `;
 
             playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
         }
