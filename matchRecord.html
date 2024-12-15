@@ -465,17 +465,18 @@
                 return;
             }
 
-            // 상위 10개의 데이터만 가져옴
-            const topMatches = Object.entries(matches).slice(0, 10);
+            // matches 객체를 배열로 변환 후 정렬 (최근 날짜 기준)
+            const sortedMatches = Object.entries(matches)
+                .sort(([keyA, matchA], [keyB, matchB]) => new Date(matchB.date) - new Date(matchA.date))
+                .slice(0, 10); // 상위 10개
 
-            topMatches.forEach(([key, match], index) => {
+            sortedMatches.forEach(([key, match], index) => {
                 const matchBox = document.createElement('div');
                 const rowClass = index % 2 === 0 ? 'light-row' : 'dark-row'; // 번갈아 색상 적용
                 matchBox.className = `match-box ${rowClass}`;
 
-                const [date, time] = key.split('_');
-                const formattedDate = `${date.slice(0, 4)}-${date.slice(5, 7)}-${date.slice(8, 10)}`;
-                const formattedTime = formatTime(new Date(`${date}T${time}:00`));
+                const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
+                const formattedTime = new Date(match.date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
 
                 const matchType = match.type === "1" ? '풋살' : match.type === "2" ? '자체전' : '경기';
 
@@ -518,8 +519,8 @@
                 matchBox.className = `matchtotal-box ${rowClass}`;
 
                 const [date, time] = key.split('_');
-                const formattedDate = `${date.slice(0, 4)}-${date.slice(5, 7)}-${date.slice(8, 10)}`;
-                const formattedTime = formatTime(new Date(`${date}T${time}:00`));
+                const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
+                const formattedTime = new Date(match.date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
 
                 const matchType = match.type === "1" ? '풋살' : match.type === "2" ? '자체전' : '경기';
 
@@ -586,12 +587,9 @@
 
             popup.innerHTML = ''; // 이전 내용 제거
 
-            // 날짜 생성
-            const [date, time] = Object.keys(cachedData.matchesTotal).find(key =>
-                cachedData.matchesTotal[key] === matchData).split('_');
-            // 날짜 포맷
-            const formattedDate = `${date.slice(0, 4)}-${date.slice(5, 7)}-${date.slice(8, 10)}`;
-            const formattedTime = formatTime(new Date(`${date}T${time}:00`));
+            // 날짜 포멧
+            const formattedDate = new Date(matchData.date).toLocaleDateString('ko-KR');
+            const formattedTime = new Date(matchData.date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
 
             // 날짜와 시간을 포함한 HTML 생성
             const dateNtimeHTML = `<span class="popup-date">${formattedDate}</span> <span class="popup-time">${formattedTime}</span>`;
@@ -678,9 +676,8 @@
             };
 
             const opponentMatches = Object.entries(combinedMatches)
-                .filter(([key, match]) => match.opponent.replace(/\s/g, "").toLowerCase() === matchData.opponent.replace(/\s/g, "").toLowerCase())
-                .sort(([aKey], [bKey]) => new Date(bKey.split('_')[0]) - new Date(aKey.split('_')[0]))
-                .slice(0, 10);
+                .filter(([key, match]) => match.opponent.replace(/\s/g, '').toLowerCase() === teamName.replace(/\s/g, '').toLowerCase())
+                .sort(([_, matchA], [__, matchB]) => new Date(matchB.date) - new Date(matchA.date)); // 날짜 내림차순
 
             opponentMatches.forEach(([key, match]) => {
                 const [date, time] = key.split('_');
@@ -842,44 +839,58 @@
                     return;
                 }
 
-                // opponent에서 검색하고 중복 제거
+                // 검색 로직: 중복 제거한 결과 반환
                 const results = Array.from(
-                    new Set(
-                        Object.values(cachedData.matchesTotal)
-                            .filter(match => match.opponent && match.opponent.toLowerCase().includes(query))
-                            .map(match => match.opponent) // 중복 제거를 위해 배열로 변환
-                    )
-                ).slice(0, 5); // 최대 5개 출력
+                    new Map(
+                        Object.entries(cachedData.matchesTotal)
+                            .filter(([key, match]) => match.opponent && match.opponent.toLowerCase().includes(query))
+                            .map(([key, match]) => [match.opponent, { key, opponent: match.opponent }]) // Map으로 중복 제거
+                    ).values()
+                ).slice(0, 5); // 최대 5개
 
                 // 결과를 표시
                 searchResults.innerHTML = results.length
-                    ? results.map(opponent => ` 
-                        <div style="
-                            padding: 5px 0px; 
-                            border: 2px solid #ddd; 
-                            border-radius: 5px; 
-                            margin-bottom: 5px; 
-                            cursor: pointer; 
-                            width: 90%; 
-                            max-width: 800px; 
-                            text-align: center; 
-                            margin: 0 auto;">${opponent}</div>`).join('')
-                    : `<div style="
-                            padding: 5px 10px; 
-                            color: gray; 
-                            text-align: center;">검색 결과가 없습니다.</div>`;
+                    ? results.map(result => `
+                                                <div style="
+                                                    padding: 5px 0px; 
+                                                    border: 2px solid #ddd; 
+                                                    border-radius: 5px; 
+                                                    margin-bottom: 5px; 
+                                                    cursor: pointer; 
+                                                    width: 90%; 
+                                                    max-width: 800px; 
+                                                    text-align: center; 
+                                                    margin: 0 auto;" 
+                                                    data-key="${result.key}">
+                                                    ${result.opponent}
+                                                </div>
+                                            `).join('')
+                                                            : `<div style="
+                                                    padding: 5px 10px; 
+                                                    color: gray; 
+                                                    text-align: center;">검색 결과가 없습니다.</div>`;
+
                                                 });
 
             // 검색 결과 클릭 이벤트
             searchResults.addEventListener('click', function (event) {
                 if (event.target && event.target.tagName === 'DIV') {
                     const selectedTeam = event.target.innerText.trim(); // 선택한 팀 이름
-                    if (selectedTeam === "검색 결과가 없습니다.") return; // 클릭 방지
-                    searchResults.innerHTML = ''; // 검색 결과 숨기기
-                    searchInput.value = selectedTeam; // 검색창에 선택된 팀 이름 표시
+                    const selectedKey = event.target.dataset.key; // 경기 키 가져오기
 
-                    // 히스토리와 코멘트 보여주기
+                    if (selectedTeam === '검색 결과가 없습니다.') return; // 클릭 방지
+                    searchInput.value = selectedTeam; // 검색창에 선택된 팀 이름 표시
+                    searchResults.innerHTML = ''; // 검색 결과 숨기기
+
+                    // 팀 히스토리 표시
                     showTeamHistory(selectedTeam);
+
+                    // 경기 데이터가 있을 경우 팝업도 열기
+                    if (selectedKey && cachedData.matchesTotal[selectedKey]) {
+                        renderPopup(cachedData.matchesTotal[selectedKey]);
+                    } else if (selectedKey) {
+                        console.warn(`선택된 키에 대한 경기 데이터를 찾을 수 없습니다: ${selectedKey}`);
+                    }
                 }
             });
 
@@ -949,10 +960,10 @@
                 const matchTimeRaw = matchBox.querySelector('.time').innerText.trim();
                 const matchTime = convertTo24HourFormat(matchTimeRaw);
 
-                const matchKey = `${matchDate}_${matchTime}`;
+                const matchKey = matchBox.querySelector('.popup-button').dataset.key;
                 console.log('생성된 matchKey:', matchKey);
 
-                const matchData = cachedData.matchesTotal[matchKey] || cachedData.recordAll[matchKey] || cachedData.recordThis[matchKey];
+                const matchData = cachedData.matchesTotal[matchKey];
 
                 if (matchData) {
                     renderPopup(matchData);
@@ -968,15 +979,15 @@
                 if (!cachedData) return;
 
                 // matchesTotal 데이터에서 팀과의 기록 추출
-                const combinedMatches = { ...cachedData.matchesTotal };
-                const opponentMatches = Object.entries(combinedMatches)
+                const opponentMatches = Object.entries(cachedData.matchesTotal)
                     .filter(([key, match]) => match.opponent.replace(/\s/g, '').toLowerCase() === teamName.replace(/\s/g, '').toLowerCase())
-                    .sort(([aKey], [bKey]) => new Date(bKey.split('_')[0]) - new Date(aKey.split('_')[0])); // 날짜 내림차순 정렬
+                    .sort(([_, matchA], [__, matchB]) => new Date(matchB.date) - new Date(matchA.date)); // 날짜 내림차순 정렬
 
                 let historyList = "<ul class='recent-matches-popup'>";
                 if (opponentMatches.length > 0) {
                     opponentMatches.forEach(([key, match]) => {
-                        const [date, time] = key.split('_');
+                        const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
+                        const formattedTime = new Date(match.date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                         const location = match.location || "알 수 없음";
 
                         let scoreText = "";
@@ -988,38 +999,38 @@
                         }
 
                         historyList += `<li>
-                    ${date} - <span style="color: gray; font-size: 0.9em;">${time} / ${location}</span>
-                    ${scoreText}
-                </li>`;
-                    });
-                } else {
-                    historyList += "<li>경기 기록 없음</li>";
-                }
-                historyList += "</ul>";
+                                                ${formattedDate} - <span style="color: gray; font-size: 0.9em;">${formattedTime} / ${location}</span>
+                                                ${scoreText}
+                                            </li>`;
+                                                    });
+                                                } else {
+                                                    historyList += "<li>경기 기록 없음</li>";
+                                                }
+                                                historyList += "</ul>";
 
-                // 코멘트 추출
-                const comments = opponentMatches
-                    .filter(([key, match]) => match.comment && match.comment.trim() !== "")
-                    .map(([key, match]) => match.comment);
+                                                // 코멘트 추출
+                                                const comments = opponentMatches
+                                                    .filter(([key, match]) => match.comment && match.comment.trim() !== "")
+                                                    .map(([key, match]) => match.comment);
 
-                let commentList = "<ul class='recent-matches-popup'>";
-                if (comments.length > 0) {
-                    comments.forEach(comment => {
-                        commentList += `<li>${comment}</li>`;
-                    });
-                } else {
-                    commentList += "<li>코멘트 없음</li>";
-                }
-                commentList += "</ul>";
+                                                let commentList = "<ul class='recent-matches-popup'>";
+                                                if (comments.length > 0) {
+                                                    comments.forEach(comment => {
+                                                        commentList += `<li>${comment}</li>`;
+                                                    });
+                                                } else {
+                                                    commentList += "<li>코멘트 없음</li>";
+                                                }
+                                                commentList += "</ul>";
 
-                // 컨테이너에 내용 업데이트
-                teamHistoryContainer.innerHTML = `
-                                                    <div style="text-align: center;"><span style="font-size: 1.2em; font-weight: bold;">vs ${teamName}</span></div>
-                                                    <h3 class="recent-matches-popup-head">역대 경기 기록</h3>
-                                                    ${historyList}
-                                                    <h3 class="recent-matches-popup-head">코멘트</h3>
-                                                    ${commentList}
-                                                `;
+                                                // 컨테이너에 내용 업데이트
+                                                teamHistoryContainer.innerHTML = `
+                                        <div style="text-align: center;"><span style="font-size: 1.2em; font-weight: bold;">vs ${teamName}</span></div>
+                                        <h3 class='recent-matches-popup-head'>역대 경기 기록</h3>
+                                        ${historyList}
+                                        <h3 class='recent-matches-popup-head'>코멘트</h3>
+                                        ${commentList}
+                                    `;
                 teamHistoryContainer.style.display = 'block'; // 컨테이너 표시
             }
 
