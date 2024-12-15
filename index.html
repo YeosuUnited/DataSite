@@ -27,6 +27,16 @@
             margin-bottom: -10px;
         }
 
+        .fixed-top-right {
+            position: fixed; /* 화면에 고정 */
+            top: 30px; /* 상단에서 20px 떨어짐 */
+            right: 20px; /* 우측에서 20px 떨어짐 */
+            width: 30px; /* 이미지 크기 */
+            height: auto; /* 비율 유지 */
+            z-index: 1000; /* 다른 요소 위에 표시 */
+            cursor: pointer; /* 클릭 가능한 느낌 */
+        }
+
         .bold-number {
             font-weight: bold;
         }
@@ -137,14 +147,14 @@
         }
 
             /* 배지 스타일 추가 */
-        .card .badge {
-            position: absolute;
-            top: 26px; /* 카드 상단에 걸쳐서 위치 */
-            left: -16px; /* 카드 왼쪽에 걸쳐서 위치 */
-            width: 40px; /* 배지 크기 */
-            height: auto;
-            z-index: 2; /* 다른 요소 위에 표시 */
-        }
+            .card .badge {
+                position: absolute;
+                top: 26px; /* 카드 상단에 걸쳐서 위치 */
+                left: -16px; /* 카드 왼쪽에 걸쳐서 위치 */
+                width: 40px; /* 배지 크기 */
+                height: auto;
+                z-index: 2; /* 다른 요소 위에 표시 */
+            }
 
         .card-title-container {
             display: flex;
@@ -157,10 +167,10 @@
         }
 
 
-        .card-title-container .card-title {
-            width: 200px; /* 각 항목이 카드와 동일한 폭을 가짐 */
-            text-align: center;
-        }
+            .card-title-container .card-title {
+                width: 200px; /* 각 항목이 카드와 동일한 폭을 가짐 */
+                text-align: center;
+            }
 
         .player-info {
             display: flex;
@@ -235,7 +245,7 @@
             font-size: 0.9em; /* 포지션 글씨 크기 */
             font-weight: normal;
             color: gray; /* 포지션 글씨 색상 */
-            margin-top: 13px;  /* 이름과의 높이 */ 
+            margin-top: 13px; /* 이름과의 높이 */ 
         }
 
         .player-name {
@@ -332,11 +342,101 @@
                 position: relative; /* 위치 조정을 위해 설정 */
                 left: -7px; /* 왼쪽으로 10px 이동 (값은 조정 가능) */
             }
+
+        /* 팝업창 기본 스타일 */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000; /* 다른 요소 위에 표시 */
+        }
+
+            .popup.hidden {
+                display: none; /* 숨김 */
+            }
+
+            .popup-content {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+                position: relative;
+                width: 300px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                animation: popupFadeIn 0.3s ease;
+            }
+            @keyframes popupFadeIn {
+                from {
+                    transform: scale(0.9);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            .popup-content h3 {
+                font-size: 1.2em;
+                margin-bottom: 15px;
+            }
+
+            .popup-content input {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 1em;
+                box-sizing: border-box;
+            }
+
+                .popup-content input::placeholder {
+                    color: gray;
+                }
+
+            .popup-content button {
+                padding: 10px 20px;
+                font-size: 1em;
+                border: none;
+                border-radius: 5px;
+                background-color: #4071e3;
+                color: white;
+                cursor: pointer;
+            }
+
+                .popup-content button:hover {
+                    background-color: #305ec1;
+                }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* 오류 메시지 스타일 */
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 
     <script>
         let cachedData = null; // 캐싱 데이터를 저장
-        
+
         async function fetchData() {
             const now = new Date().getTime();
             const cachedLastUpdated = localStorage.getItem('lastUpdated');
@@ -350,7 +450,7 @@
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_thisYear.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json',                    
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json',
                     ];
 
                     const responses = await Promise.allSettled(
@@ -365,7 +465,7 @@
                                 })
                         )
                     );
-                    
+
                     // 응답 데이터를 개별적으로 처리
                     const data = {
                         players: responses[0].status === 'fulfilled' ? responses[0].value : {},
@@ -373,10 +473,10 @@
                         recordThis: responses[2].status === 'fulfilled' ? responses[2].value : {},
                         matchesTotal: responses[3].status === 'fulfilled' ? responses[3].value : {},
                     };
-                    
+
                     // 데이터를 캐싱 변수에 저장
                     cachedData = data;
-                    
+
                     const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
@@ -621,13 +721,79 @@
         window.onload = function () {
             fetchData();
             enableDragScroll();
+
+            // 팝업 관련 요소 초기화
+            const popup = document.getElementById('password-popup');
+            const closeBtn = document.querySelector('.close-btn');
+            const passwordInput = document.getElementById('password-input');
+            const loginButton = document.getElementById('login-button');
+
+            const errorMessage = document.createElement('div');
+            errorMessage.classList.add('error-message');
+            popup.querySelector('.popup-content').appendChild(errorMessage);
+
+            document.querySelector('.fixed-top-right').addEventListener('click', () => {
+                popup.classList.remove('hidden');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                popup.classList.add('hidden');
+                clearPopup();
+            });
+
+            popup.addEventListener('click', (e) => {
+                if (e.target.id === 'password-popup') {
+                    popup.classList.add('hidden');
+                    clearPopup();
+                }
+            });
+
+            loginButton.addEventListener('click', () => handleLogin());
+
+            passwordInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+
+            function handleLogin() {
+                const password = passwordInput.value;
+
+                if (password === 'dutndusgkq1990') {
+                    localStorage.setItem('isAuthenticated', 'true'); // 인증 상태 저장
+                    window.location.href = 'managerMain.html';
+                } else {
+                    errorMessage.textContent = '비밀번호가 틀렸습니다.';
+                    errorMessage.style.display = 'block';
+
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 2000);
+                }
+            }
+
+            // 페이지 로드 시 인증 상태 확인
+            function checkAuthentication() {
+                const isAuthenticated = localStorage.getItem('isAuthenticated');
+
+                if (isAuthenticated !== 'true') { // 인증되지 않은 경우
+                    alert('인증되지 않은 접근입니다.');
+                    window.location.href = 'index.html'; // 메인 페이지로 이동
+                }
+            }
+
+            function clearPopup() {
+                passwordInput.value = '';
+                errorMessage.style.display = 'none';
+            }
         };
 
     </script>
 </head>
+
 <body>
     <div class="header">
-        <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/Emblem.png" alt="엠블럼" class="emblem">
+        <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" alt="엠블럼" class="emblem">
     </div>
     <nav class="navbar">
         <ul>
@@ -662,5 +828,18 @@
     <div id="lastUpdate"></div>
     <div id="debug" class="debug-message"></div>
 
+    <!-- 우측 상단 이미지 -->
+    <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/setting.png"
+         alt="설정 이미지" class="fixed-top-right">
+    <!-- 팝업창 HTML -->
+    <div id="password-popup" class="popup hidden">
+        <div class="popup-content">
+            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/btn_X.png"
+                 alt="닫기 버튼" class="close-btn">
+            <h3>관리자 페이지로 이동하기 위해 비밀번호를 입력하세요</h3>
+            <input type="password" id="password-input" placeholder="비밀번호">
+            <button id="login-button">로그인</button>
+        </div>
+    </div>
 </body>
 </html>
