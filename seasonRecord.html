@@ -208,6 +208,16 @@
             }
         }
 
+        function loadFromLocalStorage(key) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null; // 데이터가 없으면 null 반환
+            } catch (error) {
+                console.error(`Error loading data from localStorage for key "${key}":`, error);
+                return null; // 파싱 실패 시 null 반환
+            }
+        }
+
         function resetCachedData() {
             document.getElementById('status').innerText = '캐싱된 데이터가 없습니다. 기본 데이터를 사용합니다.';
             cachedData = { players: {}, matchesTotal: {}, recordAll: {} }; // 기본값
