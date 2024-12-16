@@ -469,7 +469,7 @@
                     // 응답 데이터를 개별적으로 처리
                     const data = {
                         players: responses[0].status === 'fulfilled' ? responses[0].value : {},
-                        recordsAll: responses[1].status === 'fulfilled' ? responses[1].value : {},
+                        recordall: responses[1].status === 'fulfilled' ? responses[1].value : {},
                         matchesTotal: responses[2].status === 'fulfilled' ? responses[2].value : {},
                     };
 
@@ -482,7 +482,7 @@
 
                     // 올해 데이터 필터링
                     const currentYear = new Date().getFullYear();
-                    const thisYearRecords = filterCurrentYearData(cachedData.recordsAll, currentYear);
+                    const thisYearRecords = filterCurrentYearData(cachedData.recordall, currentYear);
 
                     if (Object.keys(thisYearRecords).length === 0) {
                         console.error("올해 데이터가 없습니다.");
@@ -540,7 +540,7 @@
                     document.getElementById('status').innerText = '서버 문제 발생, 캐싱된 데이터를 사용 중입니다.';
 
                     const currentYear = new Date().getFullYear();
-                    const thisYearRecords = filterCurrentYearData(cachedData.recordsAll, currentYear);
+                    const thisYearRecords = filterCurrentYearData(cachedData.recordall, currentYear);
 
                     if (Object.keys(thisYearRecords).length === 0) {
                         throw new Error("캐싱된 데이터에 현재 연도 데이터가 없습니다.");
