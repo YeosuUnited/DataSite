@@ -22,7 +22,7 @@
 
         .emblem {
             width: 80px;
-            height: auto;            
+            height: auto;
             margin-top: 10px;
             margin-bottom: -10px;
         }
@@ -245,7 +245,7 @@
             font-size: 0.9em; /* 포지션 글씨 크기 */
             font-weight: normal;
             color: gray; /* 포지션 글씨 색상 */
-            margin-top: 13px; /* 이름과의 높이 */ 
+            margin-top: 13px; /* 이름과의 높이 */
         }
 
         .player-name {
@@ -361,60 +361,61 @@
                 display: none; /* 숨김 */
             }
 
-            .popup-content {
-                background: white;
-                padding: 20px;
-                border-radius: 10px;
-                text-align: center;
-                position: relative;
-                width: 300px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                animation: popupFadeIn 0.3s ease;
-            }
-            @keyframes popupFadeIn {
-                from {
-                    transform: scale(0.9);
-                    opacity: 0;
-                }
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: popupFadeIn 0.3s ease;
+        }
 
-                to {
-                    transform: scale(1);
-                    opacity: 1;
-                }
+        @keyframes popupFadeIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
             }
 
-            .popup-content h3 {
-                font-size: 1.2em;
-                margin-bottom: 15px;
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .popup-content h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .popup-content input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+            .popup-content input::placeholder {
+                color: gray;
             }
 
-            .popup-content input {
-                width: 100%;
-                padding: 10px;
-                margin-bottom: 15px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                font-size: 1em;
-                box-sizing: border-box;
+        .popup-content button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #4071e3;
+            color: white;
+            cursor: pointer;
+        }
+
+            .popup-content button:hover {
+                background-color: #305ec1;
             }
-
-                .popup-content input::placeholder {
-                    color: gray;
-                }
-
-            .popup-content button {
-                padding: 10px 20px;
-                font-size: 1em;
-                border: none;
-                border-radius: 5px;
-                background-color: #4071e3;
-                color: white;
-                cursor: pointer;
-            }
-
-                .popup-content button:hover {
-                    background-color: #305ec1;
-                }
 
         .close-btn {
             position: absolute;
@@ -481,7 +482,7 @@
 
                     // 올해 데이터 필터링
                     const currentYear = new Date().getFullYear();
-                    const thisYearRecords = filterCurrentYearData(data.recordsAll, currentYear);
+                    const thisYearRecords = filterCurrentYearData(cachedData.recordsAll, currentYear);
 
                     if (Object.keys(thisYearRecords).length === 0) {
                         console.error("올해 데이터가 없습니다.");
@@ -490,7 +491,7 @@
 
                     // 데이터 렌더링
                     updateTimeInfo();
-                    createCards(data.players, thisYearRecords);
+                    createCards(cachedData.players, thisYearRecords);
 
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -512,12 +513,19 @@
             }
 
             // 현재 연도의 데이터를 필터링
-            return Object.entries(allTimeRecords).reduce((filteredData, [playerNumber, yearlyRecords]) => {
+            const filteredData = Object.entries(allTimeRecords).reduce((filtered, [playerNumber, yearlyRecords]) => {
                 if (yearlyRecords[season]) {
-                    filteredData[playerNumber] = yearlyRecords[season];
+                    filtered[playerNumber] = yearlyRecords[season];
                 }
-                return filteredData;
+                return filtered;
             }, {});
+
+            // 데이터가 없는 경우 로그 및 기본값 반환
+            if (Object.keys(filteredData).length === 0) {
+                console.warn(`${currentYear} 시즌의 데이터가 없습니다.`);
+            }
+
+            return filteredData;
         }
 
         function formatTime(date) {
@@ -525,29 +533,35 @@
         }
 
         function useCachedData() {
-            const cached = localStorage.getItem('cachedData');
-            if (cached) {
-                cachedData = JSON.parse(cached);
-                document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
+            try {
+                const cached = localStorage.getItem('cachedData');
+                if (cached) {
+                    cachedData = JSON.parse(cached);
+                    document.getElementById('status').innerText = '서버 문제 발생, 캐싱된 데이터를 사용 중입니다.';
 
-                const currentYear = new Date().getFullYear();
-                const thisYearRecords = filterCurrentYearData(cachedData.recordsAll, currentYear);
+                    const currentYear = new Date().getFullYear();
+                    const thisYearRecords = filterCurrentYearData(cachedData.recordsAll, currentYear);
 
-                if (Object.keys(thisYearRecords).length === 0) {
-                    console.error("올해 데이터가 없습니다 (캐싱된 데이터).");
-                    return;
+                    if (Object.keys(thisYearRecords).length === 0) {
+                        throw new Error("캐싱된 데이터에 현재 연도 데이터가 없습니다.");
+                    }
+
+                    updateTimeInfo();
+                    createCards(cachedData.players, thisYearRecords);
+                } else {
+                    throw new Error("캐싱된 데이터가 없습니다.");
                 }
-
-                updateTimeInfo();
-                createCards(cachedData.players, thisYearRecords);
-            } else {
+            } catch (error) {
+                console.error('캐싱 데이터를 사용하는 중 오류 발생:', error);
                 document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
             }
         }
 
+
         function createCards(players, thisYearRecords) {
-            if (!thisYearRecords || typeof thisYearRecords !== 'object') {
-                console.error("thisYearRecords 데이터가 없습니다:", thisYearRecords);
+            if (!thisYearRecords || typeof thisYearRecords !== 'object' || Object.keys(thisYearRecords).length === 0) {
+                console.error("올해 데이터가 없습니다.");
+                document.getElementById('status').innerText = "올해 데이터가 없습니다.";
                 return;
             }
 
@@ -710,7 +724,7 @@
 
 
         function updateTimeInfo() {
-            const lastUpdatedTime = new Date(parseInt(lastUpdated));
+            const lastUpdatedTime = lastUpdated ? new Date(parseInt(lastUpdated)) : new Date();
             document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
         }
 
