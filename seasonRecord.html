@@ -195,7 +195,8 @@
         
         // 캐싱 데이터 로드 함수
         function useCachedData() {
-            cachedData = loadFromLocalStorage('cachedData');
+            const cached = loadFromLocalStorage('cachedData');
+            cachedData = cached;
         
             // 캐싱 데이터 유효성 검사
             if (validateCachedData(cachedData)) {
