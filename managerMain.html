@@ -321,7 +321,7 @@
                     const data = {
                         players: responses[0].status === 'fulfilled' ? responses[0].value : {},
                         recordAll: responses[1].status === 'fulfilled' ? responses[1].value : {},
-                        matchesTotal: responses[3].status === 'fulfilled' ? responses[2].value : {},
+                        matchesTotal: responses[2].status === 'fulfilled' ? responses[2].value : {},
                     };
 
                     // 데이터를 캐싱 변수에 저장
