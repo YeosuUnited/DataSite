@@ -181,31 +181,13 @@
                 useCachedData();
             }
         }
-
-        // 데이터 유효성 검증 함수
-        function validateCachedData(data) {
-            return (
-                data &&
-                typeof data === 'object' &&
-                data.players &&
-                data.recordAll &&
-                data.matchesTotal
-            );
-        }
         
         // 캐싱 데이터 로드 함수
         function useCachedData() {
             const cached = loadFromLocalStorage('cachedData');
-            cachedData = cached;
-        
-            // 캐싱 데이터 유효성 검사
-            if (validateCachedData(cachedData)) {
-                console.log('유효한 캐싱 데이터 로드 완료:', cachedData);
-                return cachedData;
-            } else {
-                console.error('유효하지 않은 캐싱 데이터:', cachedData);
-                return resetCachedData(); // 데이터 초기화 후 반환
-            }
+            cachedData = cached;  
+            
+            return cachedData;
         }
 
         function loadFromLocalStorage(key) {
