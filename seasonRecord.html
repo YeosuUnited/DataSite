@@ -500,14 +500,14 @@
         }
 
         function renderYearData(year) {
-            if (!cachedData || !cachedData.players || !cachedData.recordThis) {
+            if (!cachedData || !cachedData.players || !cachedData.recordAll) {
                 console.error('데이터가 로드되지 않았습니다.');
                 return;
             }
             const playersData = cachedData.players;
-            const recordThis = cachedData.recordThis;
+            const recordAll = cachedData.recordAll;
             // 현재 연도의 데이터를 필터링
-            const filteredData = getFilteredData(playersData, recordThis);
+            const filteredData = getFilteredData(playersData, recordAll);
 
             // 필터링된 데이터를 정렬
             const sortedData = sortData(filteredData);
