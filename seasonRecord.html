@@ -124,7 +124,7 @@
 
         async function fetchData() {
             const now = new Date().getTime();
-            const cachedLastUpdated = localStorage.getItem('lastUpdated');
+            const cachedLastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
 
             if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
                 try {
@@ -181,13 +181,53 @@
                 useCachedData();
             }
         }
-        
+
+        // localStorage 저장 함수
+        function saveToLocalStorage(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // localStorage 읽기 함수
+        function loadFromLocalStorage(key) {
+            const data = localStorage.getItem(key);
+            try {
+                return JSON.parse(data); // JSON 파싱
+            } catch (error) {
+                console.error('캐싱된 데이터를 파싱하는 중 오류 발생:', error);
+                return null; // 파싱 실패 시 null 반환
+            }
+        }
+
+        // 데이터 유효성 검증 함수
+        function validateCachedData(data) {
+            return (
+                data &&
+                typeof data === 'object' &&
+                data.players &&
+                data.recordAll &&
+                data.matchesTotal
+            );
+        }
+
+        // 캐싱 데이터 초기화 함수
+        function resetCachedData() {
+            const defaultData = { players: {}, recordAll: {}, matchesTotal: {} };
+            saveToLocalStorage('cachedData', defaultData);
+            return defaultData;
+        }
+
         // 캐싱 데이터 로드 함수
         function useCachedData() {
-            const cached = loadFromLocalStorage('cachedData');
-            cachedData = cached;  
-            
-            return cachedData;
+            cachedData = loadFromLocalStorage('cachedData');
+
+            // 캐싱 데이터 유효성 검사
+            if (validateCachedData(cachedData)) {
+                console.log('유효한 캐싱 데이터 로드 완료:', cachedData);
+                return cachedData;
+            } else {
+                console.error('유효하지 않은 캐싱 데이터:', cachedData);
+                return resetCachedData(); // 데이터 초기화 후 반환
+            }
         }
 
         function loadFromLocalStorage(key) {
@@ -198,12 +238,6 @@
                 console.error(`Error loading data from localStorage for key "${key}":`, error);
                 return null; // 파싱 실패 시 null 반환
             }
-        }
-
-        function resetCachedData() {
-            document.getElementById('status').innerText = '캐싱된 데이터가 없습니다. 기본 데이터를 사용합니다.';
-            cachedData = { players: {}, matchesTotal: {}, recordAll: {} }; // 기본값
-            localStorage.setItem('cachedData', JSON.stringify(cachedData));
         }
 
         function updateTimeInfo(lastUpdated) {
