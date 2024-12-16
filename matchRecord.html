@@ -496,7 +496,7 @@
                                             <div class="location">${match.location}</div>
                                             ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
                                         </div>
-                                        <button class="popup-button">기록</button>
+                                        <button class="popup-button" data-key="${key}">기록</button>
                                     `;
                 matchContainer.appendChild(matchBox);
             });
@@ -540,7 +540,7 @@
                                             <div class="location">${match.location}</div>
                                             ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
                                         </div>
-                                        <button class="popup-button">기록</button>
+                                        <button class="popup-button" data-key="${key}">기록</button>
                                     `;
                 matchContainer.appendChild(matchBox);
             });
@@ -571,9 +571,14 @@
             }
         }
 
-        function renderPopup(matchData) {
+        function renderPopup(matchData, teamName) {
             if (!matchData) {
                 console.error('경기 데이터가 제공되지 않았습니다.');
+                return;
+            }
+
+            if (!teamName) {
+                console.error('teamName이 제공되지 않았습니다.');
                 return;
             }
 
@@ -586,8 +591,11 @@
             popup.innerHTML = ''; // 이전 내용 제거
 
             // 날짜 포멧
-            const formattedDate = new Date(matchData.date).toLocaleDateString('ko-KR');
-            const formattedTime = new Date(matchData.date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+            const formattedDate = new Date(matchData.date).toLocaleDateString('ko-KR'); // 예: "2024. 12. 17."
+            const formattedTime = new Date(matchData.date).toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit',
+            }); // 예: "오후 9:07"
 
             // 날짜와 시간을 포함한 HTML 생성
             const dateNtimeHTML = `<span class="popup-date">${formattedDate}</span> <span class="popup-time">${formattedTime}</span>`;
@@ -663,22 +671,21 @@
 
             playersTable += `</table>`;
 
-
             // 과거 경기 기록
             const historyHeader = "<h3 class='recent-matches-popup-head'>해당팀과의 최근 10경기</h3>";
             let historyList = "<ul class='recent-matches-popup'>";
 
-            // matchesTotal과 matchesTotal에서 데이터를 합쳐서 검색
-            const combinedMatches = {
-                ...cachedData.matchesTotal
-            };
-
-            const opponentMatches = Object.entries(combinedMatches)
+            const opponentMatches = Object.entries(cachedData.matchesTotal)
                 .filter(([key, match]) => match.opponent.replace(/\s/g, '').toLowerCase() === teamName.replace(/\s/g, '').toLowerCase())
                 .sort(([_, matchA], [__, matchB]) => new Date(matchB.date) - new Date(matchA.date)); // 날짜 내림차순
 
             opponentMatches.forEach(([key, match]) => {
-                const [date, time] = key.split('_');
+                const formattedDate = new Date(matchData.date).toLocaleDateString('ko-KR'); // 예: "2024. 12. 17."
+                const formattedTime = new Date(matchData.date).toLocaleTimeString('ko-KR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                }); // 예: "오후 9:07"
+
                 const location = match.location || "알 수 없음";
 
                 let scoreText = "";
@@ -690,7 +697,7 @@
                 }
 
                 historyList += `<li>
-                                    <span style="font-size: 0.9em;">${date}</span> - <span style="color: gray; font-size: 0.8em;">${time} / ${location}</span>
+                                    <span style="font-size: 0.9em;">${formattedDate}</span> - <span style="color: gray; font-size: 0.8em;">${formattedTime} / ${location}</span>
                                     ${scoreText}
                                 </li> `; });
 
@@ -698,7 +705,7 @@
 
             // 코멘트 추출
             const commentHeader = "<h3 class='recent-matches-popup-head'>해당팀과의 최근 경기 후 코멘트</h3>";
-            const comments = Object.entries(combinedMatches)
+            const comments = Object.entries(cachedData.matchesTotal)
                 .filter(([key, match]) =>
                     match.comment && match.comment.trim() !== "" && // comment가 있는 경우
                     match.opponent.replace(/\s/g, "").toLowerCase() === matchData.opponent.replace(/\s/g, "").toLowerCase() // 특정 팀과의 경기만
@@ -732,8 +739,6 @@
 
             openPopup();
         }
-
-
 
         function convertTo24HourFormat(timeStr) {
             const period = timeStr.includes('오전') ? 'AM' : 'PM';
@@ -882,13 +887,6 @@
 
                     // 팀 히스토리 표시
                     showTeamHistory(selectedTeam);
-
-                    // 경기 데이터가 있을 경우 팝업도 열기
-                    if (selectedKey && cachedData.matchesTotal[selectedKey]) {
-                        renderPopup(cachedData.matchesTotal[selectedKey]);
-                    } else if (selectedKey) {
-                        console.warn(`선택된 키에 대한 경기 데이터를 찾을 수 없습니다: ${selectedKey}`);
-                    }
                 }
             });
 
@@ -958,13 +956,15 @@
                 const matchTimeRaw = matchBox.querySelector('.time').innerText.trim();
                 const matchTime = convertTo24HourFormat(matchTimeRaw);
 
-                const matchKey = matchBox.querySelector('.popup-button').dataset.key;
+                const matchKey = matchBox.querySelector('.popup-button').dataset.key;                
                 console.log('생성된 matchKey:', matchKey);
 
                 const matchData = cachedData.matchesTotal[matchKey];
+                const teamName = matchData ? matchData.opponent : null; // teamName을 opponent로 설정
+                console.log('teamName:', teamName);
 
                 if (matchData) {
-                    renderPopup(matchData);
+                    renderPopup(matchData, teamName);
                 } else {
                     console.error('선택된 경기 데이터를 찾을 수 없습니다:', matchKey);
                 }
@@ -984,51 +984,63 @@
                 let historyList = "<ul class='recent-matches-popup'>";
                 if (opponentMatches.length > 0) {
                     opponentMatches.forEach(([key, match]) => {
-                        const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
-                        const formattedTime = new Date(match.date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-                        const location = match.location || "알 수 없음";
 
-                        let scoreText = "";
-                        if (match.type === "0" && match.score) {
-                            const usScore = match.score.us;
-                            const themScore = match.score.them;
-                            const result = usScore > themScore ? "승" : usScore < themScore ? "패" : "무";
-                            scoreText = ` - <strong>${usScore} : ${themScore}</strong> (${result})`;
+                        const matchDate = new Date(match.date);
+                        if (isNaN(matchDate.getTime())) {
+                            console.error('Invalid match.date format:', match.date);
+                            return;
                         }
 
-                        historyList += `<li>
-                                                ${formattedDate} - <span style="color: gray; font-size: 0.9em;">${formattedTime} / ${location}</span>
-                                                ${scoreText}
-                                            </li>`;
-                                                    });
-                                                } else {
-                                                    historyList += "<li>경기 기록 없음</li>";
-                                                }
-                                                historyList += "</ul>";
+                        // 날짜 및 시간 포맷팅
+                        const formattedDate = matchDate.toLocaleDateString('ko-KR'); // 예: "2024. 12. 17."
+                        const formattedTime = matchDate.toLocaleTimeString('ko-KR', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        }); // 예: "오후 9:07"
 
-                                                // 코멘트 추출
-                                                const comments = opponentMatches
-                                                    .filter(([key, match]) => match.comment && match.comment.trim() !== "")
-                                                    .map(([key, match]) => match.comment);
+                    const location = match.location || "알 수 없음";
 
-                                                let commentList = "<ul class='recent-matches-popup'>";
-                                                if (comments.length > 0) {
-                                                    comments.forEach(comment => {
-                                                        commentList += `<li>${comment}</li>`;
-                                                    });
-                                                } else {
-                                                    commentList += "<li>코멘트 없음</li>";
-                                                }
-                                                commentList += "</ul>";
+                    let scoreText = "";
+                    if (match.type === "0" && match.score) {
+                        const usScore = match.score.us;
+                        const themScore = match.score.them;
+                        const result = usScore > themScore ? "승" : usScore < themScore ? "패" : "무";
+                        scoreText = ` - <strong>${usScore} : ${themScore}</strong> (${result})`;
+                    }
 
-                                                // 컨테이너에 내용 업데이트
-                                                teamHistoryContainer.innerHTML = `
-                                        <div style="text-align: center;"><span style="font-size: 1.2em; font-weight: bold;">vs ${teamName}</span></div>
-                                        <h3 class='recent-matches-popup-head'>역대 경기 기록</h3>
-                                        ${historyList}
-                                        <h3 class='recent-matches-popup-head'>코멘트</h3>
-                                        ${commentList}
-                                    `;
+                    historyList += `<li>
+                                        ${formattedDate} - <span style="color: gray; font-size: 0.9em;">${formattedTime} / ${location}</span>
+                                        ${scoreText}
+                                    </li>`;
+                            });
+                    } else {
+                        historyList += "<li>경기 기록 없음</li>";
+                    }
+                    historyList += "</ul>";
+
+                    // 코멘트 추출
+                    const comments = opponentMatches
+                        .filter(([key, match]) => match.comment && match.comment.trim() !== "")
+                        .map(([key, match]) => match.comment);
+
+                    let commentList = "<ul class='recent-matches-popup'>";
+                    if (comments.length > 0) {
+                        comments.forEach(comment => {
+                            commentList += `<li>${comment}</li>`;
+                        });
+                    } else {
+                        commentList += "<li>코멘트 없음</li>";
+                    }
+                    commentList += "</ul>";
+
+                    // 컨테이너에 내용 업데이트
+                    teamHistoryContainer.innerHTML = `
+                                                        <div style="text-align: center;"><span style="font-size: 1.2em; font-weight: bold;">vs ${teamName}</span></div>
+                                                        <h3 class='recent-matches-popup-head'>역대 경기 기록</h3>
+                                                        ${historyList}
+                                                        <h3 class='recent-matches-popup-head'>코멘트</h3>
+                                                        ${commentList}
+                                                    `;
                 teamHistoryContainer.style.display = 'block'; // 컨테이너 표시
             }
 
