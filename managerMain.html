@@ -221,6 +221,103 @@
             font-size: 0.9em; /* 이름보다 살짝 작은 크기 */
             margin-left: 5px;
         }
+
+        .matches-defaultBox {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+
+        .matchtotal-box {
+            width: 100%;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            align-items: start;
+            margin-top: 2px; /* 위 간격 */
+            margin-bottom: 2px; /* 아래 간격 */
+        }
+
+            .matchtotal-box .date-time {
+                font-size: 0.9em;
+                color: #333;
+                align-self: start;
+                display: flex;
+                flex-direction: row;
+                gap: 5px; /* 날짜와 시간을 약간 간격을 둡니다 */
+            }
+
+                .matchtotal-box .date-time .date {
+                    font-size: 1em;
+                    color: #555; /* 날짜 색상 */
+                }
+
+                .matchtotal-box .date-time .time {
+                    margin-top: 2px;
+                    font-size: 0.75em; /* 시간 크기 */
+                    color: gray; /* 시간 색상 */
+                }
+
+            .matchtotal-box .opponent-location {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .matchtotal-box .opponent {
+                font-size: 1.2em;
+                font-weight: bold;
+                text-align: left;
+            }
+
+            .matchtotal-box .location {
+                font-size: 0.78em;
+                color: gray;
+                text-align: left;
+                margin-top: 5px;
+            }
+
+            .matchtotal-box .score {
+                position: absolute;
+                top: 50%;
+                right: 35%;
+                transform: translate(50%, -50%);
+                font-weight: bold;
+                font-size: 1.2em;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                gap: 5px;
+                text-align: center;
+            }
+
+        .edit-button {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            background-color: #f1f1f1;
+            color: black;
+            border: 1px solid #aaa;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .light-row {
+            background-color: #f9f9f9; /* 연한 회색 */
+        }
+
+        .dark-row {
+            background-color: #e0e0e0; /* 진한 회색 */
+        }
     </style>
 </head>
 <body>
@@ -232,7 +329,7 @@
     </div>
     <div class="button-container" id="button-container">
         <button class="action-button style1" id="add-match-button">경기 추가</button>
-        <button class="action-button style1">경기 수정</button>
+        <button class="action-button style1" id="modify-match-button">경기 수정</button>
         <button class="action-button style2">선수 추가</button>
         <button class="action-button style2">선수 수정</button>
     </div>
@@ -254,7 +351,7 @@
             <input type="text" id="opponent-name" placeholder="상대이름 입력">
 
             <label>상대팀 점수</label>
-            <input type="text" id="opponent-score" placeholder="상대팀 점수 입력">
+            <input type="number" id="opponent-score" placeholder="상대팀 점수 입력" min="0" step="1">
 
             <label>날짜/시간</label>
             <input type="datetime-local" id="match-date">
@@ -279,7 +376,16 @@
             <textarea id="match-comment" placeholder="코멘트 입력"></textarea>
 
             <button type="button" id="submit-match">추가하기</button>
+            <button type="button" id="update-match">수정하기</button>
+            <button type="button" id="delete-match">삭제하기</button>
         </form>
+    </div>
+
+    <!-- 경기 수정 페이지 -->
+    <div id="match-modify-container" class="match-form" style="display: none;">
+        <!-- 경기 수정 페이지 내용 -->
+        <h2>경기 수정</h2>
+        <div id="allMatchesContainer" class="matches-defaultBox"></div>
     </div>
 
     <script>
@@ -399,8 +505,8 @@
                 const nameCell = document.createElement("td");
                 nameCell.style.textAlign = "left"; // 왼쪽 정렬
                 nameCell.innerHTML = `
-            ${player.name} <span style="color: gray; font-size: 0.9em;">No.${number}</span>
-        `;
+                    ${player.name} <span style="color: gray; font-size: 0.9em;">No.${number}</span>
+                `;
                 row.appendChild(nameCell);
 
                 // 출전 여부 (체크박스)
@@ -415,9 +521,11 @@
                 const goalsCell = document.createElement("td");
                 const goalsInput = document.createElement("input");
                 goalsInput.type = "number";
-                goalsInput.name = `goals_${number}`;
+                goalsInput.name = `goals_${number}`; // 기존 name 유지
+                goalsInput.id = `goals_${number}`;   // 고유한 ID 추가
                 goalsInput.placeholder = "0";
                 goalsInput.style.width = "50px";
+                goalsInput.min = "0"; // 음수 입력 방지
                 goalsCell.appendChild(goalsInput);
                 row.appendChild(goalsCell);
 
@@ -425,9 +533,11 @@
                 const assistsCell = document.createElement("td");
                 const assistsInput = document.createElement("input");
                 assistsInput.type = "number";
-                assistsInput.name = `assists_${number}`;
+                assistsInput.name = `assists_${number}`; // 기존 name 유지
+                assistsInput.id = `assists_${number}`;   // 고유한 ID 추가
                 assistsInput.placeholder = "0";
                 assistsInput.style.width = "50px";
+                assistsInput.min = "0"; // 음수 입력 방지
                 assistsCell.appendChild(assistsInput);
                 row.appendChild(assistsCell);
 
@@ -484,9 +594,9 @@
         });
 
         // 경기 데이터를 저장하는 함수
-        async function saveMatchData(matchData) {
+        async function uploadMatchData(matchData) {
             try {
-                const token = "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"; // GitHub Personal Access Token
+                const token = "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"; // GitHub Personal Access Token
                 const filePath = "assets/data/matches_total.json";
                 const repoOwner = "YeosuUnited";
                 const repoName = "DataSite";
@@ -567,6 +677,150 @@
             }
         }
 
+        // 경기 데이터를 저장하는 함수
+        async function uploadModifyMatchData(matchData) {
+            try {
+                const token = "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"; // GitHub Personal Access Token
+                const filePath = "assets/data/matches_total.json";
+                const repoOwner = "YeosuUnited";
+                const repoName = "DataSite";
+
+                // 기존 데이터 가져오기
+                const getResponse = await fetch(
+                    `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`,
+                    {
+                        headers: {
+                            Authorization: `token ${token}`,
+                        },
+                    }
+                );
+
+                if (!getResponse.ok) {
+                    throw new Error("기존 파일을 가져오는 데 실패했습니다.");
+                }
+
+                const fileData = await getResponse.json();
+                const currentContent = JSON.parse(base64ToUtf8(fileData.content));
+
+                // 기존 데이터에서 window.currentMatchKey와 동일한 matchKey 제거
+                const filteredContent = Object.fromEntries(
+                    Object.entries(currentContent).filter(([key]) => key !== window.currentMatchKey)
+                );
+
+                // 새로운 match 데이터를 기존 데이터에 추가
+                const tempContent = {
+                    ...filteredContent, // 필터링된 데이터 사용
+                    temp: matchData,    // 새로운 데이터 임시 추가
+                };
+
+                // 1. date 기준으로 오름차순 정렬 (가장 오래된 데이터부터 키를 생성)
+                const sortedByOldest = Object.entries(tempContent).sort(([, a], [, b]) =>
+                    new Date(a.date) - new Date(b.date)
+                );
+
+                // 2. "match_숫자" 키 재설정
+                const rekeyedContent = {};
+                sortedByOldest.forEach(([key, value], index) => {
+                    const newKey = `match_${String(index + 1).padStart(5, '0')}`;
+                    rekeyedContent[newKey] = value;
+                });
+
+                // 3. date 기준으로 내림차순 정렬
+                const finalSortedContent = Object.fromEntries(
+                    Object.entries(rekeyedContent).sort(([, a], [, b]) =>
+                        new Date(b.date) - new Date(a.date)
+                    )
+                );
+
+                console.log("최종 정렬된 데이터:", finalSortedContent);
+
+                // 정렬된 데이터를 Base64로 변환
+                const updatedFileContent = utf8ToBase64(JSON.stringify(finalSortedContent, null, 2));
+
+                // 업데이트된 데이터를 GitHub에 저장
+                const updateResponse = await fetch(
+                    `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            Authorization: `token ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            message: "경기 데이터를 추가 및 정렬합니다.",
+                            content: updatedFileContent,
+                            sha: fileData.sha,
+                        }),
+                    }
+                );
+
+                if (!updateResponse.ok) {
+                    throw new Error("파일 업데이트에 실패했습니다.");
+                }
+
+                alert("경기 데이터가 성공적으로 저장되었습니다!");
+                console.log("파일 업데이트 성공:", await updateResponse.json());
+            } catch (error) {
+                console.error("Error saving match data:", error);
+                alert("경기 데이터를 저장하는 중 오류가 발생했습니다.");
+            }
+        }
+
+        async function uploadRecordData(recordData) {
+            try {
+                const token = "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"; // GitHub Personal Access Token
+                const filePath = "assets/data/records_allTime.json";
+                const repoOwner = "YeosuUnited";
+                const repoName = "DataSite";
+
+                // 새로운 데이터를 Base64로 변환
+                const newFileContent = btoa(JSON.stringify(recordData, null, 2)); // Base64 인코딩
+
+                // 기존 파일 SHA 가져오기
+                const getResponse = await fetch(
+                    `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`,
+                    {
+                        headers: {
+                            Authorization: `token ${token}`,
+                        },
+                    }
+                );
+
+                let sha = null; // 기존 파일의 SHA 값
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    sha = fileData.sha; // 기존 파일 SHA 저장
+                }
+
+                // 새로운 데이터를 GitHub에 저장
+                const updateResponse = await fetch(
+                    `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            Authorization: `token ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            message: "새로운 경기 데이터를 업로드합니다.",
+                            content: newFileContent,
+                            sha: sha, // SHA가 null이어도 새 파일로 작성됨
+                        }),
+                    }
+                );
+
+                if (!updateResponse.ok) {
+                    throw new Error("파일 업로드에 실패했습니다.");
+                }
+
+                alert("경기 데이터가 성공적으로 업로드되었습니다!");
+                console.log("파일 업로드 성공:", await updateResponse.json());
+            } catch (error) {
+                console.error("Error uploading match data:", error);
+                alert("경기 데이터를 업로드하는 중 오류가 발생했습니다.");
+            }
+        }
+
         // 선수 데이터를 수집하여 반환하는 함수
         function collectPlayerData() {
             const playerList = document.getElementById("player-list").querySelectorAll("tr");
@@ -585,50 +839,208 @@
             return { players, totalGoals };
         }
 
-
         document.getElementById('add-match-button').addEventListener('click', function () {
             const buttonContainer = document.getElementById('button-container');
             buttonContainer.classList.remove('grid');
             buttonContainer.classList.add('horizontal-layout');
 
+            resetMatchForm(); // 폼 리셋 함수
+            document.getElementById('submit-match').style.display = 'inline-block';
+            document.getElementById('update-match').style.display = 'none';
+            document.getElementById('delete-match').style.display = 'none';
+
+            document.getElementById('match-modify-container').style.display = 'none';
             document.getElementById('match-form-container').style.display = 'block';
         });
 
-        document.getElementById('submit-match').addEventListener('click', async function () {
+        function resetMatchForm() {
+            // 폼 자체를 리셋
+            document.getElementById('match-form').reset();
+
+            // 선수 목록 체크박스 및 득점/도움 필드 초기화
+            const playerList = document.getElementById("player-list");
+            playerList.querySelectorAll('tr').forEach(row => {
+                const checkbox = row.querySelector('input[type="checkbox"]');
+                const goalsInput = row.querySelector('input[name^="goals"]');
+                const assistsInput = row.querySelector('input[name^="assists"]');
+
+                if (checkbox) checkbox.checked = false; // 체크 해제
+                if (goalsInput) goalsInput.value = ''; // 득점 초기화
+                if (assistsInput) assistsInput.value = ''; // 도움 초기화
+            });
+
+            console.log('폼이 초기화되었습니다.');
+        }
+
+        document.getElementById('modify-match-button').addEventListener('click', function () {
+            const buttonContainer = document.getElementById('button-container');
+            buttonContainer.classList.remove('grid');
+            buttonContainer.classList.add('horizontal-layout');
+
+            document.getElementById('match-form-container').style.display = 'none';
+            renderTotalMatches(cachedData.matchesTotal); // renderTotalMatches 실행
+            document.getElementById('match-modify-container').style.display = 'block';
+        });
+
+        function renderTotalMatches(matches) {
+            const matchContainer = document.getElementById('allMatchesContainer');
+            matchContainer.innerHTML = '';
+
+            if (!matches || Object.keys(matches).length === 0) {
+                matchContainer.innerHTML = '<p>최근 경기 데이터가 없습니다.</p>';
+                return;
+            }
+
+            Object.entries(matches).forEach(([key, match], index) => {
+                const matchBox = document.createElement('div');
+                const rowClass = index % 2 === 0 ? 'light-row' : 'dark-row'; // 번갈아 색상 적용
+                matchBox.className = `matchtotal-box ${rowClass}`;
+
+                const [date, time] = key.split('_');
+                const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
+                const formattedTime = new Date(match.date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+                const matchType = match.type === "1" ? '풋살' : match.type === "2" ? '자체전' : '경기';
+
+                let scoreText = '';
+                if (match.type === "0") {
+                    const usScore = match.score.us;
+                    const themScore = match.score.them;
+                    const result = usScore > themScore ? '승' : usScore < themScore ? '패' : '무';
+                    scoreText = `<span>${usScore}</span> : <span>${themScore}</span> (<span>${result}</span>)`;
+                }
+
+                matchBox.innerHTML = `
+                                        <div class="date-time">
+                                            <div class="date">${formattedDate}</div>
+                                            <div class="time">${formattedTime}</div>
+                                        </div>
+                                        <div class="opponent-location">
+                                            <div class="opponent">${match.opponent}</div>
+                                            <div class="location">${match.location}</div>
+                                            ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
+                                        </div>
+                                        <button class="edit-button" data-key="${key}">수정</button>
+                                    `;
+                matchContainer.appendChild(matchBox);
+            });
+        }
+
+        // 모든 경기에서 "수정" 버튼 처리
+        document.getElementById('allMatchesContainer').addEventListener('click', function (event) {
+            if (event.target.classList.contains('edit-button')) {
+                const matchKey = event.target.dataset.key;
+                const matchData = cachedData.matchesTotal[matchKey];
+                loadMatchDataToForm(matchData, matchKey);
+            }
+        });
+
+        let originalMatchData = null; // 불러온 원본 데이터를 저장하는 변수
+
+        function loadMatchDataToForm(matchData, matchKey) {
+            originalMatchData = JSON.parse(JSON.stringify(matchData)); // 원본 데이터 복사
+            window.currentMatchKey = matchKey; // 현재 경기 키 저장
+
+            // 경기 데이터를 폼에 채움
+            document.querySelector(`input[name="match-type"][value="${matchData.type === "0" ? "축구" : matchData.type === "1" ? "풋살" : "자체전"}"]`).checked = true;
+            document.getElementById('opponent-name').value = matchData.opponent;
+            document.getElementById('opponent-score').value = matchData.score.them;
+            document.getElementById('match-date').value = matchData.date;
+            document.getElementById('match-location').value = matchData.location;
+            document.getElementById('match-comment').value = matchData.comment;
+
+            // 선수 데이터 채우기
+            populatePlayerList(cachedData.players); // 기존 함수
+            // 출전 여부, 득점, 도움 필드 채우기
+            matchData.players.forEach(playerName => {
+                // 이름 → 등번호 변환
+                const playerEntry = Object.entries(cachedData.players).find(([key, player]) => player.name === playerName);
+                if (playerEntry) {
+                    const playerNumber = playerEntry[0]; // 등번호
+
+                    // 출전 여부 체크박스 체크
+                    const checkbox = document.querySelector(`input[name="playing_${playerNumber}"]`);
+                    if (checkbox) checkbox.checked = true;
+
+                    // 득점 필드 채우기
+                    const goals = matchData.goal.filter(name => name === playerName).length; // 골 개수
+                    const goalsInput = document.querySelector(`input[name="goals_${playerNumber}"]`);
+                    if (goalsInput) goalsInput.value = goals;
+
+                    // 도움 필드 채우기
+                    const assists = matchData.assist.filter(name => name === playerName).length; // 도움 개수
+                    const assistsInput = document.querySelector(`input[name="assists_${playerNumber}"]`);
+                    if (assistsInput) assistsInput.value = assists;
+                } else {
+                    console.warn(`선수 정보를 찾을 수 없습니다: ${playerName}`);
+                }
+            });
+
+            // 화면 전환
+            document.getElementById('match-modify-container').style.display = 'none';
+            document.getElementById('match-form-container').style.display = 'block';
+
+            // 버튼 수정
+            document.getElementById('submit-match').style.display = 'none';
+            document.getElementById('update-match').style.display = 'inline-block';
+            document.getElementById('delete-match').style.display = 'inline-block';
+        }                
+
+        document.getElementById('update-match').addEventListener('click', async function () {
             try {
                 // 경기 종류
                 const selectedType = document.querySelector('input[name="match-type"]:checked')?.value;
                 if (!selectedType) return alert('경기 종류를 선택해주세요');
 
+                let typeNumber;
+                if (selectedType === "축구") {
+                    typeNumber = "0";
+                } else if (selectedType === "풋살") {
+                    typeNumber = "1";
+                } else if (selectedType === "자체전") {
+                    typeNumber = "2";
+                }
+
                 // 경기 날짜 유효성 체크
                 const matchDate = document.getElementById('match-date').value;
-                console.log("Match Date: ", matchDate);  // 추가된 로그로 matchDate 확인
                 if (!matchDate || isNaN(new Date(matchDate))) {
                     alert('유효한 경기 날짜를 입력해주세요');
                     return;
                 }
 
+                const matchDateTime = new Date(matchDate);
+                const year = matchDateTime.getFullYear();
+
                 // 상대팀 이름
                 const opponentName = document.getElementById('opponent-name').value;
                 if (!opponentName) return alert('상대팀 이름을 입력하세요');
 
-                // 날짜 및 시간 처리
-                const matchDateTime = new Date(matchDate);
-                if (isNaN(matchDateTime.getTime())) {
-                    alert('유효한 날짜를 입력해주세요');
-                    console.error('Invalid Date:', matchDate);  // 에러 로그 추가
-                    return;
-                }
+                // 선수 데이터 수집
+                const { players, totalGoals } = collectPlayerData();
 
-                // "YYYY-MM-DD_HH:MM" 형식으로 matchKey 생성
-                const year = matchDateTime.getFullYear();
-                const month = (matchDateTime.getMonth() + 1).toString().padStart(2, '0');
-                const day = matchDateTime.getDate().toString().padStart(2, '0');
-                const hours = matchDateTime.getHours().toString().padStart(2, '0');
-                const minutes = matchDateTime.getMinutes().toString().padStart(2, '0');
+                // 득점과 어시스트 배열 생성
+                const goalPlayers = [];   // 골 넣은 선수들
+                const assistPlayers = []; // 어시스트 한 선수들
 
-                const matchKey = `${year}-${month}-${day}_${hours}:${minutes}`;
-                console.log('생성된 matchKey:', matchKey);
+                players.forEach((player) => {
+                    // 선수 번호를 기반으로 입력 필드 가져오기
+                    const playerNumber = Object.entries(cachedData.players).find(([key, value]) => value.name === player)?.[0];
+                    if (!playerNumber) {
+                        console.warn(`선수 ${player}의 등번호를 찾을 수 없습니다.`);
+                        return;
+                    }
+                    const goalsInput = document.querySelector(`#goals_${playerNumber}`);
+                    const assistsInput = document.querySelector(`#assists_${playerNumber}`);
+
+                    const goals = goalsInput ? parseInt(goalsInput.value || '0', 10) : 0; // input이 없으면 0으로 처리
+                    const assists = assistsInput ? parseInt(assistsInput.value || '0', 10) : 0; // input이 없으면 0으로 처리
+
+                    // 골을 넣은 만큼 이름 추가
+                    for (let i = 0; i < goals; i++) goalPlayers.push(player);
+
+                    // 어시스트 한 만큼 이름 추가
+                    for (let i = 0; i < assists; i++) assistPlayers.push(player);
+                });
 
                 // 상대팀 점수와 우리팀 점수
                 let opponentScore = 0;
@@ -640,8 +1052,133 @@
                     usScore = 0;
                 } else {
                     opponentScore = parseInt(document.getElementById('opponent-score').value || '0', 10);
-                    usScore = parseInt(document.getElementById('us-score').value || '0', 10);  // 우리팀 점수
+                    usScore = goalPlayers.length;
                 }
+
+                // 경기 데이터 객체 구성
+                const matchData = {
+                    date: matchDate, // matchDate 추가
+                    type: typeNumber,
+                    opponent: opponentName,
+                    players,
+                    score: { us: usScore, them: opponentScore },  // 점수를 0으로 처리한 것 반영
+                    location: document.getElementById('match-location').value,
+                    goal: goalPlayers,    // 골 넣은 선수들
+                    assist: assistPlayers, // 어시스트 한 선수들
+                    comment: document.getElementById('match-comment').value,
+                };
+
+                //플레이 데이터 작업시작
+                const playerList = document.querySelectorAll("#player-list tr");
+
+                // --- 추가 작업: recordAll 업데이트 ---
+                const updatedRecordAll = { ...cachedData.recordAll };
+
+                // 이름 -> 등번호 변환
+                const nameToNumberMap = Object.fromEntries(
+                    Object.entries(cachedData.players).map(([number, info]) => [info.name, number])
+                );
+
+                playerList.forEach(row => {
+                    const playerName = row.querySelector("td:first-child").innerText.split(' ')[0].trim();
+                    const isPlaying = row.querySelector("input[type='checkbox']").checked; // 출전 여부 확인
+                    const goals = parseInt(row.querySelector("input[name^='goals']").value || '0', 10);
+                    const assists = parseInt(row.querySelector("input[name^='assists']").value || '0', 10);
+
+                    const originalGoals = originalMatchData.goal.filter(name => name === playerName).length;
+                    const originalAssists = originalMatchData.assist.filter(name => name === playerName).length;
+                    const wasPlaying = originalMatchData.players.includes(playerName); // 원본 데이터에서 출전 여부 확인
+
+                    // 득점 차이값 계산
+                    const goalDiff = goals - originalGoals;
+
+                    // 도움 차이값 계산
+                    const assistDiff = assists - originalAssists;
+
+                    const playerNumber = nameToNumberMap[playerName];
+                    if (!playerNumber) {
+                        console.warn(`선수 ${playerName}의 등번호를 찾을 수 없습니다.`);
+                        return;
+                    }
+
+                    // 선수의 기록 데이터 가져오기
+                    const playerRecord = updatedRecordAll[playerNumber] || {};
+                    const yearData = playerRecord[year] || { goals: 0, assists: 0, attackP: 0, matches: 0 };
+
+                    //골, 어시, 공격포인트 달라진점 반영
+                    yearData.goals += goalDiff;
+                    yearData.assists += assistDiff;
+                    yearData.attackP += goalDiff + assistDiff;
+
+                    if (isPlaying && !wasPlaying) {
+                        yearData.matches += 1;
+                    } else if (!isPlaying && wasPlaying) {
+                        yearData.matches -= 1;
+                    }
+
+                    // 업데이트된 데이터를 기록에 반영
+                    playerRecord[year] = yearData;
+                    updatedRecordAll[playerNumber] = playerRecord;
+                });
+
+                // 서버에 데이터 저장
+                await uploadModifyMatchData(matchData);
+                await uploadRecordData(updatedRecordAll); // recordAll 업데이트 저장
+
+                // 초기화: 폼 리셋
+                document.getElementById('match-form').reset();
+
+                // 선수 목록 초기화
+                const playerListInUpdate = document.getElementById('player-list');
+                playerListInUpdate.innerHTML = '';
+
+                // 상태 및 UI 초기화
+                const buttonContainer = document.getElementById('button-container');
+                buttonContainer.classList.remove('horizontal-layout');
+                buttonContainer.classList.add('grid');
+
+                // 경기 추가 폼 숨기기
+                document.getElementById('match-form-container').style.display = 'none';
+            } catch (error) {
+                console.error('Error during match submission:', error);
+                alert('경기 데이터를 저장하는 중 오류가 발생했습니다.');
+            }           
+        });
+
+        document.getElementById('delete-match').addEventListener('click', async () => {
+            delete cachedData.matchesTotal[window.currentMatchKey]; // 해당 경기 삭제
+            await uploadMatchData(cachedData.matchesTotal);
+            alert("경기 정보가 삭제되었습니다!");
+        });
+
+        document.getElementById('submit-match').addEventListener('click', async function () {
+            try {
+                // 경기 종류
+                const selectedType = document.querySelector('input[name="match-type"]:checked')?.value;
+                if (!selectedType) return alert('경기 종류를 선택해주세요');
+
+                let typeNumber;
+                if (selectedType === "축구") {
+                    typeNumber = "0";
+                } else if (selectedType === "풋살") {
+                    typeNumber = "1";
+                } else if (selectedType === "자체전") {
+                    typeNumber = "2";
+                }
+
+                // 경기 날짜 유효성 체크
+                const matchDate = document.getElementById('match-date').value;
+                if (!matchDate || isNaN(new Date(matchDate))) {
+                    alert('유효한 경기 날짜를 입력해주세요');
+                    return;
+                }
+                
+                const matchDateTime = new Date(matchDate);
+                const year = matchDateTime.getFullYear();
+
+                // 상대팀 이름
+                const opponentName = document.getElementById('opponent-name').value;
+                if (!opponentName) return alert('상대팀 이름을 입력하세요');
 
                 // 선수 데이터 수집
                 const { players, totalGoals } = collectPlayerData();
@@ -650,50 +1187,98 @@
                 const goalPlayers = [];   // 골 넣은 선수들
                 const assistPlayers = []; // 어시스트 한 선수들
 
-                players.forEach((player, index) => {
-                    // #goals_${index} 요소가 존재하는지 확인 후 처리
-                    const goalsInput = document.querySelector(`#goals_${index}`);
-                    const assistsInput = document.querySelector(`#assists_${index}`);
+                players.forEach((player) => {
+                    // 선수 번호를 기반으로 입력 필드 가져오기
+                    const playerNumber = Object.entries(cachedData.players).find(([key, value]) => value.name === player)?.[0];
+                    if (!playerNumber) {
+                        console.warn(`선수 ${player}의 등번호를 찾을 수 없습니다.`);
+                        return;
+                    }
+                    const goalsInput = document.querySelector(`#goals_${playerNumber}`);
+                    const assistsInput = document.querySelector(`#assists_${playerNumber}`);
 
                     const goals = goalsInput ? parseInt(goalsInput.value || '0', 10) : 0; // input이 없으면 0으로 처리
                     const assists = assistsInput ? parseInt(assistsInput.value || '0', 10) : 0; // input이 없으면 0으로 처리
 
                     // 골을 넣은 만큼 이름 추가
-                    for (let i = 0; i < goals; i++) {
-                        goalPlayers.push(player);
-                    }
+                    for (let i = 0; i < goals; i++) goalPlayers.push(player);
 
                     // 어시스트 한 만큼 이름 추가
-                    for (let i = 0; i < assists; i++) {
-                        assistPlayers.push(player);
-                    }
+                    for (let i = 0; i < assists; i++) assistPlayers.push(player);
                 });
+
+                // 상대팀 점수와 우리팀 점수
+                let opponentScore = 0;
+                let usScore = 0;
+
+                // "풋살" 또는 "자체전"일 경우 점수를 0으로 처리
+                if (selectedType === "풋살" || selectedType === "자체전") {
+                    opponentScore = 0;
+                    usScore = 0;
+                } else {
+                    opponentScore = parseInt(document.getElementById('opponent-score').value || '0', 10);
+                    usScore = goalPlayers.length;
+                }
 
                 // 경기 데이터 객체 구성
                 const matchData = {
                     date: matchDate, // matchDate 추가
-                    type: selectedType,
+                    type: typeNumber,
                     opponent: opponentName,
                     players,
                     score: { us: usScore, them: opponentScore },  // 점수를 0으로 처리한 것 반영
                     location: document.getElementById('match-location').value,
-                    goals: goalPlayers,    // 골 넣은 선수들
-                    assists: assistPlayers, // 어시스트 한 선수들
-                    mom: "",
+                    goal: goalPlayers,    // 골 넣은 선수들
+                    assist: assistPlayers, // 어시스트 한 선수들
                     comment: document.getElementById('match-comment').value,
                 };
 
-                console.log("matchData 객체:", matchData);
+                // --- 추가 작업: recordAll 업데이트 ---
+                const updatedRecordAll = { ...cachedData.recordAll };
+
+                // 이름 -> 등번호 변환
+                const nameToNumberMap = Object.fromEntries(
+                    Object.entries(cachedData.players).map(([number, info]) => [info.name, number])
+                );
+
+                players.forEach((playerName) => {
+                    const playerNumber = nameToNumberMap[playerName];
+                    if (!playerNumber) {
+                        console.warn(`선수 ${playerName}의 등번호를 찾을 수 없습니다.`);
+                        return;
+                    }
+
+                    // 선수의 기록 데이터 가져오기
+                    const playerRecord = updatedRecordAll[playerNumber] || {};
+                    const yearData = playerRecord[year] || { goals: 0, assists: 0, attackP: 0, matches: 0 };
+
+                    // 기록 업데이트
+                    yearData.matches += 1;
+
+                    const playerGoals = goalPlayers.filter((name) => name === playerName).length;
+                    const playerAssists = assistPlayers.filter((name) => name === playerName).length;
+
+                    yearData.goals += playerGoals;
+                    yearData.assists += playerAssists;
+                    yearData.attackP += playerGoals + playerAssists;
+
+                    // 업데이트된 데이터를 기록에 반영
+                    playerRecord[year] = yearData;
+                    updatedRecordAll[playerNumber] = playerRecord;
+                });
+
+                console.log("updatedRecordAll : ", updatedRecordAll);
 
                 // 서버에 데이터 저장
-                await saveMatchData(matchData);
+                await uploadMatchData(matchData);
+                await uploadRecordData(updatedRecordAll); // recordAll 업데이트 저장
 
                 // 초기화: 폼 리셋
                 document.getElementById('match-form').reset();
 
                 // 선수 목록 초기화
-                const playerList = document.getElementById('player-list');
-                playerList.innerHTML = '';
+                const playerListInSubmit = document.getElementById('player-list');
+                playerListInSubmit.innerHTML = '';
 
                 // 상태 및 UI 초기화
                 const buttonContainer = document.getElementById('button-container');
