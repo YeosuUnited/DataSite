@@ -1,0 +1,34 @@
+name: Generate and Deploy Token Data
+
+on:
+  push:
+    branches:
+      - main  # main 브랜치로 푸시할 때 실행
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 저장소 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. 정적 파일 생성 (HTML 또는 JSON)
+      - name: Generate HTML and JSON files
+        run: |
+          echo "<!DOCTYPE html>" > output.html
+          echo "<html>" >> output.html
+          echo "<body>" >> output.html
+          echo "<h1>Token: ${{ secrets.YEOSU_TOKEN }}</h1>" >> output.html
+          echo "</body>" >> output.html
+          echo "</html>" >> output.html
+
+          echo "{\"token\": \"${{ secrets.YEOSU_TOKEN }}\"}" > data.json
+
+      # 3. GitHub Pages 브랜치에 배포
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .  # 현재 디렉토리에 있는 모든 파일을 배포
