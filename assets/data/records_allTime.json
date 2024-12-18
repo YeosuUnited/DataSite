@@ -14,9 +14,9 @@
     },
     "2024": {
       "assists": -1,
-      "attackP": -5,
-      "goals": -4,
-      "matches": 10
+      "attackP": -4,
+      "goals": -3,
+      "matches": 11
     }
   },
   "3": {
@@ -53,10 +53,10 @@
       "matches": 8
     },
     "2024": {
-      "assists": 0,
-      "attackP": 0,
+      "assists": 1,
+      "attackP": 1,
       "goals": 0,
-      "matches": 5
+      "matches": 6
     }
   },
   "6": {
@@ -74,9 +74,9 @@
     },
     "2024": {
       "assists": 0,
-      "attackP": 0,
-      "goals": 0,
-      "matches": 2
+      "attackP": 1,
+      "goals": 1,
+      "matches": 3
     }
   },
   "7": {
@@ -96,7 +96,7 @@
       "assists": 0,
       "attackP": -1,
       "goals": -1,
-      "matches": 6
+      "matches": 7
     }
   },
   "8": {
