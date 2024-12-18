@@ -14,22 +14,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. 정적 파일 생성 (HTML 또는 JSON)
-      - name: Generate HTML and JSON files
+      # 2. GitHub API에서 데이터 가져오기
+      - name: Fetch data from API
+        env:
+          GITHUB_TOKEN: ${{ secrets.YEOSU_TOKEN }}
         run: |
-          echo "<!DOCTYPE html>" > output.html
-          echo "<html>" >> output.html
-          echo "<body>" >> output.html
-          echo "<h1>Token: ${{ secrets.YEOSU_TOKEN }}</h1>" >> output.html
-          echo "</body>" >> output.html
-          echo "</html>" >> output.html
+          curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user > data.json
 
-          echo "{\"token\": \"${{ secrets.YEOSU_TOKEN }}\"}" > data.json
-
-      # 3. GitHub Pages 브랜치에 배포
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages  # 배포 브랜치 지정
-          publish_dir: .            # 현재 디렉토리의 파일 배포
+      # 3. 결과를 Pages에서 사용할 수 있도록 커밋 및 푸시
+      - name: Commit and push updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git commit -m "Update data.json with API data"
+          git push
