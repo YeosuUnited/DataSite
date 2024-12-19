@@ -1,282 +1,292 @@
 {
-        "2": {
-            "birth": "19910107",
-            "height": "176",
-            "name": "이혜성",
-            "nation": "대한민국",
-            "number": "2",
-            "posi": "RB",
-            "subPosi": "CB",
-            "weight": "64"            
-        },
-        "3": {
-            "birth": "19901002",
-            "height": "176",
-            "name": "성연채",
-            "nation": "대한민국",
-            "number": "3",
-            "posi": "GK",
-            "subPosi": "CB",
-            "weight": "64"
-        },
-        "4": {
-            "birth": "19901128",
-            "height": "176",
-            "name": "조상운",
-            "nation": "대한민국",
-            "number": "4",
-            "posi": "CB",
-            "subPosi": "CDM",
-            "weight": "64"
-        },
-        "6": {
-            "birth": "19900223",
-            "height": "176",
-            "name": "전재현",
-            "nation": "대한민국",
-            "number": "6",
-            "posi": "RW",
-            "subPosi": "LW",
-            "weight": "64"
-        },
-        "7": {
-            "birth": "19900727",
-            "height": "176",
-            "name": "임승준",
-            "nation": "대한민국",
-            "number": "7",
-            "posi": "CAM",
-            "subPosi": "CM",
-            "weight": "64"
-        },
-        "8": {
-            "birth": "19900401",
-            "height": "176",
-            "name": "노재욱",
-            "nation": "대한민국",
-            "number": "8",
-            "posi": "LW",
-            "subPosi": "RW",
-            "weight": "64"
-        },
-        "9": {
-            "birth": "19900912",
-            "height": "176",
-            "name": "변상민",
-            "nation": "대한민국",
-            "number": "9",
-            "posi": "ST",
-            "subPosi": "CF",
-            "weight": "64"
-        },
-        "10": {
-            "birth": "19900503",
-            "height": "176",
-            "name": "김기욱",
-            "nation": "대한민국",
-            "number": "10",
-            "posi": "CM",
-            "subPosi": "CAM",
-            "weight": "64"
-        },
-        "11": {
-            "birth": "19900328",
-            "height": "176",
-            "name": "이세현",
-            "nation": "대한민국",
-            "number": "11",
-            "posi": "CM",
-            "subPosi": "CDM",
-            "weight": "64"
-        },
-        "12": {
-            "birth": "19900131",
-            "height": "176",
-            "name": "임용철",
-            "nation": "대한민국",
-            "number": "12",
-            "posi": "ST",
-            "subPosi": "CF",
-            "weight": "64"
-        },
-        "13": {
-            "birth": "19900212",
-            "height": "176",
-            "name": "엄은식",
-            "nation": "대한민국",
-            "number": "13",
-            "posi": "CF",
-            "subPosi": "CAM",
-            "weight": "64"
-        },
-        "14": {
-            "birth": "19900630",
-            "height": "176",
-            "name": "이재성",
-            "nation": "대한민국",
-            "number": "14",
-            "posi": "RW",
-            "subPosi": "LW",
-            "weight": "64"
-        },
-        "15": {
-            "birth": "19900627",
-            "height": "176",
-            "name": "김대원",
-            "nation": "대한민국",
-            "number": "15",
-            "posi": "CF",
-            "subPosi": "CAM",
-            "weight": "64"
-        },
-        "16": {
-            "birth": "19900508",
-            "height": "176",
-            "name": "한동화",
-            "nation": "대한민국",
-            "number": "16",
-            "posi": "RB",
-            "subPosi": "LB",
-            "weight": "64"
-        },
-        "18": {
-            "birth": "19920602",
-            "height": "176",
-            "name": "김준태",
-            "nation": "대한민국",
-            "number": "18",
-            "posi": "ST",
-            "subPosi": "CB",
-            "weight": "64"
-        },
-        "20": {
-            "birth": "19900523",
-            "height": "176",
-            "name": "주선우",
-            "nation": "대한민국",
-            "number": "20",
-            "posi": "CB",
-            "subPosi": "ST",
-            "weight": "64"
-        },
-        "21": {
-            "birth": "19900421",
-            "height": "176",
-            "name": "박지원",
-            "nation": "대한민국",
-            "number": "21",
-            "posi": "RB",
-            "subPosi": "LB",
-            "weight": "64"
-        },
-        "23": {
-            "birth": "19910326",
-            "height": "176",
-            "name": "송민수",
-            "nation": "대한민국",
-            "number": "23",
-            "posi": "CDM",
-            "subPosi": "CB",
-            "weight": "64"
-        },
-        "26": {
-            "birth": "19900319",
-            "height": "176",
-            "name": "강성용",
-            "nation": "대한민국",
-            "number": "26",
-            "posi": "CAM",
-            "subPosi": "CM",
-            "weight": "64"
-        },
-        "27": {
-            "birth": "19910723",
-            "height": "176",
-            "name": "김언수",
-            "nation": "대한민국",
-            "number": "27",
-            "posi": "RCB",
-            "subPosi": "LCB",
-            "weight": "64"
-        },
-        "29": {
-            "birth": "19900517",
-            "height": "176",
-            "name": "임상규",
-            "nation": "대한민국",
-            "number": "29",
-            "posi": "RW",
-            "subPosi": "LW",
-            "weight": "64"
-        },
-        "30": {
-            "birth": "19900212",
-            "height": "176",
-            "name": "박지훈",
-            "nation": "대한민국",
-            "number": "30",
-            "posi": "LCM",
-            "subPosi": "RCM",
-            "weight": "64"
-        },
-        "31": {
-            "birth": "19961119",
-            "height": "176",
-            "name": "이덕환",
-            "nation": "대한민국",
-            "number": "31",
-            "posi": "CM",
-            "subPosi": "CDM",
-            "weight": "64"
-        },
-        "39": {
-            "birth": "19960909",
-            "height": "176",
-            "name": "이상구",
-            "nation": "대한민국",
-            "number": "39",
-            "posi": "CB",
-            "subPosi": "RB",
-            "weight": "64"
-        },
-        "66": {
-            "birth": "19900513",
-            "height": "176",
-            "name": "안진현",
-            "nation": "대한민국",
-            "number": "66",
-            "posi": "CM",
-            "subPosi": "CDM",
-            "weight": "64"
-        },
-        "77": {
-            "birth": "19910316",
-            "height": "176",
-            "name": "강기준",
-            "nation": "대한민국",
-            "number": "77",
-            "posi": "CAM",
-            "subPosi": "CF",
-            "weight": "64"
-        },
-        "88": {
-            "birth": "19910123",
-            "height": "176",
-            "name": "김광민",
-            "nation": "대한민국",
-            "number": "88",
-            "posi": "CF",
-            "subPosi": "ST",
-            "weight": "64"
-        },
-        "99": {
-            "birth": "19901113",
-            "height": "174",
-            "name": "김범수",
-            "nation": "대한민국",
-            "number": "99",
-            "posi": "RB",
-            "subPosi": "RW",
-            "weight": "67"
-        }
+  "1": {
+    "name": "테스트1",
+    "birth": "2024-12-19",
+    "nation": "대한민국",
+    "number": 1,
+    "posi": "GK",
+    "subPosi": "",
+    "height": 200,
+    "weight": 98
+  },
+  "2": {
+    "birth": "19910107",
+    "height": "176",
+    "name": "이혜성",
+    "nation": "대한민국",
+    "number": "2",
+    "posi": "RB",
+    "subPosi": "CB",
+    "weight": "64"
+  },
+  "3": {
+    "birth": "19901002",
+    "height": "176",
+    "name": "성연채",
+    "nation": "대한민국",
+    "number": "3",
+    "posi": "GK",
+    "subPosi": "CB",
+    "weight": "64"
+  },
+  "4": {
+    "birth": "19901128",
+    "height": "176",
+    "name": "조상운",
+    "nation": "대한민국",
+    "number": "4",
+    "posi": "CB",
+    "subPosi": "CDM",
+    "weight": "64"
+  },
+  "6": {
+    "birth": "19900223",
+    "height": "176",
+    "name": "전재현",
+    "nation": "대한민국",
+    "number": "6",
+    "posi": "RW",
+    "subPosi": "LW",
+    "weight": "64"
+  },
+  "7": {
+    "birth": "19900727",
+    "height": "176",
+    "name": "임승준",
+    "nation": "대한민국",
+    "number": "7",
+    "posi": "CAM",
+    "subPosi": "CM",
+    "weight": "64"
+  },
+  "8": {
+    "birth": "19900401",
+    "height": "176",
+    "name": "노재욱",
+    "nation": "대한민국",
+    "number": "8",
+    "posi": "LW",
+    "subPosi": "RW",
+    "weight": "64"
+  },
+  "9": {
+    "birth": "19900912",
+    "height": "176",
+    "name": "변상민",
+    "nation": "대한민국",
+    "number": "9",
+    "posi": "ST",
+    "subPosi": "CF",
+    "weight": "64"
+  },
+  "10": {
+    "birth": "19900503",
+    "height": "176",
+    "name": "김기욱",
+    "nation": "대한민국",
+    "number": "10",
+    "posi": "CM",
+    "subPosi": "CAM",
+    "weight": "64"
+  },
+  "11": {
+    "birth": "19900328",
+    "height": "176",
+    "name": "이세현",
+    "nation": "대한민국",
+    "number": "11",
+    "posi": "CM",
+    "subPosi": "CDM",
+    "weight": "64"
+  },
+  "12": {
+    "birth": "19900131",
+    "height": "176",
+    "name": "임용철",
+    "nation": "대한민국",
+    "number": "12",
+    "posi": "ST",
+    "subPosi": "CF",
+    "weight": "64"
+  },
+  "13": {
+    "birth": "19900212",
+    "height": "176",
+    "name": "엄은식",
+    "nation": "대한민국",
+    "number": "13",
+    "posi": "CF",
+    "subPosi": "CAM",
+    "weight": "64"
+  },
+  "14": {
+    "birth": "19900630",
+    "height": "176",
+    "name": "이재성",
+    "nation": "대한민국",
+    "number": "14",
+    "posi": "RW",
+    "subPosi": "LW",
+    "weight": "64"
+  },
+  "15": {
+    "birth": "19900627",
+    "height": "176",
+    "name": "김대원",
+    "nation": "대한민국",
+    "number": "15",
+    "posi": "CF",
+    "subPosi": "CAM",
+    "weight": "64"
+  },
+  "16": {
+    "birth": "19900508",
+    "height": "176",
+    "name": "한동화",
+    "nation": "대한민국",
+    "number": "16",
+    "posi": "RB",
+    "subPosi": "LB",
+    "weight": "64"
+  },
+  "18": {
+    "birth": "19920602",
+    "height": "176",
+    "name": "김준태",
+    "nation": "대한민국",
+    "number": "18",
+    "posi": "ST",
+    "subPosi": "CB",
+    "weight": "64"
+  },
+  "20": {
+    "birth": "19900523",
+    "height": "176",
+    "name": "주선우",
+    "nation": "대한민국",
+    "number": "20",
+    "posi": "CB",
+    "subPosi": "ST",
+    "weight": "64"
+  },
+  "21": {
+    "birth": "19900421",
+    "height": "176",
+    "name": "박지원",
+    "nation": "대한민국",
+    "number": "21",
+    "posi": "RB",
+    "subPosi": "LB",
+    "weight": "64"
+  },
+  "23": {
+    "birth": "19910326",
+    "height": "176",
+    "name": "송민수",
+    "nation": "대한민국",
+    "number": "23",
+    "posi": "CDM",
+    "subPosi": "CB",
+    "weight": "64"
+  },
+  "26": {
+    "birth": "19900319",
+    "height": "176",
+    "name": "강성용",
+    "nation": "대한민국",
+    "number": "26",
+    "posi": "CAM",
+    "subPosi": "CM",
+    "weight": "64"
+  },
+  "27": {
+    "birth": "19910723",
+    "height": "176",
+    "name": "김언수",
+    "nation": "대한민국",
+    "number": "27",
+    "posi": "RCB",
+    "subPosi": "LCB",
+    "weight": "64"
+  },
+  "29": {
+    "birth": "19900517",
+    "height": "176",
+    "name": "임상규",
+    "nation": "대한민국",
+    "number": "29",
+    "posi": "RW",
+    "subPosi": "LW",
+    "weight": "64"
+  },
+  "30": {
+    "birth": "19900212",
+    "height": "176",
+    "name": "박지훈",
+    "nation": "대한민국",
+    "number": "30",
+    "posi": "LCM",
+    "subPosi": "RCM",
+    "weight": "64"
+  },
+  "31": {
+    "birth": "19961119",
+    "height": "176",
+    "name": "이덕환",
+    "nation": "대한민국",
+    "number": "31",
+    "posi": "CM",
+    "subPosi": "CDM",
+    "weight": "64"
+  },
+  "39": {
+    "birth": "19960909",
+    "height": "176",
+    "name": "이상구",
+    "nation": "대한민국",
+    "number": "39",
+    "posi": "CB",
+    "subPosi": "RB",
+    "weight": "64"
+  },
+  "66": {
+    "birth": "19900513",
+    "height": "176",
+    "name": "안진현",
+    "nation": "대한민국",
+    "number": "66",
+    "posi": "CM",
+    "subPosi": "CDM",
+    "weight": "64"
+  },
+  "77": {
+    "birth": "19910316",
+    "height": "176",
+    "name": "강기준",
+    "nation": "대한민국",
+    "number": "77",
+    "posi": "CAM",
+    "subPosi": "CF",
+    "weight": "64"
+  },
+  "88": {
+    "birth": "19910123",
+    "height": "176",
+    "name": "김광민",
+    "nation": "대한민국",
+    "number": "88",
+    "posi": "CF",
+    "subPosi": "ST",
+    "weight": "64"
+  },
+  "99": {
+    "birth": "19901113",
+    "height": "174",
+    "name": "김범수",
+    "nation": "대한민국",
+    "number": "99",
+    "posi": "RB",
+    "subPosi": "RW",
+    "weight": "67"
+  }
 }
