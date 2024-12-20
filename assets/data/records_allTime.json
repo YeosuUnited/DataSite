@@ -236,7 +236,7 @@
       "assists": 1,
       "attackP": 4,
       "goals": 3,
-      "matches": 9
+      "matches": 8
     }
   },
   "15": {
@@ -537,6 +537,22 @@
       "attackP": 0,
       "goals": 0,
       "matches": 3
+    }
+  },
+  "94": {
+    "2024": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 0
+    }
+  },
+  "95": {
+    "2024": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 0
     }
   },
   "99": {
