@@ -1,218 +1,542 @@
 {
   "2": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 19
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 9
+    },
+    "2024": {
+      "assists": 2,
+      "attackP": 4,
+      "goals": 2,
+      "matches": 13
     }
   },
   "3": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 1
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 5
+    },
+    "2024": {
+      "assists": 6,
+      "attackP": 10,
+      "goals": 4,
+      "matches": 3
     }
   },
   "4": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 16
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 8
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 3,
+      "goals": 3,
+      "matches": 9
     }
   },
   "6": {
-    "2024": {
-      "goals": 0,
+    "2022": {
+      "assists": 0,
+      "attackP": 2,
+      "goals": 2,
+      "matches": 20
+    },
+    "2023": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 8
+    },
+    "2024": {
+      "assists": 1,
+      "attackP": 1,
+      "goals": 0,
+      "matches": 5
     }
   },
   "7": {
-    "2024": {
-      "goals": 0,
+    "2022": {
+      "assists": 1,
+      "attackP": 2,
+      "goals": 1,
+      "matches": 12
+    },
+    "2023": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 10
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 2,
+      "goals": 2,
+      "matches": 10
     }
   },
   "8": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
+      "goals": 0,
+      "matches": 4
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
       "matches": 0
+    },
+    "2024": {
+      "assists": 2,
+      "attackP": 2,
+      "goals": 0,
+      "matches": 6
     }
   },
   "9": {
-    "2024": {
-      "goals": 0,
-      "assists": 2,
+    "2022": {
+      "assists": 1,
       "attackP": 2,
-      "matches": 1
+      "goals": 1,
+      "matches": 2
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 8
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 5,
+      "goals": 5,
+      "matches": 18
     }
   },
   "10": {
-    "2024": {
-      "goals": 0,
+    "2022": {
+      "assists": 3,
+      "attackP": 6,
+      "goals": 3,
+      "matches": 36
+    },
+    "2023": {
       "assists": 0,
-      "attackP": 0,
-      "matches": 0
+      "attackP": 4,
+      "goals": 4,
+      "matches": 20
+    },
+    "2024": {
+      "assists": 2,
+      "attackP": 3,
+      "goals": 1,
+      "matches": 17
     }
   },
   "11": {
-    "2024": {
+    "2022": {
+      "assists": 2,
+      "attackP": 4,
+      "goals": 2,
+      "matches": 12
+    },
+    "2023": {
+      "assists": 2,
+      "attackP": 2,
       "goals": 0,
+      "matches": 13
+    },
+    "2024": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 3
     }
   },
   "12": {
+    "2022": {
+      "assists": 8,
+      "attackP": 16,
+      "goals": 8,
+      "matches": 9
+    },
+    "2023": {
+      "assists": 3,
+      "attackP": 7,
+      "goals": 4,
+      "matches": 14
+    },
     "2024": {
-      "goals": 0,
-      "assists": 0,
-      "attackP": 0,
-      "matches": 0
+      "assists": 2,
+      "attackP": 5,
+      "goals": 3,
+      "matches": 9
     }
   },
   "13": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 13
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 13
+    },
+    "2024": {
+      "assists": 1,
+      "attackP": 1,
+      "goals": 0,
+      "matches": 7
     }
   },
   "14": {
+    "2022": {
+      "assists": 1,
+      "attackP": 2,
+      "goals": 1,
+      "matches": 12
+    },
+    "2023": {
+      "assists": 1,
+      "attackP": 5,
+      "goals": 4,
+      "matches": 12
+    },
     "2024": {
-      "goals": 0,
-      "assists": 0,
-      "attackP": 0,
-      "matches": 0
+      "assists": 1,
+      "attackP": 4,
+      "goals": 3,
+      "matches": 9
     }
   },
   "15": {
+    "2022": {
+      "assists": 2,
+      "attackP": 4,
+      "goals": 2,
+      "matches": 22
+    },
+    "2023": {
+      "assists": 1,
+      "attackP": 3,
+      "goals": 2,
+      "matches": 14
+    },
     "2024": {
-      "goals": 0,
-      "assists": 0,
-      "attackP": 0,
-      "matches": 0
+      "assists": 1,
+      "attackP": 3,
+      "goals": 2,
+      "matches": 14
     }
   },
   "16": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 2
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 2
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 6
     }
   },
   "18": {
-    "2024": {
-      "goals": 0,
+    "2022": {
+      "assists": 1,
+      "attackP": 2,
+      "goals": 1,
+      "matches": 8
+    },
+    "2023": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 3
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 5
     }
   },
   "20": {
-    "2024": {
-      "goals": 0,
+    "2022": {
+      "assists": 1,
+      "attackP": 2,
+      "goals": 1,
+      "matches": 7
+    },
+    "2023": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 2
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 2
     }
   },
   "21": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 5
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 1
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 8
     }
   },
   "23": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 13
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 1,
+      "goals": 1,
+      "matches": 4
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 6
     }
   },
   "26": {
-    "2024": {
-      "goals": 0,
+    "2022": {
+      "assists": 2,
+      "attackP": 4,
+      "goals": 2,
+      "matches": 11
+    },
+    "2023": {
       "assists": 0,
       "attackP": 0,
+      "goals": 0,
       "matches": 0
+    },
+    "2024": {
+      "assists": 1,
+      "attackP": 1,
+      "goals": 0,
+      "matches": 3
     }
   },
   "27": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
+      "goals": 0,
       "matches": 0
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 1
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 1
     }
   },
   "29": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 3
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 4
+    },
+    "2024": {
+      "assists": 1,
+      "attackP": 1,
+      "goals": 0,
+      "matches": 6
     }
   },
   "30": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 25
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 4
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 7
     }
   },
   "31": {
+    "2022": {
+      "assists": 1,
+      "attackP": 2,
+      "goals": 1,
+      "matches": 30
+    },
+    "2023": {
+      "assists": 1,
+      "attackP": 3,
+      "goals": 2,
+      "matches": 23
+    },
     "2024": {
-      "goals": 0,
-      "assists": 0,
-      "attackP": 0,
-      "matches": 0
+      "assists": 4,
+      "attackP": 7,
+      "goals": 3,
+      "matches": 21
     }
   },
   "39": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
+      "goals": 0,
       "matches": 0
+    },
+    "2023": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 0
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 0,
+      "goals": 0,
+      "matches": 2
     }
   },
   "66": {
-    "2024": {
+    "2022": {
+      "assists": 3,
+      "attackP": 6,
+      "goals": 3,
+      "matches": 20
+    },
+    "2023": {
+      "assists": 4,
+      "attackP": 4,
       "goals": 0,
-      "assists": 0,
-      "attackP": 0,
-      "matches": 0
+      "matches": 14
+    },
+    "2024": {
+      "assists": 2,
+      "attackP": 4,
+      "goals": 2,
+      "matches": 14
     }
   },
   "77": {
+    "2022": {
+      "assists": 1,
+      "attackP": 2,
+      "goals": 1,
+      "matches": 16
+    },
+    "2023": {
+      "assists": 2,
+      "attackP": 3,
+      "goals": 1,
+      "matches": 10
+    },
     "2024": {
-      "goals": 0,
-      "assists": 0,
-      "attackP": 0,
-      "matches": 0
+      "assists": 1,
+      "attackP": 2,
+      "goals": 1,
+      "matches": 4
     }
   },
   "88": {
+    "2022": {
+      "assists": 1,
+      "attackP": 2,
+      "goals": 1,
+      "matches": 11
+    },
+    "2023": {
+      "assists": 1,
+      "attackP": 1,
+      "goals": 0,
+      "matches": 6
+    },
     "2024": {
-      "goals": 3,
       "assists": 0,
-      "attackP": 3,
-      "matches": 1
+      "attackP": 0,
+      "goals": 0,
+      "matches": 3
     }
   },
   "94": {
@@ -232,11 +556,23 @@
     }
   },
   "99": {
-    "2024": {
-      "goals": 0,
+    "2022": {
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "goals": 0,
+      "matches": 23
+    },
+    "2023": {
+      "assists": 1,
+      "attackP": 1,
+      "goals": 0,
+      "matches": 11
+    },
+    "2024": {
+      "assists": 0,
+      "attackP": 1,
+      "goals": 1,
+      "matches": 14
     }
   }
 }
