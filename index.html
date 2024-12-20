@@ -480,6 +480,8 @@
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
 
+                    console.log("fuck which to download : ", cachedData);
+
                     // 올해 데이터 필터링
                     const currentYear = new Date().getFullYear();
                     const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
@@ -540,9 +542,12 @@
                     document.getElementById('status').innerText = '서버 문제 발생, 캐싱된 데이터를 사용 중입니다.';
 
                     const currentYear = new Date().getFullYear();
+
                     const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
 
                     if (Object.keys(thisYearRecords).length === 0) {
+                        console.log("cachedData : ", cachedData);
+                        console.log("cached : ", cached);
                         throw new Error("캐싱된 데이터에 현재 연도 데이터가 없습니다.");
                     }
 
@@ -775,6 +780,12 @@
             popup.querySelector('.popup-content').appendChild(errorMessage);
 
             document.querySelector('.fixed-top-right').addEventListener('click', () => {
+                const isAuthenticated = localStorage.getItem('isAuthenticated');
+                if (isAuthenticated === 'true') {
+                    // 이미 인증된 경우 바로 managerMain.html로 이동
+                    window.location.href = 'managerMain.html';
+                    console.log("alreday");
+                }
                 popup.classList.remove('hidden');
             });
 
