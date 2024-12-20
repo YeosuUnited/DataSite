@@ -1,14 +1,4 @@
 {
-  "1": {
-    "name": "테스트1",
-    "birth": "20241219",
-    "nation": "대한민국",
-    "number": "1",
-    "posi": "GK",
-    "subPosi": "",
-    "height": 200,
-    "weight": 98
-  },
   "2": {
     "birth": "19910107",
     "height": "176",
