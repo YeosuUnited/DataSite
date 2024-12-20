@@ -4,14 +4,19 @@
     "type": "0",
     "opponent": "ㅁㄴㅇ",
     "players": [
+      "조상운",
+      "이재성",
       "김대원"
     ],
     "score": {
-      "us": 0,
+      "us": 2,
       "them": 2
     },
     "location": "ㅁㄴㄷ",
-    "goal": [],
+    "goal": [
+      "조상운",
+      "조상운"
+    ],
     "assist": [],
     "comment": "ㅁㄴㅇ"
   },
