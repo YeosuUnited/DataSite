@@ -861,6 +861,13 @@
 
         // 페이지 로드 시 선수 목록을 불러오는 이벤트 추가
         document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('match-form-container').style.display = 'none';
+            document.getElementById('match-modify-container').style.display = 'none';
+            document.getElementById('player-add-form-container').style.display = 'none';
+
+            const buttonContainer = document.getElementById('button-container');
+            buttonContainer.classList.remove('horizontal-layout');
+            buttonContainer.classList.add('grid');
             fetchData().then(() => {
                 console.log("[DOMContentLoaded] 캐싱된 데이터 확인:", cachedData);
                 if (cachedData && cachedData.players) {
@@ -1181,9 +1188,8 @@
             document.getElementById('cancel-match').style.display = 'none';
 
             document.getElementById('match-modify-container').style.display = 'none';
-            document.getElementById('player-list-container').style.display = 'none';
             document.getElementById('player-add-form-container').style.display = 'none'; // 폼 표시
-
+            console.log("here");
             document.getElementById('match-form-container').style.display = 'block';
         });
 
