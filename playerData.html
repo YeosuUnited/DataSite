@@ -232,7 +232,7 @@
                     // 데이터 렌더링
                     document.getElementById('status').innerText = '데이터 로딩 완료.';
                     updateTimeInfo(lastUpdated);
-
+                    renderPlayerList();
                 } catch (error) {
                     console.error('Error fetching data:', error);
                     useCachedData();
@@ -258,6 +258,7 @@
                 document.getElementById('status').innerText = '서버 문제로 캐싱된 데이터를 사용 중입니다.';
                 const lastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
                 updateTimeInfo(lastUpdated);
+                renderPlayerList();
             } else {
                 document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다. 캐싱된 데이터가 없습니다.';
             }
@@ -356,6 +357,189 @@
             return decodeURIComponent(escape(atob(str)));
         }
 
+        // (예) 데이터 로딩(fetchData)이 끝난 후, 로드가 완료되면 호출할 함수를 하나 추가합니다.
+        function renderPlayerList() {
+            const container = document.createElement('div');
+            container.id = 'player-list';
+            container.style.padding = '20px';
+            container.style.backgroundColor = '#f9f9f9';
+
+            // 기존 내용 초기화
+            const existingContainer = document.getElementById('player-list');
+            if (existingContainer) {
+                existingContainer.remove();
+            }
+
+            document.body.appendChild(container);
+
+            if (!cachedData || !cachedData.players) {
+                container.innerHTML = '<p>선수 데이터가 없습니다.</p>';
+                return;
+            }
+
+            // 선수 리스트 생성
+            Object.entries(cachedData.players).forEach(([number, player]) => {
+                const playerRow = document.createElement('div');
+                playerRow.style.display = 'flex';
+                playerRow.style.justifyContent = 'space-between';
+                playerRow.style.padding = '10px 0';
+                playerRow.style.borderBottom = '1px solid #ccc';
+
+                const playerInfo = document.createElement('span');
+                playerInfo.textContent = `${player.name} (등번호: ${number})`;
+
+                const modifyButton = document.createElement('button');
+                modifyButton.textContent = '상세기록';
+                modifyButton.style.backgroundColor = '#4CAF50';
+                modifyButton.style.color = 'white';
+                modifyButton.style.border = 'none';
+                modifyButton.style.padding = '5px 10px';
+                modifyButton.style.cursor = 'pointer';
+                modifyButton.style.borderRadius = '5px';
+
+                // 클릭 이벤트 추가
+                modifyButton.addEventListener('click', function () {
+                    const playerNumber = this.getAttribute('data-player-number'); // 버튼에 설정된 번호 가져오기
+                    if (cachedData && cachedData.players) {
+                        const player = cachedData.players[playerNumber]; // 등번호로 직접 접근
+                        if (player) {
+                            console.log("player : ", player);                            
+                            displayPlayerDetails(player); // 선수 상세 정보 표시
+                            displayPlayerRecord(player); // 선수 기록 표시
+                            document.getElementById('player-details').style.display = 'block'; // 상세 정보 숨김
+                            document.getElementById('player-list').style.display = 'none'; // 선수 목록 표시
+                        } else {
+                            console.error(`Player not found for number: ${playerNumber}`);
+                        }
+                    } else {
+                        console.error('Cached data or players not available');
+                    }
+                });
+
+                modifyButton.setAttribute('data-player-number', number);
+
+                playerRow.appendChild(playerInfo);
+                playerRow.appendChild(modifyButton);
+                container.appendChild(playerRow);
+            });
+        }
+
+        function displayPlayerDetails(player) {
+            const playerDetailsElement = document.getElementById('player-details');
+            playerDetailsElement.style.display = 'block'; // 상세 정보 표시
+            document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
+            playerDetailsElement.innerHTML = `
+                                                <button id="back-to-list" class="back-button" style="margin-bottom: 10px;">선수 목록</button>
+                                                <div class="divider"></div>
+                                                <div>
+                                                    <span class="label">이름: </span><span class="value">${player.name}</span> <span class="label">NO.${player.number}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="label">포지션: </span><span class="value">${player.posi}</span> <span class="label">${player.subPosi}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="label">신체: </span><span class="value">${player.height}cm</span>, <span class="value">${player.weight}kg</span>
+                                                </div>
+                                                <div>
+                                                    <span class="label">출생: </span><span class="value">${player.birth}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="label">국적: </span><span class="value">${player.nation}</span>
+                                                </div>
+                                                <div class="divider"></div>
+                                            `;
+
+                // "선수 목록" 버튼 이벤트 리스너 등록
+                const backButton = document.getElementById('back-to-list');
+                backButton.addEventListener('click', function () {
+                playerDetailsElement.style.display = 'none'; // 상세 정보 숨김
+                document.getElementById('player-list').style.display = 'block'; // 선수 목록 표시
+            });
+        }
+
+        function displayPlayerRecord(player) {
+            const playerDetailsElement = document.getElementById('player-details'); // 요소를 함수 내부에서 다시 가져옴
+            const allRecords = { ...cachedData.recordAll?.[player.number] || {} };
+            if (Object.keys(allRecords).length === 0) {
+                return; // 기록이 없으면 함수 종료
+            }
+
+            let summary = {
+                경기수: 0,
+                득점: 0,
+                도움: 0,
+                공격P: 0,
+            };
+
+            const yearRecords = Object.entries(allRecords);
+
+            // 통산 기록 계산
+            yearRecords.forEach(([year, record]) => {
+                summary.경기수 += parseInt(record.matches, 10);
+                summary.득점 += parseInt(record.goals, 10);
+                summary.도움 += parseInt(record.assists, 10);
+                summary.공격P += parseInt(record.attackP, 10);
+            });
+
+            let recordHtml = `
+                                <div class="record-container">
+                                    <div class="record-header">
+                                        <span class="title">통산기록</span>
+                                        <span class="subtitle">최근 10년 데이터</span>
+                                    </div>
+                                    <table class="record-table">
+                                        <thead>
+                                            <tr>
+                                                <th>시즌</th>
+                                                <th>경기수</th>
+                                                <th>득점</th>
+                                                <th>도움</th>
+                                                <th>공격P</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="summary">
+                                                <td>통산</td>
+                                                <td>${summary.경기수}</td>
+                                                <td>${summary.득점}</td>
+                                                <td>${summary.도움}</td>
+                                                <td>${summary.공격P}</td>
+                                            </tr>
+                            `;
+
+            yearRecords
+                .sort((a, b) => parseInt(b[0], 10) - parseInt(a[0], 10))
+                .forEach(([year, record], index) => {
+                    const rowClass = index < 1 ? 'year-data' : 'other-year-data';
+                    recordHtml += `
+                                    <tr class="${rowClass}">
+                                        <td>${year}</td>
+                                        <td>${record.matches}</td>
+                                        <td>${record.goals}</td>
+                                        <td>${record.assists}</td>
+                                        <td>${record.attackP}</td>
+                                    </tr>
+                                `;
+                });
+
+            recordHtml += `
+                            </tbody>
+                                </table>
+                            </div>
+                            `;
+
+            playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
+        }
+
+        // "선수 목록" 버튼 클릭 시 동작
+        document.addEventListener('DOMContentLoaded', function () {
+            const backButton = document.getElementById('back-to-list');
+            backButton.addEventListener('click', function () {
+                document.getElementById('player-details').style.display = 'none'; // 상세 정보 숨김
+                document.getElementById('player-list').style.display = 'block'; // 선수 목록 표시
+            });
+        });
+
         document.addEventListener("DOMContentLoaded", function () {            
             const searchInputElement = document.getElementById('search-input');
             const searchResultsElement = document.getElementById('search-results');
@@ -400,6 +584,7 @@
                     if (cachedData && cachedData.players) {
                         const player = Object.values(cachedData.players).find(p => p.name === playerName);
                         if (player) {
+                            console.log("click player : ", player);
                             displayPlayerDetails(player);
                             displayPlayerRecord(player);
                             searchResultsElement.innerHTML = ""; // 검색 결과 닫기
@@ -430,105 +615,9 @@
                 }
             });
 
-            function displayPlayerDetails(player) {
-                playerDetailsElement.innerHTML = `
-                    <div class="divider"></div>
-                    <div>
-                        <span class="label">이름: </span><span class="value">${player.name}</span> <span class="label">NO.${player.number}</span>
-                    </div>
-                    <div>
-                        <span class="label">포지션: </span><span class="value">${player.posi}</span> <span class="label">${player.subPosi}</span>
-                    </div>
-                    <div>
-                        <span class="label">신체: </span><span class="value">${player.height}cm</span>, <span class="value">${player.weight}kg</span>
-                    </div>
-                    <div>
-                        <span class="label">출생: </span><span class="value">${player.birth}</span>
-                    </div>
-                    <div>
-                        <span class="label">국적: </span><span class="value">${player.nation}</span>
-                    </div>
-                    <div class="divider"></div>
-                `;
-            }
-
-            function displayPlayerRecord(player) {
-                const allRecords = { ...cachedData.recordAll?.[player.number] || {} };
-                if (Object.keys(allRecords).length === 0) {
-                    return; // 기록이 없으면 함수 종료
-                }
-
-                let summary = {
-                    경기수: 0,
-                    득점: 0,
-                    도움: 0,
-                    공격P: 0,
-                };
-
-                const yearRecords = Object.entries(allRecords);
-
-                // 통산 기록 계산
-                yearRecords.forEach(([year, record]) => {
-                    summary.경기수 += parseInt(record.matches, 10);
-                    summary.득점 += parseInt(record.goals, 10);
-                    summary.도움 += parseInt(record.assists, 10);
-                    summary.공격P += parseInt(record.attackP, 10);
-                });
-
-                let recordHtml = `
-                                    <div class="record-container">
-                                        <div class="record-header">
-                                            <span class="title">통산기록</span>
-                                            <span class="subtitle">최근 10년 데이터</span>
-                                        </div>
-                                        <table class="record-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>시즌</th>
-                                                    <th>경기수</th>
-                                                    <th>득점</th>
-                                                    <th>도움</th>
-                                                    <th>공격P</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr class="summary">
-                                                    <td>통산</td>
-                                                    <td>${summary.경기수}</td>
-                                                    <td>${summary.득점}</td>
-                                                    <td>${summary.도움}</td>
-                                                    <td>${summary.공격P}</td>
-                                                </tr>
-                                `;
-
-                yearRecords
-                    .sort((a, b) => parseInt(b[0], 10) - parseInt(a[0], 10))
-                    .forEach(([year, record], index) => {
-                        const rowClass = index < 1 ? 'year-data' : 'other-year-data';
-                        recordHtml += `
-                                            <tr class="${rowClass}">
-                                                <td>${year}</td>
-                                                <td>${record.matches}</td>
-                                                <td>${record.goals}</td>
-                                                <td>${record.assists}</td>
-                                                <td>${record.attackP}</td>
-                                            </tr>
-                                        `;
-                    });
-
-                recordHtml += `
-                                        </tbody>
-                                            </table>
-                                        </div>
-                                        `;
-
-                playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
-            }
-
             window.onload = function () {
-                fetchData();
+                fetchData();    
             };
-
         });
     </script>
 </head>
@@ -540,7 +629,12 @@
         </div>
     </div>
     <div id="search-results" class="search-results"></div>
-    <div id="player-details" class="player-details"></div>
+    <div id="player-details" class="player-details" style="display: none;">
+        <button id="back-to-list" class="back-button" style="margin-bottom: 10px;">선수 목록</button>
+    </div>
+
+    <!-- 선수 카드들이 표시될 컨테이너 -->
+    <div id="player-list" class="player-list"></div>
 
     <div id="status">데이터 상태: 로딩 중...</div>
     <div id="lastUpdate"></div>
