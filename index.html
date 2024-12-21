@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -521,7 +521,6 @@
 
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
-                    
                     const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
 
                     if (Object.keys(thisYearRecords).length === 0) {
@@ -637,6 +636,49 @@
             }
 
             return recordAll;
+        }
+
+        // 공통 유틸리티 함수: GitHub 파일 가져오기
+        async function getGitHubFile(repoOwner, repoName, filePath) {
+            const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+                headers: {
+                    Authorization: `token ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                const fileData = await response.json();
+                return {
+                    sha: fileData.sha,
+                    content: JSON.parse(base64ToUtf8(fileData.content)),
+                };
+            } else {
+                console.warn(`파일을 찾을 수 없습니다: ${filePath}`);
+                return { sha: null, content: {} };
+            }
+        }
+
+        // 공통 유틸리티 함수: GitHub 파일 저장
+        async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, message) {
+            const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `token ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    message,
+                    content: utf8ToBase64(JSON.stringify(content, null, 2)),
+                    sha: sha || null, // 새 파일인 경우 sha를 null로 처리
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
+            }
+
+            console.log(`${filePath} 파일이 성공적으로 저장되었습니다.`);
+            return await response.json();
         }
 
         function createCards(players, thisYearRecords) {
