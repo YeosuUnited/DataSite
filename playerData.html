@@ -254,6 +254,7 @@
             const cached = localStorage.getItem('cachedData');
             if (cached) {
                 const data = JSON.parse(cached);
+                cachedData = data;
                 document.getElementById('status').innerText = '서버 문제로 캐싱된 데이터를 사용 중입니다.';
                 const lastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
                 updateTimeInfo(lastUpdated);
