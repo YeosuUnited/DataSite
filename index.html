@@ -473,6 +473,8 @@
                     // token을 localStorage에 저장
                     localStorage.setItem('token', token)
 
+                    console.log("firstToken : ", token);
+
                     // 가져올 파일들 (GitHub Contents API를 활용)
                     const files = [
                         'assets/data/player_data.json',
@@ -502,6 +504,8 @@
                                 ? responses[2].value.content
                                 : {},
                     };
+
+                    console.log("data : ", data);
 
                     const recordAllSha =
                         responses[1].status === 'fulfilled'
@@ -679,6 +683,16 @@
 
             console.log(`${filePath} 파일이 성공적으로 저장되었습니다.`);
             return await response.json();
+        }
+
+        // UTF-8 문자열을 Base64로 변환
+        function utf8ToBase64(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+        }
+
+        // Base64 문자열을 UTF-8로 변환
+        function base64ToUtf8(str) {
+            return decodeURIComponent(escape(atob(str)));
         }
 
         function createCards(players, thisYearRecords) {
