@@ -276,14 +276,6 @@
             margin-left: 5px;
         }
 
-        .matches-defaultBox {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
-            padding: 0 10px;
-        }
-
         .matchtotal-box {
             width: 100%;
             background-color: #f1f1f1;
@@ -371,24 +363,7 @@
 
         .dark-row {
             background-color: #e0e0e0; /* 진한 회색 */
-        }
-
-        /* 경기 수정 컨테이너 스타일 */
-        #match-modify-container {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 600px;
-            margin: 20px auto;
-        }
-
-        .matches-defaultBox {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            background-color: #f8f8f8;
-        }
+        }        
 
         /* 선수 추가 폼 스타일 */
         #player-add-form-container {
@@ -448,9 +423,14 @@
 
         /* 반응형 디자인 */
         @media (max-width: 768px) {
-            #match-modify-container, #player-add-form-container {
+            #player-add-form-container {
                 padding: 15px;
                 margin: 10px;
+            }
+
+            #match-modify-container{
+                padding: 5px;
+                margin: 5px 0;
             }
 
             #player-add-form input, #player-add-form select {
@@ -593,58 +573,82 @@
 
             console.log(`[fetchData] 실행: 현재 시간 - ${now}, 캐시된 마지막 업데이트 시간 - ${cachedLastUpdated}`);
 
-            // 오버레이 활성화
-            const loadingOverlay = document.getElementById('loading-overlay');
-            loadingOverlay.classList.add('active');
+            toggleLoadingOverlay(true);
 
             if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
                 try {
                     document.getElementById('status').innerText = '데이터를 불러오는 중...';
                     console.log('[fetchData] 데이터 새로 요청 중...');
 
-                    // 3개의 JSON 파일을 병렬로 가져오기
                     const urls = [
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_2.text',
                     ];
 
-                    const responses = await Promise.allSettled(
-                        urls.map((url, index) =>
+                    const tokenResponses = await Promise.allSettled(
+                        urls.map(url =>
                             fetch(url)
                                 .then(response => {
-                                    console.log(`[fetchData] URL ${index + 1} (${url}) 응답 상태: ${response.status}`);
                                     if (!response.ok) {
                                         console.error(`네트워크 오류 발생: ${url}`);
                                         throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
                                     }
-                                    // text 파일과 JSON 파일 구분
-                                    if (url.endsWith('.text')) {
-                                        return response.text();
-                                    }
-                                    return response.json();
+                                    return response.text();
                                 })
+                        )
+                    );
+
+                    // token 파일 내용 합치기
+                    const token_1 = tokenResponses[0].status === 'fulfilled' ? tokenResponses[0].value.replace(/\n/g, '') : '';
+                    const token_2 = tokenResponses[1].status === 'fulfilled' ? tokenResponses[1].value.replace(/\n/g, '') : '';
+                    token = token_1 + token_2;
+
+                    // token을 localStorage에 저장
+                    localStorage.setItem('token', token)
+
+                    // 가져올 파일들 (GitHub Contents API를 활용)
+                    const files = [
+                        'assets/data/player_data.json',
+                        'assets/data/records_allTime.json',
+                        'assets/data/matches_total.json',
+                    ];
+
+                    // 병렬 요청 수행
+                    const responses = await Promise.allSettled(
+                        files.map((filePath) =>
+                            getGitHubFile('YeosuUnited', 'DataSite', filePath, token)
                         )
                     );
 
                     // 응답 데이터를 개별적으로 처리
                     const data = {
-                        players: responses[0].status === 'fulfilled' ? responses[0].value : {},
-                        recordAll: responses[1].status === 'fulfilled' ? responses[1].value : {},
-                        matchesTotal: responses[2].status === 'fulfilled' ? responses[2].value : {},
+                        players:
+                            responses[0].status === 'fulfilled'
+                                ? responses[0].value.content
+                                : {},
+                        recordAll:
+                            responses[1].status === 'fulfilled'
+                                ? responses[1].value.content
+                                : {},
+                        matchesTotal:
+                            responses[2].status === 'fulfilled'
+                                ? responses[2].value.content
+                                : {},
                     };
 
-                    // token 파일 내용 합치기
-                    const token_1 = responses[3].status === 'fulfilled' ? responses[3].value.replace(/\n/g, '') : '';
-                    const token_2 = responses[4].status === 'fulfilled' ? responses[4].value.replace(/\n/g, '') : '';
-                    token = token_1 + token_2;
+                    const recordAllSha =
+                        responses[1].status === 'fulfilled'
+                            ? responses[1].value.sha
+                            : null;
 
-                    // token을 localStorage에 저장
-                    localStorage.setItem('token', token);
+                    const currentYear = new Date().getFullYear();
+                    data.recordAll = await addMissingYearData(
+                        data.recordAll,
+                        currentYear,
+                        recordAllSha
+                    );
 
-                    // 데이터를 캐싱 변수에 저장
+                    // 데이터를 전역 변수 및 localStorage에 저장
                     cachedData = data;
                     const lastUpdated = now;
 
@@ -658,13 +662,43 @@
                     console.error('Error fetching data:', error);
                     useCachedData();
                 } finally {
-                    // 오버레이 비활성화
-                    loadingOverlay.classList.remove('active');
+                    toggleLoadingOverlay(false);
                 }
             } else {
                 useCachedData();
-                loadingOverlay.classList.remove('active');
+                toggleLoadingOverlay(false);
             }
+        }
+
+        async function addMissingYearData(recordAll, year, sha) {
+            let isModify = false;
+            for (const playerNumber in recordAll) {
+                // 해당 선수에 year 키가 없으면 추가
+                if (!recordAll[playerNumber][year]) {
+                    isModify = true;
+                    recordAll[playerNumber][year] = {
+                        goals: 0,
+                        assists: 0,
+                        attackP: 0,
+                        matches: 0,
+                    };
+                }
+            }
+
+            // 누락된 연도가 하나라도 있었다면 GitHub에 저장
+            if (isModify) {
+                await saveGitHubFile(
+                    'YeosuUnited',
+                    'DataSite',
+                    'assets/data/records_allTime.json',
+                    recordAll,
+                    sha, // 기존 파일의 sha
+                    `Add ${year} data if missing`
+                );
+                console.log(`"${year}" 데이터가 없던 선수에게 기본값을 추가하고, GitHub에 업로드했습니다.`);
+            }
+
+            return recordAll;
         }
 
         async function fetchLatestData() {
@@ -1655,7 +1689,19 @@
                 if (!playerNumber) throw new Error(`선수 ${playerName}의 등번호를 찾을 수 없습니다.`);
 
                 const playerRecord = updatedRecordAll[playerNumber] || {};
-                const yearData = playerRecord[year] || { goals: 0, assists: 0, attackP: 0, matches: 0 };
+
+                // 만약 year 데이터가 없으면 로직을 중단하고 팝업을 띄우도록 처리
+                if (!playerRecord[year]) {
+                    // 브라우저 팝업
+                    alert('데이터에 문제가 있으니 페이지를 새로고침이 필요합니다.');
+                    // 페이지 새로고침
+                    location.reload();
+
+                    // 함수 전체 로직을 중단하려면 아래와 같이 처리
+                    throw new Error(`연도 ${year} 데이터가 존재하지 않습니다. 페이지를 새로고침하세요.`);
+                }
+
+                const yearData = playerRecord[year];
 
                 const playerGoals = goalPlayers.filter((name) => name === playerName).length;
                 const playerAssists = assistPlayers.filter((name) => name === playerName).length;
