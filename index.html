@@ -473,8 +473,6 @@
                     // token을 localStorage에 저장
                     localStorage.setItem('token', token)
 
-                    console.log("firstToken : ", token);
-
                     // 가져올 파일들 (GitHub Contents API를 활용)
                     const files = [
                         'assets/data/player_data.json',
@@ -504,8 +502,6 @@
                                 ? responses[2].value.content
                                 : {},
                     };
-
-                    console.log("data : ", data);
 
                     const recordAllSha =
                         responses[1].status === 'fulfilled'
