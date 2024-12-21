@@ -386,7 +386,11 @@
                 playerRow.style.borderBottom = '1px solid #ccc';
 
                 const playerInfo = document.createElement('span');
-                playerInfo.textContent = `${player.name} (등번호: ${number})`;
+                playerInfo.innerHTML = `
+                                        <span style="font-weight: bold;">${player.name}</span>
+                                        <span style="color: gray; font-size: 0.9em; margin-left: 0px;">${player.posi}</span>
+                                        <span style="color: gray; font-size: 0.9em; position: absolute; left: 130px;">no.<span style="font-weight: bold;">${number}</span>
+                                    `;
 
                 const modifyButton = document.createElement('button');
                 modifyButton.textContent = '상세기록';
