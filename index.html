@@ -521,9 +521,7 @@
 
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
-
-                    // 올해 데이터 필터링
-                    const currentYear = new Date().getFullYear();
+                    
                     const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
 
                     if (Object.keys(thisYearRecords).length === 0) {
