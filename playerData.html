@@ -142,6 +142,25 @@
                 background-color: white;
                 color: #8F8F9D;
             }
+
+        .back-button {
+            background-color: #2565D0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
+            margin-bottom: 10px; /* margin-bottom을 CSS로 이동 */
+        }
+
+            .back-button:hover {
+                background-color: #1E4FA6;
+                transform: scale(1.05);
+            }
     </style>
     <script>
         let cachedData = null; // 캐싱 데이터를 저장
@@ -634,7 +653,7 @@
     </div>
     <div id="search-results" class="search-results"></div>
     <div id="player-details" class="player-details" style="display: none;">
-        <button id="back-to-list" class="back-button" style="margin-bottom: 10px;">선수 목록</button>
+        <button id="back-to-list" class="back-button">선수 목록</button>
     </div>
 
     <!-- 선수 카드들이 표시될 컨테이너 -->
