@@ -366,6 +366,7 @@
     <script>
         let cachedData = null; // 캐싱 데이터를 저장
         let currentMatchData = null; // 현재 선택된 경기 데이터를 저장
+        let token = null;
 
         async function fetchData() {
             const now = new Date().getTime();
@@ -376,12 +377,11 @@
                     document.getElementById('status').innerText = '데이터를 불러오는 중...';
 
                     const urls = [
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/player_data.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/records_allTime.json',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/matches_total.json',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
+                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_2.text',
                     ];
 
-                    const responses = await Promise.allSettled(
+                    const tokenResponses = await Promise.allSettled(
                         urls.map(url =>
                             fetch(url)
                                 .then(response => {
@@ -389,21 +389,63 @@
                                         console.error(`네트워크 오류 발생: ${url}`);
                                         throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
                                     }
-                                    return response.json();
+                                    return response.text();
                                 })
+                        )
+                    );
+
+                    // token 파일 내용 합치기
+                    const token_1 = tokenResponses[0].status === 'fulfilled' ? tokenResponses[0].value.replace(/\n/g, '') : '';
+                    const token_2 = tokenResponses[1].status === 'fulfilled' ? tokenResponses[1].value.replace(/\n/g, '') : '';
+                    token = token_1 + token_2;
+
+                    // token을 localStorage에 저장
+                    localStorage.setItem('token', token)
+
+                    // 가져올 파일들 (GitHub Contents API를 활용)
+                    const files = [
+                        'assets/data/player_data.json',
+                        'assets/data/records_allTime.json',
+                        'assets/data/matches_total.json',
+                    ];
+
+                    // 병렬 요청 수행
+                    const responses = await Promise.allSettled(
+                        files.map((filePath) =>
+                            getGitHubFile('YeosuUnited', 'DataSite', filePath, token)
                         )
                     );
 
                     // 응답 데이터를 개별적으로 처리
                     const data = {
-                        players: responses[0].status === 'fulfilled' ? responses[0].value : {},
-                        recordAll: responses[1].status === 'fulfilled' ? responses[1].value : {},
-                        matchesTotal: responses[2].status === 'fulfilled' ? responses[2].value : {},
+                        players:
+                            responses[0].status === 'fulfilled'
+                                ? responses[0].value.content
+                                : {},
+                        recordAll:
+                            responses[1].status === 'fulfilled'
+                                ? responses[1].value.content
+                                : {},
+                        matchesTotal:
+                            responses[2].status === 'fulfilled'
+                                ? responses[2].value.content
+                                : {},
                     };
+
+                    const recordAllSha =
+                        responses[1].status === 'fulfilled'
+                            ? responses[1].value.sha
+                            : null;
+
+                    const currentYear = new Date().getFullYear();
+                    data.recordAll = await addMissingYearData(
+                        data.recordAll,
+                        currentYear,
+                        recordAllSha
+                    );
 
                     // 데이터를 캐싱 변수에 저장
                     cachedData = data;
-
                     const lastUpdated = now;
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
@@ -422,6 +464,14 @@
         }
 
         function useCachedData() {
+            const cachedToken = localStorage.getItem('token');
+            console.log("cachedToken : ", cachedToken);
+            if (cachedToken) {
+                token = cachedToken;
+            }
+            else {
+                document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+            }
             const cached = localStorage.getItem('cachedData');
             if (cached) {
                 try {
@@ -455,6 +505,37 @@
             const period = hours < 12 ? '오전' : '오후';
             const formattedHours = hours % 12 || 12;
             return `${period} ${formattedHours}시${minutes ? ` ${minutes}분` : ''}`;
+        }
+
+        async function addMissingYearData(recordAll, year, sha) {
+            let isModify = false;
+            for (const playerNumber in recordAll) {
+                // 해당 선수에 year 키가 없으면 추가
+                if (!recordAll[playerNumber][year]) {
+                    isModify = true;
+                    recordAll[playerNumber][year] = {
+                        goals: 0,
+                        assists: 0,
+                        attackP: 0,
+                        matches: 0,
+                    };
+                }
+            }
+
+            // 누락된 연도가 하나라도 있었다면 GitHub에 저장
+            if (isModify) {
+                await saveGitHubFile(
+                    'YeosuUnited',
+                    'DataSite',
+                    'assets/data/records_allTime.json',
+                    recordAll,
+                    sha, // 기존 파일의 sha
+                    `Add ${year} data if missing`
+                );
+                console.log(`"${year}" 데이터가 없던 선수에게 기본값을 추가하고, GitHub에 업로드했습니다.`);
+            }
+
+            return recordAll;
         }
 
         function renderRecentMatches(matches) {
@@ -690,8 +771,8 @@
                 .sort(([_, matchA], [__, matchB]) => new Date(matchB.date) - new Date(matchA.date)); // 날짜 내림차순
 
             opponentMatches.forEach(([key, match]) => {
-                const formattedDate = new Date(matchData.date).toLocaleDateString('ko-KR'); // 예: "2024. 12. 17."
-                const formattedTime = new Date(matchData.date).toLocaleTimeString('ko-KR', {
+                const formattedDate = new Date(match.date).toLocaleDateString('ko-KR'); // 예: "2024. 12. 17."
+                const formattedTime = new Date(match.date).toLocaleTimeString('ko-KR', {
                     hour: '2-digit',
                     minute: '2-digit',
                 }); // 예: "오후 9:07"
