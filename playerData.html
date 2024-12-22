@@ -398,21 +398,41 @@
 
             // 선수 리스트 생성
             Object.entries(cachedData.players).forEach(([number, player]) => {
+                const playerImage = document.createElement('img');
+                playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
+                playerImage.alt = player.name;
+                playerImage.className = 'player-image';
+                playerImage.style.width = '25px';
+                playerImage.style.height = '25px';
+                playerImage.style.borderRadius = '50%';
+                playerImage.style.objectFit = 'cover';
+                playerImage.style.marginRight = '10px';
+                playerImage.onerror = () => {
+                    playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+                };
+
                 const playerRow = document.createElement('div');
+                playerRow.className = 'player-row';
                 playerRow.style.display = 'flex';
                 playerRow.style.justifyContent = 'space-between';
                 playerRow.style.padding = '10px 0';
                 playerRow.style.borderBottom = '1px solid #ccc';
 
                 const playerInfo = document.createElement('span');
+                playerInfo.style.display = 'flex';
+                playerInfo.style.alignItems = 'center'; // 이미지를 텍스트와 수직 정렬
                 playerInfo.innerHTML = `
                                         <span style="font-weight: bold;">${player.name}</span>
-                                        <span style="color: gray; font-size: 0.9em; margin-left: 0px;">${player.posi}</span>
-                                        <span style="color: gray; font-size: 0.9em; position: absolute; left: 130px;">no.<span style="font-weight: bold;">${number}</span>
-                                    `;
+                                        <span style="color: gray; font-size: 0.9em; margin-left: 5px;">${player.posi}</span>
+                                        <span style="color: gray; font-size: 0.9em; position: absolute; left: 160px;">no.<span style="font-weight: bold;">${number}</span>
+                                       `;
+
+                // 이미지 노드를 playerInfo의 가장 앞에 추가
+                playerInfo.prepend(playerImage);
 
                 const modifyButton = document.createElement('button');
                 modifyButton.textContent = '상세기록';
+                modifyButton.className = 'modify-button';
                 modifyButton.style.backgroundColor = '#4CAF50';
                 modifyButton.style.color = 'white';
                 modifyButton.style.border = 'none';
@@ -451,23 +471,38 @@
             const playerDetailsElement = document.getElementById('player-details');
             playerDetailsElement.style.display = 'block'; // 상세 정보 표시
             document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
+
             playerDetailsElement.innerHTML = `
                                                 <button id="back-to-list" class="back-button" style="margin-bottom: 10px;">선수 목록</button>
                                                 <div class="divider"></div>
-                                                <div>
-                                                    <span class="label">이름: </span><span class="value">${player.name}</span> <span class="label">NO.${player.number}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">포지션: </span><span class="value">${player.posi}</span> <span class="label">${player.subPosi}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">신체: </span><span class="value">${player.height}cm</span>, <span class="value">${player.weight}kg</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">출생: </span><span class="value">${player.birth}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">국적: </span><span class="value">${player.nation}</span>
+                                                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; margin-bottom: -10px">
+                                                 <!-- 정보 섹션 -->
+                                                    <div style="flex: 1; margin-right: 20px;">
+                                                        <div>
+                                                            <span class="label">이름: </span><span class="value">${player.name}</span> <span class="label">NO.${player.number}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="label">포지션: </span><span class="value">${player.posi}</span> <span class="label">${player.subPosi}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="label">신체: </span><span class="value">${player.height}cm</span>, <span class="value">${player.weight}kg</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="label">출생: </span><span class="value">${player.birth}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="label">국적: </span><span class="value">${player.nation}</span>
+                                                        </div>
+                                                    </div>
+                                                <!-- 사진 섹션 -->
+                                                    <div style="flex-shrink: 0;">
+                                                        <img
+                                                            src="https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png" 
+                                                            alt="${player.name}" 
+                                                            style="width: 120px; height: 150px; border-radius: 10px; object-fit: cover; margin-top:-10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"
+                                                            onerror="this.src='https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png';">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="divider"></div>
                                             `;
