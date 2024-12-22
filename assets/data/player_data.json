@@ -269,16 +269,6 @@
     "subPosi": "ST",
     "weight": "64"
   },
-  "94": {
-    "name": "테스트3",
-    "birth": "20241207",
-    "nation": "대한민국",
-    "number": "94",
-    "posi": "CB",
-    "subPosi": "",
-    "height": 173,
-    "weight": 75
-  },
   "95": {
     "name": "테스트2",
     "birth": "20241225",
