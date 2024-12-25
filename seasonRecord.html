@@ -613,6 +613,7 @@
         function setSortCriteria(criteria) {
             const sortCriteriaElement = document.getElementById('sortCriteria');
             sortCriteriaElement.textContent = criteria;
+            currentSortCriteria = criteria;
 
             const filteredData = getProcessedData(recordAllData, playerInfoData, currentYear);
             let sortedData;
