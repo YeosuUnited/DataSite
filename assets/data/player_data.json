@@ -269,16 +269,6 @@
     "subPosi": "ST",
     "weight": "64"
   },
-  "95": {
-    "name": "테스트2",
-    "birth": "20241225",
-    "nation": "대만",
-    "number": "95",
-    "posi": "CAM",
-    "subPosi": "",
-    "height": 186,
-    "weight": 75
-  },
   "99": {
     "birth": "19901113",
     "height": "174",
