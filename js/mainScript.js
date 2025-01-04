@@ -7,8 +7,6 @@ async function fetchData() {
 
     if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
         try {
-            console.log("데이터를 불러오는 중...");
-
             const urls = [
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_2.text',
