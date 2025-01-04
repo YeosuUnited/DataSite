@@ -1,4 +1,3 @@
-
         let cachedData = null; // 캐싱 데이터를 저장
         let currentMatchData = null; // 현재 선택된 경기 데이터를 저장
         let token = null;
