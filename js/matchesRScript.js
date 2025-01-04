@@ -8,7 +8,7 @@
 
             if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
                 try {
-                    document.getElementById('status').innerText = '데이터를 불러오는 중...';
+                    console.log("데이터를 불러오는 중...");
 
                     const urls = [
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
@@ -84,8 +84,6 @@
                     localStorage.setItem('cachedData', JSON.stringify(cachedData));
                     localStorage.setItem('lastUpdated', lastUpdated);
 
-                    document.getElementById('status').innerText = '데이터 로딩 완료.';
-                    updateTimeInfo(lastUpdated);
                     renderRecentMatches(data.matchesTotal);
 
                 } catch (error) {
@@ -104,7 +102,7 @@
                 token = cachedToken;
             }
             else {
-                document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+                console.log("데이터를 불러오는 중 오류가 발생했습니다.");
             }
             const cached = localStorage.getItem('cachedData');
             if (cached) {
@@ -112,25 +110,18 @@
                     const parsedData = JSON.parse(cached);
                     if (parsedData && parsedData.matchesTotal) {
                         cachedData = parsedData; // cachedData를 초기화
-                        document.getElementById('status').innerText = '서버 문제로 캐싱된 데이터를 사용 중입니다.';
+                        console.log("서버 문제, 캐싱된 데이터를 사용 중입니다.");
                         const lastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
-                        updateTimeInfo(lastUpdated);
                         renderRecentMatches(cachedData.matchesTotal); // 데이터 렌더링
                     } else {
                         throw new Error('캐싱된 데이터가 올바르지 않습니다.');
                     }
                 } catch (error) {
                     console.error('캐싱된 데이터 파싱 중 오류:', error);
-                    document.getElementById('status').innerText = '캐싱된 데이터가 손상되었습니다.';
                 }
             } else {
-                document.getElementById('status').innerText = '캐싱된 데이터가 없습니다.';
+                console.log("캐싱된 데이터가 없습니다.");
             }
-        }
-
-        function updateTimeInfo(lastUpdated) {
-            const lastUpdatedTime = new Date(lastUpdated);
-            document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
         }
 
         function formatTime(date) {
