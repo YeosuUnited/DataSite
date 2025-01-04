@@ -7,7 +7,7 @@ async function fetchData() {
 
     if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
         try {
-            document.getElementById('status').innerText = '데이터를 불러오는 중...';
+            console.log("데이터를 불러오는 중...");
 
             const urls = [
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
@@ -83,9 +83,6 @@ async function fetchData() {
             localStorage.setItem('cachedData', JSON.stringify(cachedData));
             localStorage.setItem('lastUpdated', lastUpdated);
 
-            // 데이터 렌더링
-            document.getElementById('status').innerText = '데이터 로딩 완료.';
-            updateTimeInfo(lastUpdated);
             renderPlayerList();
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -103,24 +100,18 @@ function useCachedData() {
         token = cachedToken;
     }
     else {
-        document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+        console.log("데이터를 불러오는 중 오류가 발생했습니다.");
     }
     const cached = localStorage.getItem('cachedData');
     if (cached) {
         const data = JSON.parse(cached);
         cachedData = data;
-        document.getElementById('status').innerText = '서버 문제로 캐싱된 데이터를 사용 중입니다.';
+        console.log("서버 문제, 캐싱된 데이터를 사용 중입니다.");
         const lastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
-        updateTimeInfo(lastUpdated);
         renderPlayerList();
     } else {
-        document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다. 캐싱된 데이터가 없습니다.';
+        console.log("캐싱된 데이터가 없습니다.");
     }
-}
-
-function updateTimeInfo(lastUpdated) {
-    const lastUpdatedTime = new Date(lastUpdated);
-    document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
 }
 
 function formatTime(date) {
