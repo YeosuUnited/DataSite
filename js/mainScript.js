@@ -7,7 +7,7 @@ async function fetchData() {
 
     if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
         try {
-            document.getElementById('status').innerText = '데이터를 불러오는 중...';
+            console.log("데이터를 불러오는 중...");
 
             const urls = [
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
@@ -139,12 +139,12 @@ function useCachedData() {
             token = cachedToken;
         }
         else {
-            document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+            console.log("데이터를 불러오는 중 오류가 발생했습니다.");
         }
         const cached = localStorage.getItem('cachedData');
         if (cached) {
             cachedData = JSON.parse(cached);
-            document.getElementById('status').innerText = '서버 문제 발생, 캐싱된 데이터를 사용 중입니다.';
+            console.log("서버 문제, 캐싱된 데이터를 사용 중입니다.");
 
             const currentYear = new Date().getFullYear();
 
@@ -162,7 +162,6 @@ function useCachedData() {
         }
     } catch (error) {
         console.error('캐싱 데이터를 사용하는 중 오류 발생:', error);
-        document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
     }
 }
 
@@ -253,7 +252,6 @@ function base64ToUtf8(str) {
 function createCards(players, thisYearRecords) {
     if (!thisYearRecords || typeof thisYearRecords !== 'object' || Object.keys(thisYearRecords).length === 0) {
         console.error("올해 데이터가 없습니다.");
-        document.getElementById('status').innerText = "올해 데이터가 없습니다.";
         return;
     }
 
