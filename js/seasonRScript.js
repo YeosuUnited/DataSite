@@ -19,7 +19,7 @@ async function fetchData() {
 
     if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
         try {
-            document.getElementById('status').innerText = '데이터를 불러오는 중...';
+            console.log("데이터를 불러오는 중...");
 
             const urls = [
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
@@ -99,12 +99,8 @@ async function fetchData() {
 
             initializePlayerInfoData(data.players);
 
-            document.getElementById('status').innerText = '데이터 로딩 완료.';
-            updateTimeInfo(lastUpdated);
-
         } catch (error) {
             console.error('데이터 로드 실패:', error);
-            document.getElementById('status').innerText = '데이터를 불러올 수 없습니다.';
             useCachedData();
         }
     } else {
@@ -148,7 +144,7 @@ function useCachedData() {
         token = cachedToken;
     }
     else {
-        document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+        console.log("데이터를 불러오는 중 오류가 발생했습니다.");
     }
 
     const cached = localStorage.getItem('cachedData');
@@ -156,19 +152,9 @@ function useCachedData() {
         cachedData = JSON.parse(cached);
         recordAllData = cachedData.recordAll;
         initializePlayerInfoData(cachedData.players);
-        document.getElementById('status').innerText = '서버 문제 발생, 캐싱된 데이터를 사용 중입니다.';
+        console.log("캐싱된 데이터를 사용 중입니다.");
     } else {
         throw new Error("캐싱된 데이터가 없습니다.");
-    }
-}
-
-function updateTimeInfo(lastUpdated) {
-    const lastUpdatedElement = document.getElementById('lastUpdate');
-    if (lastUpdatedElement) {
-        const lastUpdatedTime = new Date(lastUpdated);
-        lastUpdatedElement.innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
-    } else {
-        console.warn("'lastUpdate' 요소가 존재하지 않습니다.");
     }
 }
 
@@ -710,10 +696,9 @@ window.onload = async function () {
             prevYearButton.addEventListener('click', () => changeYear('prev'));
             nextYearButton.addEventListener('click', () => changeYear('next'));
         } else {
-            document.getElementById('status').textContent = '데이터를 불러올 수 없습니다.';
+            console.log("데이터를 불러오는 중 오류가 발생했습니다.");
         }
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
-        document.getElementById('status').textContent = '데이터를 불러올 수 없습니다.';
     }
 };
