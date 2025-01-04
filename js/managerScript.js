@@ -11,7 +11,7 @@ async function fetchData() {
 
     if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
         try {
-            document.getElementById('status').innerText = '데이터를 불러오는 중...';
+            console.log("데이터를 불러오는 중...");
             console.log('[fetchData] 데이터 새로 요청 중...');
 
             const urls = [
@@ -88,9 +88,6 @@ async function fetchData() {
 
             localStorage.setItem('cachedData', JSON.stringify(cachedData));
             localStorage.setItem('lastUpdated', lastUpdated);
-
-            // 데이터 렌더링
-            updateTimeInfo();
 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -198,29 +195,17 @@ function useCachedData() {
         token = cachedToken;
     }
     else {
-        document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+        console.log("데이터를 불러오는 중 오류가 발생했습니다.");
     }
     const cached = localStorage.getItem('cachedData');
     if (cached) {
         cachedData = JSON.parse(cached);
-        document.getElementById('status').innerText = '서버 문제, 캐싱된 데이터를 사용 중입니다.';
-        updateTimeInfo();
+        console.log("서버 문제, 캐싱된 데이터를 사용 중입니다.");
 
         // createCards 호출 제거
         console.log('[useCachedData] 캐싱된 데이터:', cachedData);
     } else {
-        document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
-    }
-}
-
-function updateTimeInfo() {
-    const lastUpdated = localStorage.getItem('lastUpdated'); // localStorage에서 값 가져오기
-    if (lastUpdated) {
-        const lastUpdatedTime = new Date(parseInt(lastUpdated, 10)); // 10진수로 변환
-        document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
-    } else {
-        console.warn("[updateTimeInfo] lastUpdated 값이 없습니다.");
-        document.getElementById('lastUpdate').innerText = '최근 데이터 갱신 시간: 없음';
+        console.log("데이터를 불러오는 중 오류가 발생했습니다.");
     }
 }
 
