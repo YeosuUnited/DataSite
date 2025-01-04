@@ -7,8 +7,6 @@ async function fetchData() {
 
     if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
         try {
-            console.log("데이터를 불러오는 중...");
-
             const urls = [
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_2.text',
@@ -95,7 +93,6 @@ async function fetchData() {
 
 function useCachedData() {
     const cachedToken = localStorage.getItem('token');
-    console.log("cachedToken : ", cachedToken);
     if (cachedToken) {
         token = cachedToken;
     }
@@ -188,7 +185,6 @@ async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, messa
         throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
     }
 
-    console.log(`${filePath} 파일이 성공적으로 저장되었습니다.`);
     return await response.json();
 }
 
@@ -271,8 +267,7 @@ function renderPlayerList() {
             const playerNumber = this.getAttribute('data-player-number'); // 버튼에 설정된 번호 가져오기
             if (cachedData && cachedData.players) {
                 const player = cachedData.players[playerNumber]; // 등번호로 직접 접근
-                if (player) {
-                    console.log("player : ", player);                            
+                if (player) {                         
                     displayPlayerDetails(player); // 선수 상세 정보 표시
                     displayPlayerRecord(player); // 선수 기록 표시
                     document.getElementById('player-details').style.display = 'block'; // 상세 정보 숨김
@@ -468,7 +463,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (cachedData && cachedData.players) {
                 const player = Object.values(cachedData.players).find(p => p.name === playerName);
                 if (player) {
-                    console.log("click player : ", player);
                     displayPlayerDetails(player);
                     displayPlayerRecord(player);
                     searchResultsElement.innerHTML = ""; // 검색 결과 닫기
