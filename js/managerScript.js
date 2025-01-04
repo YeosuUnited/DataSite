@@ -5,8 +5,6 @@ async function fetchData() {
     const now = new Date().getTime();
     const cachedLastUpdated = localStorage.getItem('lastUpdated');
 
-    console.log(`[fetchData] 실행: 현재 시간 - ${now}, 캐시된 마지막 업데이트 시간 - ${cachedLastUpdated}`);
-
     toggleLoadingOverlay(true);
 
     if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
@@ -174,7 +172,6 @@ async function fetchLatestData() {
             matchesTotal: responses[2].status === 'fulfilled' ? responses[2].value : cachedData.matchesTotal,
         };
 
-        console.log("[fetchLatestData] 최신 데이터를 성공적으로 불러왔습니다:", cachedData);
     } catch (error) {
         console.error("최신 데이터를 불러오는 중 오류가 발생했습니다:", error);
         alert("최신 데이터를 불러오는 데 실패했습니다. 다시 시도하세요.");
@@ -187,7 +184,6 @@ function formatTime(date) {
 
 function useCachedData() {
     const cachedToken = localStorage.getItem('token');
-    console.log("cachedToken : ", cachedToken);
     if (cachedToken) {
         token = cachedToken;
     }
@@ -198,9 +194,6 @@ function useCachedData() {
     if (cached) {
         cachedData = JSON.parse(cached);
         console.log("서버 문제, 캐싱된 데이터를 사용 중입니다.");
-
-        // createCards 호출 제거
-        console.log('[useCachedData] 캐싱된 데이터:', cachedData);
     } else {
         console.log("데이터를 불러오는 중 오류가 발생했습니다.");
     }
@@ -319,7 +312,6 @@ document.addEventListener("DOMContentLoaded", () => {
     buttonContainer.classList.remove('horizontal-layout');
     buttonContainer.classList.add('grid');
     fetchData().then(() => {
-        console.log("[DOMContentLoaded] 캐싱된 데이터 확인:", cachedData);
         if (cachedData && cachedData.players) {
             populatePlayerList(cachedData.players);
         } else {
@@ -343,8 +335,6 @@ async function uploadMatchData(matchData) {
 
         // 데이터 정렬 및 키 재설정
         const finalSortedContent = sortAndRekeyMatchData(tempContent);
-
-        console.log("최종 정렬된 데이터:", finalSortedContent);
 
         // 데이터를 GitHub에 저장
         await saveGitHubFile(repoOwner, repoName, filePath, finalSortedContent, sha, "경기 데이터를 추가 및 정렬합니다.");
@@ -411,7 +401,6 @@ async function uploadDeleteMatchData() {
         await saveGitHubFile(repoOwner, repoName, filePath, finalSortedContent, sha, "경기 데이터를 삭제 및 정렬합니다.");
 
         alert("경기 데이터가 성공적으로 저장되었습니다!");
-        console.log("파일 업데이트 성공:", await updateResponse.json());
     } catch (error) {
         console.error("Error saving match data:", error);
         alert("경기 데이터를 저장하는 중 오류가 발생했습니다.");
@@ -580,7 +569,6 @@ async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, messa
         throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
     }
 
-    console.log(`${filePath} 파일이 성공적으로 저장되었습니다.`);
     return await response.json();
 
     // --- 삭제 후 최신 데이터 다시 가져오기 ---
@@ -606,8 +594,6 @@ async function deleteGitHubFile(repoOwner, repoName, filePath, sha, message) {
     if (!response.ok) {
         throw new Error(`파일 삭제에 실패했습니다: ${filePath}`);
     }
-
-    console.log(`${filePath} 파일이 성공적으로 삭제되었습니다.`);
 }
 
 // 정렬 및 키 재설정 함수
@@ -663,7 +649,6 @@ document.getElementById('add-match-button').addEventListener('click', function (
 
     document.getElementById('match-modify-container').style.display = 'none';
     document.getElementById('player-add-form-container').style.display = 'none'; // 폼 표시
-    console.log("here");
     document.getElementById('match-form-container').style.display = 'block';
 });
 
@@ -682,8 +667,6 @@ function resetMatchForm() {
         if (goalsInput) goalsInput.value = ''; // 득점 초기화
         if (assistsInput) assistsInput.value = ''; // 도움 초기화
     });
-
-    console.log('폼이 초기화되었습니다.');
 }
 
 document.getElementById('modify-match-button').addEventListener('click', function () {
@@ -807,8 +790,6 @@ function renderPlayerList() {
             document.getElementById('add-player-submit').style.display = 'none';
             document.getElementById('modify-player-confirm').style.display = 'block';
             document.getElementById('delete-player-confirm').style.display = 'block';
-
-            console.log("player : ", player);
 
             nowClickPlayer = player;
             populatePlayerForm(nowClickPlayer); // 선수 데이터 폼에 채우기
@@ -986,8 +967,6 @@ document.getElementById('update-match').addEventListener('click', async function
         const nameToNumberMap = Object.fromEntries(Object.entries(cachedData.players).map(([number, info]) => [info.name, number]));
         const updatedRecordAll = processPlayerData(playerList, nameToNumberMap, { ...cachedData.recordAll }, year, originalMatchData);
         
-        console.log("updatedRecordAll : ", updatedRecordAll);
-
         // 서버에 데이터 저장
         await uploadRecordData(updatedRecordAll); // recordAll 업데이트 저장
         await uploadModifyMatchData(matchData);
