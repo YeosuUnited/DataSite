@@ -19,8 +19,6 @@ async function fetchData() {
 
     if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
         try {
-            console.log("데이터를 불러오는 중...");
-
             const urls = [
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_2.text',
@@ -139,7 +137,6 @@ function validateCachedData(data) {
 // 캐싱 데이터 로드 함수
 function useCachedData() {
     const cachedToken = localStorage.getItem('token');
-    console.log("cachedToken : ", cachedToken);
     if (cachedToken) {
         token = cachedToken;
     }
@@ -236,7 +233,6 @@ async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, messa
         throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
     }
 
-    console.log(`${filePath} 파일이 성공적으로 저장되었습니다.`);
     return await response.json();
 }
 
@@ -285,8 +281,6 @@ function initializePlayerInfoData(playersData) {
 
         return acc;
     }, {});
-
-    console.log("초기화된 선수 정보:", playerInfoData);
 }
 
 let availableYears = []; // 이동 가능한 연도 리스트
@@ -492,7 +486,6 @@ function setSortCriteria(criteria) {
     } else if (criteria === '등번호') {
         sortedData = sortDataByCriteria(filteredData, criteria);
     } else {
-        console.log(`${criteria} 기준으로 정렬은 나중에 구현`);
         return;
     }
 
