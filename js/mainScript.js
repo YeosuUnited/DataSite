@@ -90,8 +90,6 @@ async function fetchData() {
                 return;
             }
 
-            // 데이터 렌더링
-            updateTimeInfo();
             createCards(cachedData.players, thisYearRecords);
 
         } catch (error) {
@@ -158,7 +156,6 @@ function useCachedData() {
                 throw new Error("캐싱된 데이터에 현재 연도 데이터가 없습니다.");
             }
 
-            updateTimeInfo();
             createCards(cachedData.players, thisYearRecords);
         } else {
             throw new Error("캐싱된 데이터가 없습니다.");
@@ -415,12 +412,6 @@ function getSortedPlayers(data, key) {
     });
 
     return sorted;
-}
-
-
-function updateTimeInfo() {
-    const lastUpdatedTime = lastUpdated ? new Date(parseInt(lastUpdated)) : new Date();
-    document.getElementById('lastUpdate').innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
 }
 
 function enableDragScroll() {
