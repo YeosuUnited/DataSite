@@ -1,1 +1,719 @@
+let cachedData = null; // 캐싱 데이터를 저장
+let token = null;
+let recordAllData = null;
+// 선수 이름, 등번호, 포지션 정보를 담을 새로운 전역 변수
+let playerInfoData = {};
+let currentSortCriteria = '기본'; // 현재 정렬 기준을 저장하는 변수
 
+// 포지션 분류를 위한 매핑 객체
+const positionMapping = {
+    FW: ["ST", "CF", "SS", "LWF", "RWF", "LW", "RW"],
+    MF: ["CM", "LCM", "RCM", "CDM", "AM", "CAM", "RM", "LM", "DM"],
+    DF: ["CB", "LCB", "RCB", "RB", "LB", "LWB", "RWB"],
+    GK: ["GK"]
+};
+
+async function fetchData() {
+    const now = new Date().getTime();
+    const cachedLastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
+
+    if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
+        try {
+            document.getElementById('status').innerText = '데이터를 불러오는 중...';
+
+            const urls = [
+                'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
+                'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_2.text',
+            ];
+
+            const tokenResponses = await Promise.allSettled(
+                urls.map(url =>
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                console.error(`네트워크 오류 발생: ${url}`);
+                                throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
+                            }
+                            return response.text();
+                        })
+                )
+            );
+
+            // token 파일 내용 합치기
+            const token_1 = tokenResponses[0].status === 'fulfilled' ? tokenResponses[0].value.replace(/\n/g, '') : '';
+            const token_2 = tokenResponses[1].status === 'fulfilled' ? tokenResponses[1].value.replace(/\n/g, '') : '';
+            token = token_1 + token_2;
+
+            // token을 localStorage에 저장
+            localStorage.setItem('token', token)
+
+            // 가져올 파일들 (GitHub Contents API를 활용)
+            const files = [
+                'assets/data/player_data.json',
+                'assets/data/records_allTime.json',
+                'assets/data/matches_total.json',
+            ];
+
+            // 병렬 요청 수행
+            const responses = await Promise.allSettled(
+                files.map((filePath) =>
+                    getGitHubFile('YeosuUnited', 'DataSite', filePath, token)
+                )
+            );
+
+            // 응답 데이터를 개별적으로 처리
+            const data = {
+                players:
+                    responses[0].status === 'fulfilled'
+                        ? responses[0].value.content
+                        : {},
+                recordAll:
+                    responses[1].status === 'fulfilled'
+                        ? responses[1].value.content
+                        : {},
+                matchesTotal:
+                    responses[2].status === 'fulfilled'
+                        ? responses[2].value.content
+                        : {},
+            };
+
+            const recordAllSha =
+                responses[1].status === 'fulfilled'
+                    ? responses[1].value.sha
+                    : null;
+
+            const nowYear = new Date().getFullYear();
+            data.recordAll = await addMissingYearData(
+                data.recordAll,
+                nowYear,
+                recordAllSha
+            );
+
+            // 캐싱 데이터 저장
+            cachedData = data;
+            const lastUpdated = now;
+            localStorage.setItem('cachedData', JSON.stringify(cachedData));
+            localStorage.setItem('lastUpdated', lastUpdated);
+
+            recordAllData = data.recordAll;
+
+            initializePlayerInfoData(data.players);
+
+            document.getElementById('status').innerText = '데이터 로딩 완료.';
+            updateTimeInfo(lastUpdated);
+
+        } catch (error) {
+            console.error('데이터 로드 실패:', error);
+            document.getElementById('status').innerText = '데이터를 불러올 수 없습니다.';
+            useCachedData();
+        }
+    } else {
+        useCachedData();
+    }
+}
+
+// localStorage 저장 함수
+function saveToLocalStorage(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+// localStorage 읽기 함수
+function loadFromLocalStorage(key) {
+    const data = localStorage.getItem(key);
+    try {
+        return JSON.parse(data); // JSON 파싱
+    } catch (error) {
+        console.error('캐싱된 데이터를 파싱하는 중 오류 발생:', error);
+        return null; // 파싱 실패 시 null 반환
+    }
+}
+
+// 데이터 유효성 검증 함수
+function validateCachedData(data) {
+    return (
+        data &&
+        typeof data === 'object' &&
+        data.players &&
+        data.recordAll &&
+        data.matchesTotal
+    );
+}
+
+
+// 캐싱 데이터 로드 함수
+function useCachedData() {
+    const cachedToken = localStorage.getItem('token');
+    console.log("cachedToken : ", cachedToken);
+    if (cachedToken) {
+        token = cachedToken;
+    }
+    else {
+        document.getElementById('status').innerText = '데이터를 불러오는 중 오류가 발생했습니다.';
+    }
+
+    const cached = localStorage.getItem('cachedData');
+    if (cached) {
+        cachedData = JSON.parse(cached);
+        recordAllData = cachedData.recordAll;
+        initializePlayerInfoData(cachedData.players);
+        document.getElementById('status').innerText = '서버 문제 발생, 캐싱된 데이터를 사용 중입니다.';
+    } else {
+        throw new Error("캐싱된 데이터가 없습니다.");
+    }
+}
+
+function updateTimeInfo(lastUpdated) {
+    const lastUpdatedElement = document.getElementById('lastUpdate');
+    if (lastUpdatedElement) {
+        const lastUpdatedTime = new Date(lastUpdated);
+        lastUpdatedElement.innerText = `최근 데이터 갱신 시간: ${formatTime(lastUpdatedTime)}`;
+    } else {
+        console.warn("'lastUpdate' 요소가 존재하지 않습니다.");
+    }
+}
+
+function formatTime(date) {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const period = hours < 12 ? '오전' : '오후';
+    const formattedHours = hours % 12 || 12;
+    return `${period} ${formattedHours}시${minutes ? ` ${minutes}분` : ''}`;
+}
+
+async function addMissingYearData(recordAll, year, sha) {
+    let isModify = false;
+    for (const playerNumber in recordAll) {
+        // 해당 선수에 year 키가 없으면 추가
+        if (!recordAll[playerNumber][year]) {
+            isModify = true;
+            recordAll[playerNumber][year] = {
+                goals: 0,
+                assists: 0,
+                attackP: 0,
+                matches: 0,
+            };
+        }
+    }
+
+    // 누락된 연도가 하나라도 있었다면 GitHub에 저장
+    if (isModify) {
+        await saveGitHubFile(
+            'YeosuUnited',
+            'DataSite',
+            'assets/data/records_allTime.json',
+            recordAll,
+            sha, // 기존 파일의 sha
+            `Add ${year} data if missing`
+        );
+        console.log(`"${year}" 데이터가 없던 선수에게 기본값을 추가하고, GitHub에 업로드했습니다.`);
+    }
+
+    return recordAll;
+}
+
+// 공통 유틸리티 함수: GitHub 파일 가져오기
+async function getGitHubFile(repoOwner, repoName, filePath) {
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+        headers: {
+            Authorization: `token ${token}`,
+        },
+    });
+
+    if (response.ok) {
+        const fileData = await response.json();
+        return {
+            sha: fileData.sha,
+            content: JSON.parse(base64ToUtf8(fileData.content)),
+        };
+    } else {
+        console.warn(`파일을 찾을 수 없습니다: ${filePath}`);
+        return { sha: null, content: {} };
+    }
+}
+
+// 공통 유틸리티 함수: GitHub 파일 저장
+async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, message) {
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+        method: "PUT",
+        headers: {
+            Authorization: `token ${token}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            message,
+            content: utf8ToBase64(JSON.stringify(content, null, 2)),
+            sha: sha || null, // 새 파일인 경우 sha를 null로 처리
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
+    }
+
+    console.log(`${filePath} 파일이 성공적으로 저장되었습니다.`);
+    return await response.json();
+}
+
+// UTF-8 문자열을 Base64로 변환
+function utf8ToBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+}
+
+// Base64 문자열을 UTF-8로 변환
+function base64ToUtf8(str) {
+    return decodeURIComponent(escape(atob(str)));
+}
+
+// 포지션을 분류하는 함수
+function classifyPosition(position) {
+    position = position.toUpperCase(); // 대소문자 구분 없이 처리
+
+    for (const [key, values] of Object.entries(positionMapping)) {
+        if (values.includes(position)) {
+            return key;
+        }
+    }
+
+    // 해당되지 않으면 기본값 MF 반환
+    return "MF";
+}
+
+// 선수 데이터를 초기화하고 가공하는 함수
+function initializePlayerInfoData(playersData) {
+    if (!playersData) {
+        console.error("선수 데이터가 없습니다.");
+        return;
+    }
+
+    playerInfoData = Object.keys(playersData).reduce((acc, playerId) => {
+        const player = playersData[playerId];
+
+        // 포지션 분류
+        const position = classifyPosition(player.posi || "");
+
+        acc[playerId] = {
+            name: player.name || "",
+            number: player.number || "", // 등번호 (없으면 빈 문자열)
+            position: position
+        };
+
+        return acc;
+    }, {});
+
+    console.log("초기화된 선수 정보:", playerInfoData);
+}
+
+let availableYears = []; // 이동 가능한 연도 리스트
+let currentYear; // 현재 선택된 연도
+
+function updateYearNavigationButtons() {
+    const minYear = Math.min(...availableYears); // 가능한 가장 오래된 연도
+    const maxYear = Math.max(...availableYears); // 가능한 가장 최근 연도
+
+    const prevButton = document.getElementById('prevYear');
+    const nextButton = document.getElementById('nextYear');
+
+    // 이전 버튼 비활성화 또는 숨기기
+    if (currentYear <= minYear) {
+        prevButton.disabled = true; // 버튼 비활성화
+        prevButton.style.display = 'none'; // 버튼 완전히 숨기기
+    } else {
+        prevButton.disabled = false;
+        prevButton.style.display = 'inline-block'; // 버튼 다시 표시
+    }
+
+    // 다음 버튼 비활성화 또는 숨기기
+    if (currentYear >= maxYear) {
+        nextButton.disabled = true; // 버튼 비활성화
+        nextButton.style.display = 'none'; // 버튼 완전히 숨기기
+    } else {
+        nextButton.disabled = false;
+        nextButton.style.display = 'inline-block'; // 버튼 다시 표시
+    }
+}
+
+function initializeAvailableYears(data) {
+    const allYears = [
+        ...Object.keys(data.recordAll || {}).flatMap(player =>
+            Object.keys(data.recordAll[player] || {}).map(Number)
+        )
+    ];
+
+    availableYears = [...new Set(allYears)].sort((a, b) => a - b);
+    currentYear = availableYears.includes(new Date().getFullYear())
+        ? new Date().getFullYear()
+        : availableYears[0];
+
+    document.getElementById('currentYear').textContent = currentYear;
+    updateYearNavigationButtons();
+}
+
+let currentSortColumn = 'goals';
+let currentSortDirection = 'desc';
+
+function sortTable(a, b) {
+    const column = currentSortColumn;
+    if (a[column] !== b[column]) {
+        return currentSortDirection === 'desc' ? b[column] - a[column] : a[column] - b[column];
+    }
+
+    // 동점일 경우 우선순위 정렬 (득점 → 도움 → 공격P → 출전수)
+    return (
+        b['assists'] - a['assists'] ||
+        b['attackP'] - a['attackP'] ||
+        b['matches'] - a['matches']
+    );
+}
+
+function highlightSelectedColumn(columnIndex) {
+    const allCells = document.querySelectorAll('.scrollable-table td, .scrollable-table th');
+    allCells.forEach(cell => {
+        cell.classList.remove('selected');
+        cell.style.backgroundColor = 'white';
+        cell.style.color = '';
+    });
+
+    const selectedCells = document.querySelectorAll(`.scrollable-table td:nth-child(${columnIndex}), .scrollable-table th:nth-child(${columnIndex})`);
+    selectedCells.forEach(cell => {
+        cell.classList.add('selected');
+        cell.style.backgroundColor = 'white';
+        cell.style.color = '#6495ED';
+        cell.style.fontWeight = 'bold'; // 추가: 볼드 처리
+    });
+}
+
+function displayPlayerRecord(data) {
+    let fixedColumnHtml = '<table class="fixed-column"><tr><th>이름</th></tr>';
+    data.forEach(player => {
+        fixedColumnHtml += `
+                            <tr>
+                                <td>
+                                    ${player.name}
+                                    <div style="color: gray; font-size: 10px; margin-top: 1px;">
+                                        ${player.position} | No.${player.number}
+                                    </div>
+                                </td>
+                            </tr>`;
+    });
+    fixedColumnHtml += '</table>';
+
+    let scrollableTableHtml = `
+                                <table class="scrollable-table">
+                                    <tr>
+                                        <th onclick="sortBy('goals', 1)">득점</th>
+                                        <th onclick="sortBy('assists', 2)">도움</th>
+                                        <th onclick="sortBy('attackP', 3)">공격P</th>
+                                        <th onclick="sortBy('matches', 4)">경기수</th>
+                                    </tr>`;
+
+    data.forEach(player => {
+        scrollableTableHtml += `
+                                <tr>
+                                    <td>${player.goals}</td>
+                                    <td>${player.assists}</td>
+                                    <td>${player.attackP}</td>
+                                    <td>${player.matches}</td>
+                                </tr>`;
+                                    });
+
+    scrollableTableHtml += '</table>';
+
+    document.getElementById('fixedColumn').innerHTML = fixedColumnHtml;
+    document.getElementById('scrollableTable').innerHTML = scrollableTableHtml;
+
+    requestAnimationFrame(() => matchRowHeights());
+}
+
+
+function getAvailableYears(recordAll) {
+    const years = Object.values(recordAll)
+        .flatMap(playerRecords => Object.keys(playerRecords).map(Number));
+    return [...new Set(years)].sort((a, b) => a - b); // 중복 제거 및 정렬
+}
+
+function filterDataByYear(records, year) {
+    return Object.entries(records).map(([playerId, years]) => {
+        const stats = years[year] || { goals: 0, assists: 0, attackP: 0, matches: 0 };
+        return { playerId, ...stats };
+    });
+}
+
+// 년도 변경 시 정렬 기준 적용
+function renderTable(year) {
+    const filteredData = getFilteredData(recordAllData, playerInfoData, year);
+    let sortedData = filteredData;
+
+    // 현재 정렬 기준에 따라 데이터 정렬
+    if (currentSortCriteria !== '기본') {
+        setSortCriteria(currentSortCriteria, true); // 정렬 기준 유지
+    } else {
+        sortedData = sortData(filteredData);
+        displayPlayerRecord(sortedData);
+    }
+}
+
+function sortBy(column, columnIndex) {
+    const reverseMapping = {
+        goals: '득점',
+        assists: '도움',
+        attackP: '공격P',
+        matches: '경기수',
+    };
+    const criteria = reverseMapping[column] || '기본';
+    setSortCriteria(criteria);
+    highlightSelectedColumn(columnIndex);
+}
+
+function toggleSortMenu() {
+    const menu = document.getElementById('sortMenu');
+
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+    } else {
+        const criteria = document.getElementById('sortCriteria');
+        const rect = criteria.getBoundingClientRect();
+        menu.style.top = `${rect.bottom + window.scrollY}px`; // 기준 텍스트 아래
+        menu.style.left = `${rect.left + window.scrollX}px`; // 기준 텍스트 왼쪽 정렬
+        menu.style.display = 'block';
+    }
+}
+
+function setSortCriteria(criteria) {
+    const sortCriteriaElement = document.getElementById('sortCriteria');
+    sortCriteriaElement.textContent = criteria;
+    currentSortCriteria = criteria;
+
+    const filteredData = getProcessedData(recordAllData, playerInfoData, currentYear);
+    let sortedData;
+    let columnIndex;
+
+    if (criteria === '기본') {
+        sortedData = sortData(filteredData);
+        columnIndex = 1;
+    } else if (criteria === '포지션') {
+        const positionOrder = { FW: 1, MF: 2, DF: 3, GK: 4 };
+        sortedData = sortDataByCriteria(filteredData, criteria, null, positionOrder);
+    } else if (['득점', '도움', '공격P', '경기수'].includes(criteria)) {
+        const columnMapping = {
+            '득점': 'goals',
+            '도움': 'assists',
+            '공격P': 'attackP',
+            '경기수': 'matches',
+        };
+        const columnKey = columnMapping[criteria];
+        sortedData = sortDataByCriteria(filteredData, criteria, columnKey);
+        columnIndex = { 'goals': 1, 'assists': 2, 'attackP': 3, 'matches': 4 }[columnKey];
+    } else if (criteria === '등번호') {
+        sortedData = sortDataByCriteria(filteredData, criteria);
+    } else {
+        console.log(`${criteria} 기준으로 정렬은 나중에 구현`);
+        return;
+    }
+
+    displayPlayerRecord(sortedData);
+    if (columnIndex != null) highlightSelectedColumn(columnIndex);
+    toggleSortMenu();
+}
+
+// 공통 데이터 필터링 함수
+function getProcessedData(recordAllData, playerInfoData, currentYear) {
+    return Object.keys(recordAllData).map(playerId => {
+        const yearStats = recordAllData[playerId]?.[currentYear] || {
+            assists: 0,
+            attackP: 0,
+            goals: 0,
+            matches: 0,
+        };
+
+        return {
+            name: playerInfoData[playerId]?.name || `Player ${playerId}`,
+            position: playerInfoData[playerId]?.position || 'Unknown',
+            number: parseInt(playerInfoData[playerId]?.number || '0', 10),
+            ...yearStats,
+        };
+    });
+}
+
+// 공통 데이터 정렬 함수
+function sortDataByCriteria(data, criteria, columnKey = null, positionOrder = null) {
+    if (criteria === '포지션') {
+        return data.sort((a, b) => {
+            const posCompare = positionOrder[a.position] - positionOrder[b.position];
+            if (posCompare !== 0) return posCompare;
+
+            return (
+                b.goals - a.goals ||
+                b.assists - a.assists ||
+                b.attackP - a.attackP ||
+                b.matches - a.matches
+            );
+        });
+    } else if (columnKey) {
+        return data.sort((a, b) => b[columnKey] - a[columnKey]);
+    } else if (criteria === '등번호') {
+        return data.sort((a, b) => a.number - b.number);
+    }
+    return data; // 기본 정렬
+}
+
+const data = cachedData?.players;
+
+if (data) {
+    const filteredData = Object.keys(data).map(number => {
+        const player = data[number];
+        return {
+            number: number,  // 등번호 포함
+            name: player.name,
+            goals: player.years[currentYear]?.goals || 0,
+            assists: player.years[currentYear]?.assists || 0,
+            attackP: player.years[currentYear]?.attackP || 0,
+            matches: player.years[currentYear]?.matches || 0
+        };
+    });
+
+    const sortedData = filteredData.sort((a, b) => {
+        const aValue = a[column] || 0;
+        const bValue = b[column] || 0;
+        return currentSortDirection === 'desc' ? bValue - aValue : aValue - bValue;
+    });
+
+    displayPlayerRecord(sortedData);
+    highlightSelectedColumn(columnIndex);
+}
+
+function getFilteredData(recordAll, players, year) {
+    return Object.keys(recordAll).map(playerId => {
+        const yearStats = recordAll[playerId]?.[year] || {
+            assists: 0,
+            attackP: 0,
+            goals: 0,
+            matches: 0,
+        };
+
+        return {
+            name: playerInfoData[playerId]?.name || `Player ${playerId}`,
+            position: playerInfoData[playerId]?.position || 'Unknown', // 포지션 추가
+            number: playerInfoData[playerId]?.number || 'N/A', // 등번호 추가
+            goals: yearStats.goals,
+            assists: yearStats.assists,
+            attackP: yearStats.attackP,
+            matches: yearStats.matches,
+        };
+    });
+}
+
+function sortData(data) {
+    return data.sort((a, b) => {
+        const compare = (key) => (b[key] || 0) - (a[key] || 0);
+
+        // 득점 -> 도움 -> 공격P -> 출전수 순으로 정렬
+        return (
+            compare('goals') ||
+            compare('assists') ||
+            compare('attackP') ||
+            compare('matches')
+        );
+    });
+}
+
+function matchRowHeights() {
+    const fixedRows = document.querySelectorAll('.fixed-column tr');
+    const scrollableRows = document.querySelectorAll('.scrollable-table tr');
+
+    fixedRows.forEach((row, index) => {
+        const fixedHeight = row.getBoundingClientRect().height;
+        const scrollableHeight = scrollableRows[index].getBoundingClientRect().height;
+        const maxHeight = Math.max(fixedHeight, scrollableHeight);
+
+        row.style.height = `${maxHeight}px`;
+        scrollableRows[index].style.height = `${maxHeight}px`;
+    });
+}
+
+function renderYearData(year) {
+    // 현재 연도의 데이터를 필터링
+    const filteredData = getFilteredData(playerInfoData, recordAllData);
+
+    // 필터링된 데이터를 정렬
+    const sortedData = sortData(filteredData);
+
+    // 테이블에 데이터 표시
+    displayPlayerRecord(sortedData);
+}
+
+function changeYear(direction) {
+    const minYear = Math.min(...availableYears);
+    const maxYear = Math.max(...availableYears);
+
+    if (direction === 'prev' && currentYear > minYear) {
+        currentYear--;
+    } else if (direction === 'next' && currentYear < maxYear) {
+        currentYear++;
+    }
+
+    document.getElementById('currentYear').textContent = currentYear;
+
+    updateYearNavigationButtons(); // 버튼 상태 업데이트
+    renderTable(currentYear);
+}
+
+function updateYearNavigationButtons() {
+    const minYear = Math.min(...availableYears);
+    const maxYear = Math.max(...availableYears);
+
+    document.getElementById('prevYear').disabled = currentYear <= minYear;
+    document.getElementById('nextYear').disabled = currentYear >= maxYear;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const logo = document.getElementById('logo');
+    if (logo) {
+        logo.addEventListener('click', function () {
+            window.location.href = 'index.html'; // 이동할 페이지 경로
+        });
+    }
+});
+
+document.addEventListener('click', function (event) {
+    const sortMenu = document.getElementById('sortMenu');
+    const sortCriteria = document.getElementById('sortCriteria');
+
+    // 클릭한 대상이 정렬 기준 또는 팝업 메뉴 내부인지 확인
+    if (sortMenu.style.display === 'block' && !sortMenu.contains(event.target) && event.target !== sortCriteria) {
+        sortMenu.style.display = 'none'; // 팝업 닫기
+    }
+});
+
+window.onload = async function () {
+    const prevYearButton = document.getElementById('prevYear');
+    const nextYearButton = document.getElementById('nextYear');
+    const currentYearElement = document.getElementById('currentYear');
+
+    try {
+        await fetchData();
+
+        if (cachedData?.recordAll) {
+            availableYears = getAvailableYears(recordAllData);
+            currentYear = availableYears.includes(new Date().getFullYear())
+                ? new Date().getFullYear()
+                : availableYears[0];
+
+            document.getElementById('currentYear').textContent = currentYear;
+
+            // 초기 버튼 상태 업데이트
+            updateYearNavigationButtons();
+
+            // 첫 렌더링
+            renderTable(currentYear);
+            highlightSelectedColumn(1); 
+            // 버튼 클릭 이벤트
+            prevYearButton.addEventListener('click', () => changeYear('prev'));
+            nextYearButton.addEventListener('click', () => changeYear('next'));
+        } else {
+            document.getElementById('status').textContent = '데이터를 불러올 수 없습니다.';
+        }
+    } catch (error) {
+        console.error('초기화 중 오류 발생:', error);
+        document.getElementById('status').textContent = '데이터를 불러올 수 없습니다.';
+    }
+};
