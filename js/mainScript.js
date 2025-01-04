@@ -132,7 +132,6 @@ function formatTime(date) {
 function useCachedData() {
     try {
         const cachedToken = localStorage.getItem('token');
-        console.log("cachedToken : ", cachedToken);
         if (cachedToken) {
             token = cachedToken;
         }
@@ -149,8 +148,6 @@ function useCachedData() {
             const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
 
             if (Object.keys(thisYearRecords).length === 0) {
-                console.log("cachedData : ", cachedData);
-                console.log("cached : ", cached);
                 throw new Error("캐싱된 데이터에 현재 연도 데이터가 없습니다.");
             }
 
@@ -233,7 +230,6 @@ async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, messa
         throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
     }
 
-    console.log(`${filePath} 파일이 성공적으로 저장되었습니다.`);
     return await response.json();
 }
 
@@ -461,7 +457,6 @@ window.onload = function () {
         if (isAuthenticated === 'true') {
             // 이미 인증된 경우 바로 managerMain.html로 이동
             window.location.href = 'managerMain.html';
-            console.log("alreday");
         }
         popup.classList.remove('hidden');
     });
