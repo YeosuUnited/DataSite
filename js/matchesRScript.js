@@ -8,8 +8,6 @@
 
             if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
                 try {
-                    console.log("데이터를 불러오는 중...");
-
                     const urls = [
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
                         'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_2.text',
@@ -97,7 +95,6 @@
 
         function useCachedData() {
             const cachedToken = localStorage.getItem('token');
-            console.log("cachedToken : ", cachedToken);
             if (cachedToken) {
                 token = cachedToken;
             }
@@ -157,7 +154,6 @@
                     sha, // 기존 파일의 sha
                     `Add ${year} data if missing`
                 );
-                console.log(`"${year}" 데이터가 없던 선수에게 기본값을 추가하고, GitHub에 업로드했습니다.`);
             }
 
             return recordAll;
@@ -201,8 +197,7 @@
             if (!response.ok) {
                 throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
             }
-
-            console.log(`${filePath} 파일이 성공적으로 저장되었습니다.`);
+                
             return await response.json();
         }
 
@@ -590,7 +585,6 @@
                 document.getElementById('teamHistoryContainer').style.display = 'block'; // 숨기기
                 document.getElementById('recentMatchesContainer').style.display = 'none'; // 보이기
                 document.getElementById('allMatchesContainer').style.display = 'none'; // 숨기기
-                console.log("검색 버튼 클릭됨 - 추가 기능 구현 필요");
             });
 
             recentButton.classList.add('active');
@@ -727,11 +721,9 @@
                 const matchTime = convertTo24HourFormat(matchTimeRaw);
 
                 const matchKey = matchBox.querySelector('.popup-button').dataset.key;
-                console.log('생성된 matchKey:', matchKey);
 
                 const matchData = cachedData.matchesTotal[matchKey];
                 const teamName = matchData ? matchData.opponent : null; // teamName을 opponent로 설정
-                console.log('teamName:', teamName);
 
                 if (matchData) {
                     renderPopup(matchData, teamName);
