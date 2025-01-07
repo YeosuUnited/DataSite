@@ -147,7 +147,6 @@ function useCachedData() {
     const cached = localStorage.getItem('cachedData');
     if (cached) {
         cachedData = JSON.parse(cached);
-        recordAllData = cachedData.recordAll;
         console.log("캐싱된 데이터를 사용 중입니다.");
     } else {
         throw new Error("캐싱된 데이터가 없습니다.");
