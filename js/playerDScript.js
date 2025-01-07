@@ -244,10 +244,10 @@ function renderPlayerList() {
         playerInfo.style.display = 'flex';
         playerInfo.style.alignItems = 'center'; // 이미지를 텍스트와 수직 정렬
         playerInfo.innerHTML = `
-                                <span style="font-weight: bold;">${player.name}</span>
-                                <span style="color: gray; font-size: 0.9em; margin-left: 5px;">${player.posi}</span>
-                                <span style="color: gray; font-size: 0.9em; position: absolute; left: 160px;">no.<span style="font-weight: bold;">${number}</span>
-                               `;
+                        <span style="font-weight: bold;">${player.name}</span>
+                        <span style="color: gray; font-size: 0.9em; margin-left: 5px;">${player.posi}</span>
+                        <span style="color: gray; font-size: 0.9em; position: absolute; left: 160px;">no.<span style="font-weight: bold;">${number}</span>
+                       `;
 
         // 이미지 노드를 playerInfo의 가장 앞에 추가
         playerInfo.prepend(playerImage);
@@ -267,7 +267,7 @@ function renderPlayerList() {
             const playerNumber = this.getAttribute('data-player-number'); // 버튼에 설정된 번호 가져오기
             if (cachedData && cachedData.players) {
                 const player = cachedData.players[playerNumber]; // 등번호로 직접 접근
-                if (player) {                         
+                if (player) {
                     displayPlayerDetails(player); // 선수 상세 정보 표시
                     displayPlayerRecord(player); // 선수 기록 표시
                     document.getElementById('player-details').style.display = 'block'; // 상세 정보 숨김
@@ -294,46 +294,65 @@ function displayPlayerDetails(player) {
     document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
 
     playerDetailsElement.innerHTML = `
-                                        <button id="back-to-list" class="back-button" style="margin-bottom: 10px;">선수 목록</button>
-                                        <div class="divider"></div>
-                                         <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; margin-bottom: -10px">
-                                         <!-- 정보 섹션 -->
-                                            <div style="flex: 1; margin-right: 20px; margin-left: -10px;">
-                                                <div>
-                                                    <span class="label">이름: </span><span class="value">${player.name}</span> <span class="label">NO.${player.number}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">포지션: </span><span class="value">${player.posi}</span> <span class="label">${player.subPosi}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">신체: </span><span class="value">${player.height}cm</span>, <span class="value">${player.weight}kg</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">출생: </span><span class="value">${player.birth}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">국적: </span><span class="value">${player.nation}</span>
-                                                </div>
-                                            </div>
-                                        <!-- 사진 섹션 -->
-                                            <div style="flex-shrink: 0;">
-                                                <img
-                                                    src="https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png" 
-                                                    alt="${player.name}" 
-                                                    style="width: 120px; height: 150px; border-radius: 10px; object-fit: cover; margin-top:-10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"
-                                                    onerror="this.src='https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png';">
-                                                </div>
-                                            </div>
+                                <button id="back-to-list" class="back-button" style="margin-bottom: 10px;">선수 목록</button>
+                                <div class="divider"></div>
+                                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; margin-bottom: -10px">
+                                 <!-- 정보 섹션 -->
+                                    <div style="flex: 1; margin-right: 20px; margin-left: -10px;">
+                                        <div>
+                                            <span class="label">신체: </span><span class="value">${player.height}cm</span>, <span class="value">${player.weight}kg</span>
                                         </div>
-                                        <div class="divider"></div>
-                                    `;
+                                        <div>
+                                            <span class="label">이름: </span><span class="value">${player.name}</span> <span class="label">NO.${player.number}</span>
+                                        </div>
+                                        <div>
+                                            <span class="label">출생: </span><span class="value">${formatBirthdate(player.birth)}</span>
+                                        </div>
+                                        <div>
+                                            <span class="label">포지션: </span><span class="value">${player.posi}</span>
+                                        </div>                                                                                                
+                                        <div>
+                                            <span class="label">혈액형: </span><span class="value">${player.bloodType}</span>
+                                        </div>
+                                        <div>
+                                            <span class="label">번호: </span><span class="value">${formatPhoneNumber(player.phone)}</span>
+                                        </div>
+                                    </div>
+                                <!-- 사진 섹션 -->
+                                    <div style="flex-shrink: 0;">
+                                        <img
+                                            src="https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png" 
+                                            alt="${player.name}" 
+                                            style="width: 120px; height: 150px; border-radius: 10px; object-fit: cover; margin-top:-10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"
+                                            onerror="this.src='https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png';">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                            `;
 
-        // "선수 목록" 버튼 이벤트 리스너 등록
-        const backButton = document.getElementById('back-to-list');
-        backButton.addEventListener('click', function () {
+    // "선수 목록" 버튼 이벤트 리스너 등록
+    const backButton = document.getElementById('back-to-list');
+    backButton.addEventListener('click', function () {
         playerDetailsElement.style.display = 'none'; // 상세 정보 숨김
         document.getElementById('player-list').style.display = 'block'; // 선수 목록 표시
     });
+}
+
+function formatBirthdate(birthdate) {
+    if (!/^\d{8}$/.test(birthdate)) return birthdate; // 입력값이 YYYYMMDD 형식이 아니면 그대로 반환
+    const year = birthdate.substring(0, 4);
+    const month = birthdate.substring(4, 6);
+    const day = birthdate.substring(6, 8);
+    return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
+}
+
+function formatPhoneNumber(phoneNumber) {
+    if (!/^\d{11}$/.test(phoneNumber)) return phoneNumber; // 입력값이 11자리 숫자가 아니면 그대로 반환
+    const part1 = phoneNumber.substring(0, 3); // 앞 3자리
+    const part2 = phoneNumber.substring(3, 7); // 중간 4자리
+    const part3 = phoneNumber.substring(7, 11); // 마지막 4자리
+    return `${part1}-${part2}-${part3}`;
 }
 
 function displayPlayerRecord(player) {
@@ -361,51 +380,51 @@ function displayPlayerRecord(player) {
     });
 
     let recordHtml = `
-                        <div class="record-container">
-                            <div class="record-header">
-                                <span class="title">통산기록</span>
-                                <span class="subtitle">최근 10년 데이터</span>
-                            </div>
-                            <table class="record-table">
-                                <thead>
-                                    <tr>
-                                        <th>시즌</th>
-                                        <th>경기수</th>
-                                        <th>득점</th>
-                                        <th>도움</th>
-                                        <th>공격P</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="summary">
-                                        <td>통산</td>
-                                        <td>${summary.경기수}</td>
-                                        <td>${summary.득점}</td>
-                                        <td>${summary.도움}</td>
-                                        <td>${summary.공격P}</td>
-                                    </tr>
-                    `;
+                <div class="record-container">
+                    <div class="record-header">
+                        <span class="title">통산기록</span>
+                        <span class="subtitle">최근 10년 데이터</span>
+                    </div>
+                    <table class="record-table">
+                        <thead>
+                            <tr>
+                                <th>시즌</th>
+                                <th>경기수</th>
+                                <th>득점</th>
+                                <th>도움</th>
+                                <th>공격P</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="summary">
+                                <td>통산</td>
+                                <td>${summary.경기수}</td>
+                                <td>${summary.득점}</td>
+                                <td>${summary.도움}</td>
+                                <td>${summary.공격P}</td>
+                            </tr>
+            `;
 
     yearRecords
         .sort((a, b) => parseInt(b[0], 10) - parseInt(a[0], 10))
         .forEach(([year, record], index) => {
             const rowClass = index < 1 ? 'year-data' : 'other-year-data';
             recordHtml += `
-                            <tr class="${rowClass}">
-                                <td>${year}</td>
-                                <td>${record.matches}</td>
-                                <td>${record.goals}</td>
-                                <td>${record.assists}</td>
-                                <td>${record.attackP}</td>
-                            </tr>
-                        `;
+                    <tr class="${rowClass}">
+                        <td>${year}</td>
+                        <td>${record.matches}</td>
+                        <td>${record.goals}</td>
+                        <td>${record.assists}</td>
+                        <td>${record.attackP}</td>
+                    </tr>
+                `;
         });
 
     recordHtml += `
-                    </tbody>
-                        </table>
-                    </div>
-                    `;
+            </tbody>
+                </table>
+            </div>
+            `;
 
     playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
 }
@@ -419,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function () {            
+document.addEventListener("DOMContentLoaded", function () {
     const searchInputElement = document.getElementById('search-input');
     const searchResultsElement = document.getElementById('search-results');
     const logoElement = document.getElementById('logo');
@@ -494,6 +513,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     window.onload = function () {
-        fetchData();    
+        fetchData();
     };
 });
