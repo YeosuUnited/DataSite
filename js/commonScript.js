@@ -86,7 +86,7 @@ async function fetchData() {
                 data.recordAll,
                 recordAllSha
             );
-            data.recordAll = await addMissingSubYearData(
+            data.subPlayer = await addMissingSubYearData(
                 nowYear,
                 data.subPlayer,
                 subPlayerSha
