@@ -80,13 +80,12 @@ async function fetchData() {
 
 
             const nowYear = new Date().getFullYear();
+            
             data.recordAll = await addMissingYearData(
                 nowYear,
                 data.recordAll,
                 recordAllSha
             );
-
-            const nowYear = new Date().getFullYear();
             data.recordAll = await addMissingSubYearData(
                 nowYear,
                 data.subPlayer,
