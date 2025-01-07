@@ -1,243 +1,267 @@
 {
   "2": {
     "birth": "19910107",
-    "height": "176",
+    "height": "164",
     "name": "이혜성",
     "nation": "대한민국",
     "number": "2",
-    "posi": "RB",
-    "subPosi": "CB",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "74",
+    "bloodType": "B",
+    "phone": "01083823527"
   },
   "3": {
     "birth": "19901002",
-    "height": "176",
+    "height": "173",
     "name": "성연채",
     "nation": "대한민국",
     "number": "3",
     "posi": "GK",
-    "subPosi": "CB",
-    "weight": "64"
+    "weight": "70",
+    "bloodType": "B",
+    "phone": "01098832091"
   },
   "4": {
     "birth": "19901128",
-    "height": "176",
+    "height": "170",
     "name": "조상운",
     "nation": "대한민국",
     "number": "4",
-    "posi": "CB",
-    "subPosi": "CDM",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "80",
+    "bloodType": "B",
+    "phone": "01045006509"
   },
   "6": {
     "birth": "19900223",
-    "height": "176",
+    "height": "174",
     "name": "전재현",
     "nation": "대한민국",
     "number": "6",
-    "posi": "RW",
-    "subPosi": "LW",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "73",
+    "bloodType": "B",
+    "phone": "01093385867"
   },
   "7": {
     "birth": "19900727",
-    "height": "176",
+    "height": "172",
     "name": "임승준",
     "nation": "대한민국",
     "number": "7",
-    "posi": "CAM",
-    "subPosi": "CM",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "65",
+    "bloodType": "A",
+    "phone": "01033875487"
   },
   "8": {
     "birth": "19900401",
-    "height": "176",
+    "height": "170",
     "name": "노재옥",
     "nation": "대한민국",
     "number": "8",
-    "posi": "LW",
-    "subPosi": "RW",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "70",
+    "bloodType": "B",
+    "phone": "01072726705"
   },
   "9": {
     "birth": "19900912",
-    "height": "176",
+    "height": "178",
     "name": "변상민",
     "nation": "대한민국",
     "number": "9",
-    "posi": "ST",
-    "subPosi": "CF",
-    "weight": "64"
+    "posi": "CF",
+    "weight": "75",
+    "bloodType": "A",
+    "phone": "01091966681"
   },
   "10": {
     "birth": "19900503",
-    "height": "176",
+    "height": "173",
     "name": "김기욱",
     "nation": "대한민국",
     "number": "10",
-    "posi": "CM",
-    "subPosi": "CAM",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "70",
+    "bloodType": "A",
+    "phone": "01024965075"
   },
   "11": {
     "birth": "19900328",
-    "height": "176",
+    "height": "173",
     "name": "이세현",
     "nation": "대한민국",
     "number": "11",
-    "posi": "CM",
-    "subPosi": "CDM",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "70",
+    "bloodType": "AB",
+    "phone": "01020015629"
   },
   "12": {
     "birth": "19900131",
-    "height": "176",
+    "height": "183",
     "name": "임용철",
     "nation": "대한민국",
     "number": "12",
-    "posi": "ST",
-    "subPosi": "CF",
-    "weight": "64"
+    "posi": "FW",
+    "weight": "74",
+    "bloodType": "B",
+    "phone": "01090801653"
   },
   "13": {
     "birth": "19900212",
-    "height": "176",
+    "height": "170",
     "name": "엄은식",
     "nation": "대한민국",
     "number": "13",
-    "posi": "CF",
-    "subPosi": "CAM",
-    "weight": "64"
+    "posi": "FW",
+    "weight": "66",
+    "bloodType": "B",
+    "phone": "01033601286"
   },
   "14": {
     "birth": "19900630",
-    "height": "176",
+    "height": "173",
     "name": "이재성",
     "nation": "대한민국",
     "number": "14",
-    "posi": "RW",
-    "subPosi": "LW",
-    "weight": "64"
+    "posi": "FW",
+    "weight": "74",
+    "bloodType": "O",
+    "phone": "01084490920"
   },
   "15": {
     "birth": "19900627",
-    "height": "176",
+    "height": "170",
     "name": "김대원",
     "nation": "대한민국",
     "number": "15",
-    "posi": "CF",
-    "subPosi": "CAM",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "79",
+    "bloodType": "O",
+    "phone": "01062345789"
   },
   "16": {
     "birth": "19900508",
-    "height": "176",
+    "height": "170",
     "name": "한동화",
     "nation": "대한민국",
     "number": "16",
-    "posi": "RB",
-    "subPosi": "LB",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "68",
+    "bloodType": "A",
+    "phone": "01094455155"
   },
   "18": {
     "birth": "19920602",
-    "height": "176",
+    "height": "190",
     "name": "김준태",
     "nation": "대한민국",
     "number": "18",
-    "posi": "ST",
-    "subPosi": "CB",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "92",
+    "bloodType": "A",
+    "phone": "01064503607"
   },
   "20": {
     "birth": "19900523",
-    "height": "176",
+    "height": "195",
     "name": "주선우",
     "nation": "대한민국",
     "number": "20",
-    "posi": "CB",
-    "subPosi": "ST",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "95",
+    "bloodType": "A",
+    "phone": "01024488149"
   },
   "21": {
     "birth": "19900421",
-    "height": "176",
+    "height": "174",
     "name": "박지원",
     "nation": "대한민국",
     "number": "21",
-    "posi": "RB",
-    "subPosi": "LB",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "68",
+    "bloodType": "B",
+    "phone": "01097007706"
   },
   "23": {
     "birth": "19910326",
-    "height": "176",
+    "height": "179",
     "name": "송민수",
     "nation": "대한민국",
     "number": "23",
-    "posi": "CDM",
-    "subPosi": "CB",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "76",
+    "bloodType": "A",
+    "phone": "01048998053"
   },
   "26": {
     "birth": "19900319",
-    "height": "176",
+    "height": "174",
     "name": "강성용",
     "nation": "대한민국",
     "number": "26",
-    "posi": "CAM",
-    "subPosi": "CM",
-    "weight": "64"
+    "posi": "FW",
+    "weight": "67",
+    "bloodType": "O",
+    "phone": "01040107283"
   },
   "27": {
     "birth": "19910723",
-    "height": "176",
+    "height": "173",
     "name": "김언수",
     "nation": "대한민국",
     "number": "27",
-    "posi": "RCB",
-    "subPosi": "LCB",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "68",
+    "bloodType": "B",
+    "phone": "01097589785"
   },
   "29": {
     "birth": "19900517",
-    "height": "176",
+    "height": "180",
     "name": "임상규",
     "nation": "대한민국",
     "number": "29",
-    "posi": "RW",
-    "subPosi": "LW",
-    "weight": "64"
+    "posi": "FW",
+    "weight": "84",
+    "bloodType": "AB",
+    "phone": "01066016696"
   },
   "30": {
     "birth": "19900212",
-    "height": "176",
+    "height": "178",
     "name": "박지훈",
     "nation": "대한민국",
     "number": "30",
-    "posi": "LCM",
-    "subPosi": "RCM",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "84",
+    "bloodType": "A",
+    "phone": "01072823679"
   },
   "31": {
     "birth": "19961119",
-    "height": "176",
+    "height": "168",
     "name": "이덕환",
     "nation": "대한민국",
     "number": "31",
-    "posi": "CM",
-    "subPosi": "CDM",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "70",
+    "bloodType": "AB",
+    "phone": "01055615266"
   },
   "39": {
     "birth": "19960909",
-    "height": "176",
+    "height": "163",
     "name": "이상구",
     "nation": "대한민국",
     "number": "39",
-    "posi": "CB",
-    "subPosi": "RB",
-    "weight": "64"
+    "posi": "DF",
+    "weight": "75",
+    "bloodType": "A",
+    "phone": "01029708528"
   },
   "66": {
     "birth": "19900513",
@@ -245,29 +269,32 @@
     "name": "안진현",
     "nation": "대한민국",
     "number": "66",
-    "posi": "CM",
-    "subPosi": "CDM",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "82",
+    "bloodType": "A",
+    "phone": "01071906210"
   },
   "77": {
     "birth": "19910316",
-    "height": "176",
+    "height": "178",
     "name": "강기준",
     "nation": "대한민국",
     "number": "77",
-    "posi": "CAM",
-    "subPosi": "CF",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "88",
+    "bloodType": "AB",
+    "phone": "01071113522"
   },
   "88": {
     "birth": "19910123",
-    "height": "176",
+    "height": "169",
     "name": "김광민",
     "nation": "대한민국",
     "number": "88",
-    "posi": "CF",
-    "subPosi": "ST",
-    "weight": "64"
+    "posi": "MF",
+    "weight": "72",
+    "bloodType": "A",
+    "phone": "01044110968"
   },
   "99": {
     "birth": "19901113",
@@ -275,8 +302,9 @@
     "name": "김범수",
     "nation": "대한민국",
     "number": "99",
-    "posi": "RB",
-    "subPosi": "RW",
-    "weight": "67"
+    "posi": "DF",
+    "weight": "73",
+    "bloodType": "O",
+    "phone": "01063523532"
   }
 }
