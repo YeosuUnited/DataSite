@@ -7,9 +7,9 @@ let currentSortCriteria = '기본'; // 현재 정렬 기준을 저장하는 변�
 
 // 포지션 분류를 위한 매핑 객체
 const positionMapping = {
-    FW: ["ST", "CF", "SS", "LWF", "RWF", "LW", "RW"],
-    MF: ["CM", "LCM", "RCM", "CDM", "AM", "CAM", "RM", "LM", "DM"],
-    DF: ["CB", "LCB", "RCB", "RB", "LB", "LWB", "RWB"],
+    FW: ["ST", "CF", "SS", "LWF", "RWF", "LW", "RW", "FW"],
+    MF: ["CM", "LCM", "RCM", "CDM", "AM", "CAM", "RM", "LM", "DM", "MF"],
+    DF: ["CB", "LCB", "RCB", "RB", "LB", "LWB", "RWB", "DF"],
     GK: ["GK"]
 };
 
