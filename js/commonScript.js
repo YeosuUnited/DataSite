@@ -274,26 +274,3 @@ function utf8ToBase64(str) {
 function base64ToUtf8(str) {
     return decodeURIComponent(escape(atob(str)));
 }
-
-// 선수 데이터를 초기화하고 가공하는 함수
-function initializePlayerInfoData(playersData) {
-    if (!playersData) {
-        console.error("선수 데이터가 없습니다.");
-        return;
-    }
-
-    playerInfoData = Object.keys(playersData).reduce((acc, playerId) => {
-        const player = playersData[playerId];
-
-        // 포지션 분류
-        const position = classifyPosition(player.posi || "");
-
-        acc[playerId] = {
-            name: player.name || "",
-            number: player.number || "", // 등번호 (없으면 빈 문자열)
-            position: position
-        };
-
-        return acc;
-    }, {});
-}
