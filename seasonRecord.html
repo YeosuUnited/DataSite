@@ -12,11 +12,11 @@
             box-sizing: border-box;
             font-family: 'Noto Sans KR', sans-serif;
         }
-
+        
         .header {
             background-color: #2565D0;
             color: white;
-            height: 66px;
+            height: 56px;
             width: 100%;
             text-align: left;
             padding-left: 20px;
@@ -26,12 +26,90 @@
             justify-content: space-between;
             padding-right: 20px;
         }
-
+        
         .logo {
             height: 40px;
             cursor: pointer;
+            position: absolute;            
+            left: 20px; /* header의 왼쪽에서 20px 떨어짐 */
         }
-
+        
+        .year-navigation.disabled {
+            pointer-events: none; /* 클릭 차단 */
+            opacity: 0.3; /* 흐리게 표시 */
+        }
+        
+        .toggle-button {
+            position: absolute; /* 절대 위치 지정 */
+            top: 13px; /* 세로 가운데 정렬 */
+            font-size: 18px;
+            border: none;
+            background-color: #2565D0;
+            color: #a5bcf1;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+            .toggle-button.active {
+                background-color: #2565D0;
+                color: white;
+                font-weight: bold;
+                border: none;
+            }
+        
+        .button-container {
+            display: flex;
+            gap: 20px; /* 버튼 간 간격 */
+            width: 100%; /* 부모 요소에 맞춰 버튼 위치를 조정 */
+            justify-content: center; /* 버튼을 화면 중앙에 배치 */
+            position: relative; /* 내부 버튼의 위치를 조정 가능하게 설정 */
+            margin-top: -55px;
+        }
+        
+            #officialButton {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%); /* 정회원 버튼을 중앙으로 이동 */
+            }
+        
+            #subButton {
+                position: absolute;
+                right: 30px; /* 용병 버튼을 오른쪽 끝에 고정 */
+            }
+        
+        .lowerbutton-container {
+            display: flex;
+            gap: 70px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        
+        .text-button {
+            font-size: 16px;
+            padding: 10px 5px;
+            border: none;
+            background-color: white;
+            margin-top: 0px;
+            color: #000;
+            cursor: pointer;            
+        }
+        
+            .text-button.active {
+                background-color: white;
+                color: #2565D0;
+                font-weight: bold;
+                border-bottom: 3px solid #2565D0; /* 밑줄 추가 */
+            }
+        
+        .divider {
+            background-color: #eaeaea;
+            height: 10px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
         .year-navigation {
             display: flex;
             align-items: center;
@@ -41,62 +119,68 @@
             font-weight: bold;
             gap: 10px; /* 버튼 간 간격 추가 */
         }
-
+        
         .year-arrow {
-            display: inline-block; /* 버튼 기본 표시 */
-            background-color: #2565D0;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            margin: 0 10px;
-            cursor: pointer;
-            min-width: 40px; /* 버튼 크기 고정 */
-            font-size: 20px;
-            border-radius: 5px;
+            display: inline-block; /* 인라인 블록으로 표시 */
+            background-color: transparent; /* 배경색 제거 */
+            color: black; /* 화살표 색상 */
+            border: none; /* 테두리 제거 */
+            padding: 0; /* 여백 제거 */
+            margin: 0 10px; /* 좌우 간격만 유지 */
+            cursor: pointer; /* 클릭 가능한 커서 */
+            font-size: 24px; /* 글자 크기 */
+            line-height: 1; /* 세로 정렬 간격 최소화 */
         }
-
+        
             .year-arrow:hover {
-                background-color: #1e4fa3;
+                background-color: white;
             }
-
+        
+            .year-arrow:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
+        
         #currentYear {
-            color: #2565D0;
+            color: black;
+            font-weight: bold;
+            font-size: 24px;
         }
-
+        
         .table-container {
             width: 100%;
             margin: 0;
             display: flex;
             overflow: hidden;
         }
-
+        
         .fixed-column {
             width: 80px;
             border-collapse: collapse;
             background-color: white;
         }
-
+        
             .fixed-column th, .fixed-column td {
                 padding: 10px;
                 text-align: center;
                 border: 1px solid lightgray;
                 background-color: white;
             }
-
+        
         .scrollable-table-container {
             width: 100%; /* 화면 크기에 맞게 너비 설정 */
             border-collapse: collapse;
             background-color: white;
             table-layout: fixed; /* 고정된 레이아웃으로 설정 */
         }
-
+        
         .scrollable-table {
             width: 100%;
             border-collapse: collapse;
             background-color: white;
             min-width: 150px;
         }
-
+        
             .scrollable-table th, .scrollable-table td {
                 width: 25%; /* 1/4 등분 */
                 text-align: center;
@@ -107,7 +191,7 @@
                 border-left: none; /* 세로줄 제거 */
                 border-right: none; /* 세로줄 제거 */
             }
-
+        
             .scrollable-table th {
                 position: sticky;
                 top: 0;
@@ -115,12 +199,12 @@
                 background-color: white;
                 cursor: pointer; /* 클릭 가능한 손 모양 커서 추가 */
             }
-
+        
                 .scrollable-table td.selected, .scrollable-table th.selected {
                     background-color: white;
                     color: #6495ED;
                 }
-
+        
         #sortMenu span:hover {
             background: #f0f0f0;
             display: inline; /* 기존 block을 inline으로 변경하여 빈칸 제거 */
@@ -128,25 +212,38 @@
             margin: 0; /* 여백 제거 */
             line-height: normal; /* 라인 높이 초기화 */
         }
+        }
     </style>
 
-    <script src="https://YeosuUnited.github.io/DataSite/js/seasonRScript.js?v=1.0"></script>
+    <script src="https://YeosuUnited.github.io/DataSite/js/commonScript.js?v=1.03"></script>
 </head>
 <body>
     <div class="header">
-        <img id="logo" src="https://github.com/YeosuUnited/DataSite/blob/main/assets/images/homeIcon.png?raw=true" alt="Home Icon" class="logo">
+    <img id="logo" src="https://github.com/YeosuUnited/DataSite/blob/main/assets/images/homeIcon.png?raw=true" alt="Home Icon" class="logo">
+    <div class="button-container">
+        <button id="officialButton" class="toggle-button">정회원</button>
+        <button id="subButton" class="toggle-button">용병</button>
+    </div>
     </div>
     <div class="year-navigation">
         <button id="prevYear" class="year-arrow">&lt;</button>
         <span id="currentYear"></span>
         <button id="nextYear" class="year-arrow">&gt;</button>
     </div>
-    <div style="margin-bottom: 10px; text-align: left; font-size: 16px; font-weight: bold; margin-left: 10px;">
-        <span>정렬 기준</span>
-        <span style="color: lightgray; font-size: 12px; font-weight: normal;"> | </span>
-        <span id="sortCriteria" style="color: gray; font-weight: bold; cursor: pointer;" onclick="toggleSortMenu()">
-            기본
-        </span>
+    <div class="lowerbutton-container">
+        <button id="everyYearButton" class="text-button">연도별 기록</button>
+        <button id="totalButton" class="text-button">역대 기록</button>
+    </div>
+    <div class="divider"></div>
+    <div style="margin-bottom: 10px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: bold; margin-left: 10px; margin-right: 10px;">
+        <div>
+            <span>정렬 기준</span>
+            <span style="color: lightgray; font-size: 12px; font-weight: normal;"> | </span>
+            <span id="sortCriteria" style="color: gray; font-weight: bold; cursor: pointer;" onclick="toggleSortMenu()">
+                기본
+            </span>
+        </div>
+        <span style="color: gray; font-size: 14px; font-weight: normal;" id="fromWhichYear"></span>
     </div>
     <div id="sortMenu" style="display: none; position: absolute; background: white; border: 1px solid lightgray; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 100">
         <span style="cursor: pointer;" onclick="setSortCriteria('기본')">기본</span><br>
