@@ -1,216 +1,3 @@
-        let cachedData = null; // 캐싱 데이터를 저장
-        let currentMatchData = null; // 현재 선택된 경기 데이터를 저장
-        let token = null;
-
-        async function fetchData() {
-            const now = new Date().getTime();
-            const cachedLastUpdated = localStorage.getItem('lastUpdated');
-
-            if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
-                try {
-                    const urls = [
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
-                        'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_2.text',
-                    ];
-
-                    const tokenResponses = await Promise.allSettled(
-                        urls.map(url =>
-                            fetch(url)
-                                .then(response => {
-                                    if (!response.ok) {
-                                        console.error(`네트워크 오류 발생: ${url}`);
-                                        throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
-                                    }
-                                    return response.text();
-                                })
-                        )
-                    );
-
-                    // token 파일 내용 합치기
-                    const token_1 = tokenResponses[0].status === 'fulfilled' ? tokenResponses[0].value.replace(/\n/g, '') : '';
-                    const token_2 = tokenResponses[1].status === 'fulfilled' ? tokenResponses[1].value.replace(/\n/g, '') : '';
-                    token = token_1 + token_2;
-
-                    // token을 localStorage에 저장
-                    localStorage.setItem('token', token)
-
-                    // 가져올 파일들 (GitHub Contents API를 활용)
-                    const files = [
-                        'assets/data/player_data.json',
-                        'assets/data/records_allTime.json',
-                        'assets/data/matches_total.json',
-                    ];
-
-                    // 병렬 요청 수행
-                    const responses = await Promise.allSettled(
-                        files.map((filePath) =>
-                            getGitHubFile('YeosuUnited', 'DataSite', filePath, token)
-                        )
-                    );
-
-                    // 응답 데이터를 개별적으로 처리
-                    const data = {
-                        players:
-                            responses[0].status === 'fulfilled'
-                                ? responses[0].value.content
-                                : {},
-                        recordAll:
-                            responses[1].status === 'fulfilled'
-                                ? responses[1].value.content
-                                : {},
-                        matchesTotal:
-                            responses[2].status === 'fulfilled'
-                                ? responses[2].value.content
-                                : {},
-                    };
-
-                    const recordAllSha =
-                        responses[1].status === 'fulfilled'
-                            ? responses[1].value.sha
-                            : null;
-
-                    const currentYear = new Date().getFullYear();
-                    data.recordAll = await addMissingYearData(
-                        data.recordAll,
-                        currentYear,
-                        recordAllSha
-                    );
-
-                    // 데이터를 캐싱 변수에 저장
-                    cachedData = data;
-                    const lastUpdated = now;
-                    localStorage.setItem('cachedData', JSON.stringify(cachedData));
-                    localStorage.setItem('lastUpdated', lastUpdated);
-
-                    renderRecentMatches(data.matchesTotal);
-
-                } catch (error) {
-                    console.error('Error fetching data:', error);
-                    useCachedData();
-                }
-            } else {
-                useCachedData();
-            }
-        }
-
-        function useCachedData() {
-            const cachedToken = localStorage.getItem('token');
-            if (cachedToken) {
-                token = cachedToken;
-            }
-            else {
-                console.log("데이터를 불러오는 중 오류가 발생했습니다.");
-            }
-            const cached = localStorage.getItem('cachedData');
-            if (cached) {
-                try {
-                    const parsedData = JSON.parse(cached);
-                    if (parsedData && parsedData.matchesTotal) {
-                        cachedData = parsedData; // cachedData를 초기화
-                        console.log("서버 문제, 캐싱된 데이터를 사용 중입니다.");
-                        const lastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
-                        renderRecentMatches(cachedData.matchesTotal); // 데이터 렌더링
-                    } else {
-                        throw new Error('캐싱된 데이터가 올바르지 않습니다.');
-                    }
-                } catch (error) {
-                    console.error('캐싱된 데이터 파싱 중 오류:', error);
-                }
-            } else {
-                console.log("캐싱된 데이터가 없습니다.");
-            }
-        }
-
-        function formatTime(date) {
-            const hours = date.getHours();
-            const minutes = date.getMinutes();
-            const period = hours < 12 ? '오전' : '오후';
-            const formattedHours = hours % 12 || 12;
-            return `${period} ${formattedHours}시${minutes ? ` ${minutes}분` : ''}`;
-        }
-
-        async function addMissingYearData(recordAll, year, sha) {
-            let isModify = false;
-            for (const playerNumber in recordAll) {
-                // 해당 선수에 year 키가 없으면 추가
-                if (!recordAll[playerNumber][year]) {
-                    isModify = true;
-                    recordAll[playerNumber][year] = {
-                        goals: 0,
-                        assists: 0,
-                        attackP: 0,
-                        matches: 0,
-                    };
-                }
-            }
-
-            // 누락된 연도가 하나라도 있었다면 GitHub에 저장
-            if (isModify) {
-                await saveGitHubFile(
-                    'YeosuUnited',
-                    'DataSite',
-                    'assets/data/records_allTime.json',
-                    recordAll,
-                    sha, // 기존 파일의 sha
-                    `Add ${year} data if missing`
-                );
-            }
-
-            return recordAll;
-        }
-
-        // 공통 유틸리티 함수: GitHub 파일 가져오기
-        async function getGitHubFile(repoOwner, repoName, filePath) {
-            const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-                headers: {
-                    Authorization: `token ${token}`,
-                },
-            });
-
-            if (response.ok) {
-                const fileData = await response.json();
-                return {
-                    sha: fileData.sha,
-                    content: JSON.parse(base64ToUtf8(fileData.content)),
-                };
-            } else {
-                console.warn(`파일을 찾을 수 없습니다: ${filePath}`);
-                return { sha: null, content: {} };
-            }
-        }
-
-        // 공통 유틸리티 함수: GitHub 파일 저장
-        async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, message) {
-            const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-                method: "PUT",
-                headers: {
-                    Authorization: `token ${token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    message,
-                    content: utf8ToBase64(JSON.stringify(content, null, 2)),
-                    sha: sha || null, // 새 파일인 경우 sha를 null로 처리
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
-            }
-                
-            return await response.json();
-        }
-
-        // UTF-8 문자열을 Base64로 변환
-        function utf8ToBase64(str) {
-            return btoa(unescape(encodeURIComponent(str)));
-        }
-
-        // Base64 문자열을 UTF-8로 변환
-        function base64ToUtf8(str) {
-            return decodeURIComponent(escape(atob(str)));
-        }
-
         function renderRecentMatches(matches) {
             const matchContainer = document.getElementById('recentMatchesContainer');
             matchContainer.innerHTML = '';
@@ -244,17 +31,17 @@
                 }
 
                 matchBox.innerHTML = `
-                                            <div class="date-time">
-                                                <div class="date">${formattedDate}</div>
-                                                <div class="time">${formattedTime}</div>
-                                            </div>
-                                            <div class="opponent-location">
-                                                <div class="opponent">${match.opponent}</div>
-                                                <div class="location">${match.location}</div>
-                                                ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
-                                            </div>
-                                            <button class="popup-button" data-key="${key}">기록</button>
-                                        `;
+                                                <div class="date-time">
+                                                    <div class="date">${formattedDate}</div>
+                                                    <div class="time">${formattedTime}</div>
+                                                </div>
+                                                <div class="opponent-location">
+                                                    <div class="opponent">${match.opponent}</div>
+                                                    <div class="location">${match.location}</div>
+                                                    ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
+                                                </div>
+                                                <button class="popup-button" data-key="${key}">기록</button>
+                                            `;
                 matchContainer.appendChild(matchBox);
             });
         }
@@ -288,17 +75,17 @@
                 }
 
                 matchBox.innerHTML = `
-                                            <div class="date-time">
-                                                <div class="date">${formattedDate}</div>
-                                                <div class="time">${formattedTime}</div>
-                                            </div>
-                                            <div class="opponent-location">
-                                                <div class="opponent">${match.opponent}</div>
-                                                <div class="location">${match.location}</div>
-                                                ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
-                                            </div>
-                                            <button class="popup-button" data-key="${key}">기록</button>
-                                        `;
+                                                <div class="date-time">
+                                                    <div class="date">${formattedDate}</div>
+                                                    <div class="time">${formattedTime}</div>
+                                                </div>
+                                                <div class="opponent-location">
+                                                    <div class="opponent">${match.opponent}</div>
+                                                    <div class="location">${match.location}</div>
+                                                    ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
+                                                </div>
+                                                <button class="popup-button" data-key="${key}">기록</button>
+                                            `;
                 matchContainer.appendChild(matchBox);
             });
         }
@@ -386,25 +173,25 @@
 
             // 테이블 생성
             let playersTable = `<h3 class="styled-table-title">참여 선수 기록</h3>
-                                    <table class="styled-table" border="0" cellspacing="0" cellpadding="5">
+                                        <table class="styled-table" border="0" cellspacing="0" cellpadding="5">
 `;
 
             // 테이블 헤더
             if (matchData.type === "0") {
                 playersTable += `<thead>
-                                        <tr>
-                                            <th>선수명</th>
-                                            <th>득점</th>
-                                            <th>도움</th>
-                                        </tr>
-                                     </thead>`;
+                                            <tr>
+                                                <th>선수명</th>
+                                                <th>득점</th>
+                                                <th>도움</th>
+                                            </tr>
+                                         </thead>`;
             }
             else {
                 playersTable += `<thead>
-                                            <tr>
-                                                <th colspan="3">${matchData.type === "1" ? "풋살은 상세데이터를 제공하지 않습니다" : "자체전은 상세데이터를 제공하지 않습니다"}</th>
-                                            </tr>
-                                        </thead>`;
+                                                <tr>
+                                                    <th colspan="3">${matchData.type === "1" ? "풋살은 상세데이터를 제공하지 않습니다" : "자체전은 상세데이터를 제공하지 않습니다"}</th>
+                                                </tr>
+                                            </thead>`;
             }
 
             // 테이블 데이터
@@ -414,10 +201,10 @@
                 playerStats.forEach(({ name, position, goals, assists }, index) => {
                     const rowClass = index % 2 === 0 ? "light-row" : "dark-row"; // 행 색상 번갈아가며 적용
                     playersTable += `<tr class="${rowClass}">
-                                            <td>${name} <span style="font-size: 0.85em; color: gray;">${position}</span></td>
-                                            <td>${goals}</td>
-                                            <td>${assists}</td>
-                                         </tr> `;
+                                                <td>${name} <span style="font-size: 0.85em; color: gray;">${position}</span></td>
+                                                <td>${goals}</td>
+                                                <td>${assists}</td>
+                                             </tr> `;
                 });
                 playersTable += `</tbody>`;
             }
@@ -427,8 +214,8 @@
                 playerStats.forEach(({ name, position }, index) => {
                     const rowClass = index % 2 === 0 ? "light-row" : "dark-row"; // 행 색상 번갈아가며 적용
                     playersTable += ` <tr class="${rowClass}">
-                                            <td>${name} <span style="font-size: 0.85em; color: gray;">${position}</span></td>
-                                          </tr> `;
+                                                <td>${name} <span style="font-size: 0.85em; color: gray;">${position}</span></td>
+                                              </tr> `;
                 });
                 playersTable += `</tbody>`;
             }
@@ -461,9 +248,9 @@
                 }
 
                 historyList += `<li>
-                                        <span style="font-size: 0.9em;">${formattedDate}</span> - <span style="color: gray; font-size: 0.8em;">${formattedTime} / ${location}</span>
-                                        ${scoreText}
-                                    </li> `;
+                                            <span style="font-size: 0.9em;">${formattedDate}</span> - <span style="color: gray; font-size: 0.8em;">${formattedTime} / ${location}</span>
+                                            ${scoreText}
+                                        </li> `;
             });
 
             historyList += "</ul>";
@@ -492,15 +279,15 @@
 
             // 팝업 HTML 업데이트
             popup.innerHTML = `<button class="close-button" onclick="closePopup()"><img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/btn_X.png" alt="닫기 버튼" /></button>
-                                    <div class="popup-timeNdate">
-                                        ${dateNtimeHTML}
-                                    </div>
-                                    ${header}
-                                    ${playersTable}
-                                    ${historyHeader}
-                                    ${historyList}
-                                    ${commentHeader}
-                                    ${commentList}`;
+                                        <div class="popup-timeNdate">
+                                            ${dateNtimeHTML}
+                                        </div>
+                                        ${header}
+                                        ${playersTable}
+                                        ${historyHeader}
+                                        ${historyList}
+                                        ${commentHeader}
+                                        ${commentList}`;
 
             openPopup();
         }
@@ -588,7 +375,6 @@
             });
 
             recentButton.classList.add('active');
-            window.onload = fetchData;
 
             // 검색 버튼 클릭 시
             searchButton.addEventListener('click', function () {
@@ -618,24 +404,24 @@
                 // 결과를 표시
                 searchResults.innerHTML = results.length
                     ? results.map(result => `
-                                                    <div style="
-                                                        padding: 5px 0px;
-                                                        border: 2px solid #ddd;
-                                                        border-radius: 5px;
-                                                        margin-bottom: 5px;
-                                                        cursor: pointer;
-                                                        width: 90%;
-                                                        max-width: 800px;
-                                                        text-align: center;
-                                                        margin: 0 auto;"
-                                                        data-key="${result.key}">
-                                                        ${result.opponent}
-                                                    </div>
-                                                `).join('')
+                                                        <div style="
+                                                            padding: 5px 0px;
+                                                            border: 2px solid #ddd;
+                                                            border-radius: 5px;
+                                                            margin-bottom: 5px;
+                                                            cursor: pointer;
+                                                            width: 90%;
+                                                            max-width: 800px;
+                                                            text-align: center;
+                                                            margin: 0 auto;"
+                                                            data-key="${result.key}">
+                                                            ${result.opponent}
+                                                        </div>
+                                                    `).join('')
                     : `<div style="
-                                                        padding: 5px 10px;
-                                                        color: gray;
-                                                        text-align: center;">검색 결과가 없습니다.</div>`;
+                                                            padding: 5px 10px;
+                                                            color: gray;
+                                                            text-align: center;">검색 결과가 없습니다.</div>`;
 
             });
 
@@ -681,17 +467,17 @@
                     } else if (results.length > 1) {
                         searchResults.innerHTML = results
                             .map(opponent => `
-                        <div style="
-                            padding: 5px 0px;
-                            border: 2px solid #ddd;
-                            border-radius: 5px;
-                            margin-bottom: 5px;
-                            cursor: pointer;
-                            width: 90%;
-                            max-width: 800px;
-                            text-align: center;
-                            margin: 0 auto;">${opponent}</div>
-                    `).join('');
+                            <div style="
+                                padding: 5px 0px;
+                                border: 2px solid #ddd;
+                                border-radius: 5px;
+                                margin-bottom: 5px;
+                                cursor: pointer;
+                                width: 90%;
+                                max-width: 800px;
+                                text-align: center;
+                                margin: 0 auto;">${opponent}</div>
+                        `).join('');
                     } else {
                         searchResults.innerHTML = '<div style="color: gray; text-align: center;">검색 결과가 없습니다.</div>';
                     }
@@ -771,9 +557,9 @@
                         }
 
                         historyList += `<li>
-                                            ${formattedDate} - <span style="color: gray; font-size: 0.9em;">${formattedTime} / ${location}</span>
-                                            ${scoreText}
-                                        </li>`;
+                                                ${formattedDate} - <span style="color: gray; font-size: 0.9em;">${formattedTime} / ${location}</span>
+                                                ${scoreText}
+                                            </li>`;
                     });
                 } else {
                     historyList += "<li>경기 기록 없음</li>";
@@ -797,18 +583,27 @@
 
                 // 컨테이너에 내용 업데이트
                 teamHistoryContainer.innerHTML = `
-                                                            <div style="text-align: center;"><span style="font-size: 1.2em; font-weight: bold;">vs ${teamName}</span></div>
-                                                            <h3 class='recent-matches-popup-head'>역대 경기 기록</h3>
-                                                            ${historyList}
-                                                            <h3 class='recent-matches-popup-head'>코멘트</h3>
-                                                            ${commentList}
-                                                        `;
+                                                                <div style="text-align: center;"><span style="font-size: 1.2em; font-weight: bold;">vs ${teamName}</span></div>
+                                                                <h3 class='recent-matches-popup-head'>역대 경기 기록</h3>
+                                                                ${historyList}
+                                                                <h3 class='recent-matches-popup-head'>코멘트</h3>
+                                                                ${commentList}
+                                                            `;
                 teamHistoryContainer.style.display = 'block'; // 컨테이너 표시
             }
 
             document.querySelector('.close-button').addEventListener('click', closePopup);
             document.querySelector('.overlay').addEventListener('click', closePopup);
 
-            // 페이지 로드 시 초기화
             initializeUI();
         });
+
+        window.onload = async function () {
+            try {
+                await fetchData();
+
+                renderRecentMatches(cachedData.matchesTotal);                
+            } catch (error) {
+                console.error('초기화 중 오류 발생:', error);
+            }
+        }
