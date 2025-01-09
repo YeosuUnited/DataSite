@@ -8,38 +8,100 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
         }
-
-        .header {
-            background-color: #2565D0;
+    
+        .firstHeader {
+            background-color: white;
             color: white;
-            height: 66px;
-            width: 100vw;
-            text-align: left;
-            padding-left: 20px;
-            font-size: 24px;
+            height: 43px;
+            width: 100%;
+            display: flex;
+        }
+    
+            .logo {
+                height: 35px;
+                cursor: pointer;
+                margin: 7px 0 0 7px;
+            }
+    
+            .pageTitleText {
+                color: black;
+                font-weight: bold;
+                font-size: 20px;
+                margin: 9px 0 0 12px;
+            }
+    
+        .secondHeader {
+            background-color: white;
+            color: white;
+            height: 43px;
+            width: 100%;
+            min-width: 270px;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-right: 20px;
         }
-
-        .logo {
-            height: 40px;
-            cursor: pointer;
-        }
-
-        .search-box {
+    
+            .movePageRight-button, .movePage-button, .nowPage-button {
+                background-color: white;
+                text-decoration: none; /* 밑줄 제거 */
+                position: relative;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+    
+            .movePageRight-button {
+                margin-right: 40px;
+            }
+    
+            .movePage-button {
+                color: black;
+                cursor: pointer;
+            }
+    
+            .nowPage-button {
+                margin-left: 40px;
+                color: #2565D0;
+                font-weight: bold;
+                position: relative; /* 상대 위치 조정을 위해 추가 */
+            }
+    
+                .nowPage-button::after {
+                    content: ""; /* 가상 요소 생성 */
+                    position: absolute;
+                    bottom: -11px; /* 밑줄을 더 아래로 이동 (-5px은 원하는 거리로 조정) */
+                    left: 0;
+                    width: 100%;
+                    height: 3px; /* 밑줄 두께 */
+                    background-color: #2565D0; /* 밑줄 색상 */
+                }
+    
+        .thirdHeader {
+            background-color: #2565D0;
+            color: white;
+            height: 55px;
+            width: 100%;
+            min-width: 270px;
             display: flex;
-            align-items: center;
+            justify-content: flex-end; /* 자식 요소를 오른쪽으로 정렬 */
         }
-
-        .search-input {
-            height: 30px;
-            font-size: 16px;
-            padding: 5px;
-        }
-
+    
+            .search-box {
+                display: flex;
+                align-items: center;
+                margin-right: 15px;
+            }
+    
+            .search-input {
+                height: 30px;
+                font-size: 16px;
+                padding: 5px;
+            }
+    
         .divider {
             width: 100%;
             height: 10px;
@@ -47,7 +109,7 @@
             margin: 0 auto;
             padding: 0;
         }
-
+    
         .search-results {
             background-color: white;
             color: black;
@@ -59,90 +121,90 @@
             right: 20px;
             display: none;
         }
-
+    
             .search-results ul {
                 list-style: none;
                 padding: 0;
                 margin: 0;
             }
-
+    
             .search-results li {
                 margin-bottom: 5px;
                 cursor: pointer;
             }
-
+    
         .player-details {
             background-color: white;
             color: black;
-            padding: 20px;
-            margin-top: 20px;
+            padding: 10px 10px 0 10px;
             font-size: 16px;
+            min-width: 360px;
         }
-
+    
             .player-details div {
                 margin-bottom: 10px;
             }
-
+    
             .player-details span.label {
                 color: gray;
             }
-
+    
             .player-details span.value {
                 color: black;
             }
-
+    
         .record-container {
             margin-top: 20px;
         }
-
+    
         .record-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
-
+    
             .record-header .title {
                 font-weight: bold;
                 color: black;
             }
-
+    
             .record-header .subtitle {
                 color: gray;
                 font-size: 14px;
             }
-
+    
         .record-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
         }
-
+    
             .record-table th, .record-table td {
                 border: 1px solid #ddd;
                 padding: 8px;
                 text-align: center;
             }
-
+    
             .record-table th {
                 background-color: #78A5EE;
                 color: white;
             }
-
+    
             .record-table .summary {
                 background-color: #F1F6FE;
                 color: black;
             }
-
+    
             .record-table .year-data {
                 background-color: #F1F6FE;
                 color: black;
             }
-
+    
             .record-table .other-year-data {
                 background-color: white;
                 color: #8F8F9D;
             }
-
+    
         .back-button {
             background-color: #2565D0;
             color: white;
@@ -156,21 +218,30 @@
             transition: background-color 0.3s, transform 0.2s;
             margin-bottom: 10px; /* margin-bottom을 CSS로 이동 */
         }
-
+    
             .back-button:hover {
                 background-color: #1E4FA6;
                 transform: scale(1.05);
             }
     </style>
-
-    <script src="https://YeosuUnited.github.io/DataSite/js/playerDScript.js"></script>    
+    
+    <script src="https://YeosuUnited.github.io/DataSite/js/commonScript.js?v=1.03"></script>
+    <script src="https://YeosuUnited.github.io/DataSite/js/playerDScript.js?v=1.01"></script>    
 </head>
 <body>
-    <div class="header">
+    <div class="firstHeader">
         <img id="logo" src="https://github.com/YeosuUnited/DataSite/blob/main/assets/images/homeIcon.png?raw=true" alt="Home Icon" class="logo">
-        <div class="search-box">
+        <span class="pageTitleText">프로필</span>
+    </div>
+    <div class="secondHeader">
+        <span class="nowPage-button">프로필</span>
+        <a href="matchRecord.html" class="movePage-button">팀 일정</a>
+        <a href="seasonRecord.html" class="movePageRight-button">선수 기록</a>
+    </div>
+    <div class="thirdHeader">
+        <span class="search-box">
             <input type="text" id="search-input" class="search-input" placeholder="이름 검색">
-        </div>
+        </span>
     </div>
     <div id="search-results" class="search-results"></div>
     <div id="player-details" class="player-details" style="display: none;">
