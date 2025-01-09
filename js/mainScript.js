@@ -1,106 +1,3 @@
-let cachedData = null; // 캐싱 데이터를 저장
-let token = null;
-
-async function fetchData() {
-    const now = new Date().getTime();
-    const cachedLastUpdated = localStorage.getItem('lastUpdated');
-
-    if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
-        try {
-            const urls = [
-                'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
-                'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_2.text',
-            ];
-
-            const tokenResponses = await Promise.allSettled(
-                urls.map(url =>
-                    fetch(url)
-                        .then(response => {
-                            if (!response.ok) {
-                                console.error(`네트워크 오류 발생: ${url}`);
-                                throw new Error(`네트워크 응답에 문제가 있습니다: ${url}`);
-                            }
-                            return response.text();
-                        })
-                )
-            );
-
-            // token 파일 내용 합치기
-            const token_1 = tokenResponses[0].status === 'fulfilled' ? tokenResponses[0].value.replace(/\n/g, '') : '';
-            const token_2 = tokenResponses[1].status === 'fulfilled' ? tokenResponses[1].value.replace(/\n/g, '') : '';
-            token = token_1 + token_2;
-
-            // token을 localStorage에 저장
-            localStorage.setItem('token', token)
-
-            // 가져올 파일들 (GitHub Contents API를 활용)
-            const files = [
-                'assets/data/player_data.json',
-                'assets/data/records_allTime.json',
-                'assets/data/matches_total.json',
-            ];
-
-            // 병렬 요청 수행
-            const responses = await Promise.allSettled(
-                files.map((filePath) =>
-                    getGitHubFile('YeosuUnited', 'DataSite', filePath, token)
-                )
-            );
-
-            // 응답 데이터를 개별적으로 처리
-            const data = {
-                players:
-                    responses[0].status === 'fulfilled'
-                        ? responses[0].value.content
-                        : {},
-                recordAll:
-                    responses[1].status === 'fulfilled'
-                        ? responses[1].value.content
-                        : {},
-                matchesTotal:
-                    responses[2].status === 'fulfilled'
-                        ? responses[2].value.content
-                        : {},
-            };
-
-            const recordAllSha =
-                responses[1].status === 'fulfilled'
-                    ? responses[1].value.sha
-                    : null;
-
-            const currentYear = new Date().getFullYear();
-            data.recordAll = await addMissingYearData(
-                data.recordAll,
-                currentYear,
-                recordAllSha
-            );
-
-            // 데이터를 캐싱 변수에 저장
-            cachedData = data;
-            const lastUpdated = now;
-
-            localStorage.setItem('cachedData', JSON.stringify(cachedData));
-            localStorage.setItem('lastUpdated', lastUpdated);
-            const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
-
-            if (Object.keys(thisYearRecords).length === 0) {
-                console.error("올해 데이터가 없습니다.");
-                return;
-            }
-
-            createCards(cachedData.players, thisYearRecords);
-
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            useCachedData();
-        }
-    } else {
-        useCachedData();
-    }
-}
-
-let lastUpdated = null;
-
 function filterCurrentYearData(allTimeRecords, currentYear) {
     const season = currentYear.toString();
 
@@ -123,124 +20,6 @@ function filterCurrentYearData(allTimeRecords, currentYear) {
     }
 
     return filteredData;
-}
-
-function formatTime(date) {
-    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
-}
-
-function useCachedData() {
-    try {
-        const cachedToken = localStorage.getItem('token');
-        if (cachedToken) {
-            token = cachedToken;
-        }
-        else {
-            console.log("데이터를 불러오는 중 오류가 발생했습니다.");
-        }
-        const cached = localStorage.getItem('cachedData');
-        if (cached) {
-            cachedData = JSON.parse(cached);
-            console.log("서버 문제, 캐싱된 데이터를 사용 중입니다.");
-
-            const currentYear = new Date().getFullYear();
-
-            const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
-
-            if (Object.keys(thisYearRecords).length === 0) {
-                throw new Error("캐싱된 데이터에 현재 연도 데이터가 없습니다.");
-            }
-
-            createCards(cachedData.players, thisYearRecords);
-        } else {
-            throw new Error("캐싱된 데이터가 없습니다.");
-        }
-    } catch (error) {
-        console.error('캐싱 데이터를 사용하는 중 오류 발생:', error);
-    }
-}
-
-async function addMissingYearData(recordAll, year, sha) {
-    let isModify = false;
-    for (const playerNumber in recordAll) {
-        // 해당 선수에 year 키가 없으면 추가
-        if (!recordAll[playerNumber][year]) {
-            isModify = true;
-            recordAll[playerNumber][year] = {
-                goals: 0,
-                assists: 0,
-                attackP: 0,
-                matches: 0,
-            };
-        }
-    }
-
-    // 누락된 연도가 하나라도 있었다면 GitHub에 저장
-    if (isModify) {
-        await saveGitHubFile(
-            'YeosuUnited',
-            'DataSite',
-            'assets/data/records_allTime.json',
-            recordAll,
-            sha, // 기존 파일의 sha
-            `Add ${year} data if missing`
-        );
-        console.log(`"${year}" 데이터가 없던 선수에게 기본값을 추가하고, GitHub에 업로드했습니다.`);
-    }
-
-    return recordAll;
-}
-
-// 공통 유틸리티 함수: GitHub 파일 가져오기
-async function getGitHubFile(repoOwner, repoName, filePath) {
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-        headers: {
-            Authorization: `token ${token}`,
-        },
-    });
-
-    if (response.ok) {
-        const fileData = await response.json();
-        return {
-            sha: fileData.sha,
-            content: JSON.parse(base64ToUtf8(fileData.content)),
-        };
-    } else {
-        console.warn(`파일을 찾을 수 없습니다: ${filePath}`);
-        return { sha: null, content: {} };
-    }
-}
-
-// 공통 유틸리티 함수: GitHub 파일 저장
-async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, message) {
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-        method: "PUT",
-        headers: {
-            Authorization: `token ${token}`,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            message,
-            content: utf8ToBase64(JSON.stringify(content, null, 2)),
-            sha: sha || null, // 새 파일인 경우 sha를 null로 처리
-        }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
-    }
-
-    return await response.json();
-}
-
-// UTF-8 문자열을 Base64로 변환
-function utf8ToBase64(str) {
-    return btoa(unescape(encodeURIComponent(str)));
-}
-
-// Base64 문자열을 UTF-8로 변환
-function base64ToUtf8(str) {
-    return decodeURIComponent(escape(atob(str)));
 }
 
 function createCards(players, thisYearRecords) {
@@ -438,9 +217,18 @@ function enableDragScroll() {
     });
 }
 
-window.onload = function () {
-    fetchData();
-    enableDragScroll();
+window.onload = async function () {
+    try {
+        await fetchData();
+
+        const currentYear = new Date().getFullYear();
+        const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
+        createCards(cachedData.players, thisYearRecords);
+
+        enableDragScroll();
+    } catch (error) {
+        console.error('초기화 중 오류 발생:', error);
+    }
 
     // 팝업 관련 요소 초기화
     const popup = document.getElementById('password-popup');
