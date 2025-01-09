@@ -13,69 +13,117 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
         
-        .header {
-            background-color: #2565D0;
+        .firstHeader {
+            background-color: white;
             color: white;
-            height: 66px;
+            height: 43px;
+            width: 100%;            
+            display: flex;
+        }
+        
+            .logo {
+                height: 35px;
+                cursor: pointer;
+                margin: 7px 0 0 7px;
+            }
+        
+            .pageTitleText{
+                color: black;
+                font-weight: bold;
+                font-size: 20px;
+                margin: 9px 0 0 9px;
+            }
+        
+        
+        .secondHeader {
+            background-color: white;
+            color: white;
+            height: 43px;
             width: 100%;
-            text-align: left;
-            padding-left: 20px;
-            font-size: 24px;
+            min-width: 270px;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-right: 20px;
         }
         
-        .logo {
-            height: 40px;
-            cursor: pointer;
-            position: absolute;            
-            left: 20px; /* header의 왼쪽에서 20px 떨어짐 */
+            .movePageLeft-button, .movePage-button, .nowPage-button {
+                background-color: white;
+                text-decoration: none; /* 밑줄 제거 */
+                position: relative;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+        
+            .movePageLeft-button{
+                margin-left: 40px;
+            }
+        
+            .movePage-button {
+                color: black;
+                cursor: pointer;
+            }
+        
+            .nowPage-button {
+                margin-right: 40px;
+                color: #2565D0;
+                font-weight: bold;
+                position: relative; /* 상대 위치 조정을 위해 추가 */
+            }
+        
+                .nowPage-button::after {
+                    content: ""; /* 가상 요소 생성 */
+                    position: absolute;
+                    bottom: -10px; /* 밑줄을 더 아래로 이동 (-5px은 원하는 거리로 조정) */
+                    left: 0;
+                    width: 100%;
+                    height: 3px; /* 밑줄 두께 */
+                    background-color: #2565D0; /* 밑줄 색상 */
+                }
+        
+        .thirdHeader {
+            background-color: #2565D0;
+            color: white;
+            height: 45px;
+            width: 100%;
+            min-width: 270px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
+        
+            .toggleL-button, .toggleR-button {
+                position: relative;
+                font-size: 16px;
+                border: none;
+                background-color: #2565D0;
+                color: #a5bcf1;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+        
+            .toggleL-button{
+                margin-left:80px;
+            }
+        
+            .toggleR-button{
+                margin-right:80px;
+            }
+        
+                .toggleL-button.active, .toggleR-button.active {
+                    background-color: #2565D0;
+                    color: white;
+                    font-weight: bold;
+                    border: none;
+                }
         
         .year-navigation.disabled {
             pointer-events: none; /* 클릭 차단 */
             opacity: 0.3; /* 흐리게 표시 */
-        }
-        
-        .toggle-button {
-            position: absolute; /* 절대 위치 지정 */
-            top: 13px; /* 세로 가운데 정렬 */
-            font-size: 18px;
-            border: none;
-            background-color: #2565D0;
-            color: #a5bcf1;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-            .toggle-button.active {
-                background-color: #2565D0;
-                color: white;
-                font-weight: bold;
-                border: none;
-            }
-        
-        .button-container {
-            display: flex;
-            gap: 20px; /* 버튼 간 간격 */
-            width: 100%; /* 부모 요소에 맞춰 버튼 위치를 조정 */
-            justify-content: center; /* 버튼을 화면 중앙에 배치 */
-            position: relative; /* 내부 버튼의 위치를 조정 가능하게 설정 */
-            margin-top: -55px;
-        }
-        
-            #officialButton {
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%); /* 정회원 버튼을 중앙으로 이동 */
-            }
-        
-            #subButton {
-                position: absolute;
-                right: 30px; /* 용병 버튼을 오른쪽 끝에 고정 */
-            }
+        }        
         
         .lowerbutton-container {
             display: flex;
@@ -212,19 +260,24 @@
             margin: 0; /* 여백 제거 */
             line-height: normal; /* 라인 높이 초기화 */
         }
-        }
     </style>
 
     <script src="https://YeosuUnited.github.io/DataSite/js/commonScript.js?v=1.03"></script>
     <script src="https://YeosuUnited.github.io/DataSite/js/seasonRScript.js?v=1.00"></script>
 </head>
 <body>
-    <div class="header">
-    <img id="logo" src="https://github.com/YeosuUnited/DataSite/blob/main/assets/images/homeIcon.png?raw=true" alt="Home Icon" class="logo">
-    <div class="button-container">
-        <button id="officialButton" class="toggle-button">정회원</button>
-        <button id="subButton" class="toggle-button">용병</button>
+    <div class="firstHeader">
+        <img id="logo" src="https://github.com/YeosuUnited/DataSite/blob/main/assets/images/homeIcon.png?raw=true" alt="Home Icon" class="logo">
+        <span class="pageTitleText">선수 기록</span>
     </div>
+    <div class="secondHeader">
+        <a href="playerData.html" class="movePageLeft-button">프로필</a>
+        <a href="matchRecord.html" class="movePage-button">팀 일정</a>
+        <span class="nowPage-button">선수 기록</span>
+    </div>
+    <div class="thirdHeader">
+        <button id="officialButton" class="toggleL-button">정회원</button>
+        <button id="subButton" class="toggleR-button">용병</button>
     </div>
     <div class="year-navigation">
         <button id="prevYear" class="year-arrow">&lt;</button>
