@@ -1,9 +1,20 @@
+const positionMapping = {
+    FW: ["ST", "CF", "SS", "LWF", "RWF", "LW", "RW", "FW"],
+    MF: ["CM", "LCM", "RCM", "CDM", "AM", "CAM", "RM", "LM", "DM", "MF"],
+    DF: ["CB", "LCB", "RCB", "RB", "LB", "LWB", "RWB", "DF"],
+    GK: ["GK"]
+};
+
+// 포지션을 분류하는 함수
+function classifyPosition(position) {
+    position = position.toUpperCase();
+    return Object.keys(positionMapping).find(key => positionMapping[key].includes(position)) || "MF";
+}
+
 // (예) 데이터 로딩(fetchData)이 끝난 후, 로드가 완료되면 호출할 함수를 하나 추가합니다.
 function renderPlayerList() {
     const container = document.createElement('div');
     container.id = 'player-list';
-    container.style.padding = '0 10px';
-    container.style.backgroundColor = '#f9f9f9';
 
     // 기존 내용 초기화
     const existingContainer = document.getElementById('player-list');
@@ -18,73 +29,75 @@ function renderPlayerList() {
         return;
     }
 
-    // 선수 리스트 생성
-    Object.entries(cachedData.players).forEach(([number, player]) => {
-        const playerImage = document.createElement('img');
-        playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
-        playerImage.alt = player.name;
-        playerImage.className = 'player-image';
-        playerImage.style.width = '25px';
-        playerImage.style.height = '25px';
-        playerImage.style.borderRadius = '50%';
-        playerImage.style.objectFit = 'cover';
-        playerImage.style.marginRight = '10px';
-        playerImage.onerror = () => {
-            playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-        };
+    // 포지션 매핑 및 한글 이름
+    const positionMapping = {
+        GK: "골키퍼",
+        DF: "수비수",
+        MF: "미드필더",
+        FW: "공격수"
+    };
 
-        const playerRow = document.createElement('div');
-        playerRow.className = 'player-row';
-        playerRow.style.display = 'flex';
-        playerRow.style.justifyContent = 'space-between';
-        playerRow.style.padding = '10px 0';
-        playerRow.style.borderBottom = '1px solid #ccc';
+    // 포지션별 섹션 생성
+    Object.keys(positionMapping).forEach(position => {
+        // 섹션 생성
+        const section = document.createElement('div');
+        section.className = 'position-section';
+        section.style.marginBottom = '20px';
 
-        const playerInfo = document.createElement('span');
-        playerInfo.style.display = 'flex';
-        playerInfo.style.alignItems = 'center'; // 이미지를 텍스트와 수직 정렬
-        playerInfo.innerHTML = `
-                            <span style="font-weight: bold;">${player.name}</span>
-                            <span style="color: gray; font-size: 0.9em; margin-left: 5px;">${player.posi}</span>
-                            <span style="color: gray; font-size: 0.9em; position: absolute; left: 160px;">no.<span style="font-weight: bold;">${number}</span>
-                           `;
+        const title = document.createElement('h2');                
+        title.className = 'position-title'
+        title.textContent = positionMapping[position];
 
-        // 이미지 노드를 playerInfo의 가장 앞에 추가
-        playerInfo.prepend(playerImage);
+        section.appendChild(title);
 
-        const modifyButton = document.createElement('button');
-        modifyButton.textContent = '상세기록';
-        modifyButton.className = 'modify-button';
-        modifyButton.style.backgroundColor = '#4CAF50';
-        modifyButton.style.color = 'white';
-        modifyButton.style.border = 'none';
-        modifyButton.style.padding = '5px 10px';
-        modifyButton.style.cursor = 'pointer';
-        modifyButton.style.borderRadius = '5px';
+        // 해당 포지션 선수 카드 생성
+        Object.entries(cachedData.players).forEach(([number, player]) => {
+            // 포지션 분류
+            const playerPosition = classifyPosition(player.posi || "");
+            if (playerPosition === position) {
+                const card = document.createElement('div');
+                card.className = 'player-card';
 
-        // 클릭 이벤트 추가
-        modifyButton.addEventListener('click', function () {
-            const playerNumber = this.getAttribute('data-player-number'); // 버튼에 설정된 번호 가져오기
-            if (cachedData && cachedData.players) {
-                const player = cachedData.players[playerNumber]; // 등번호로 직접 접근
-                if (player) {
-                    displayPlayerDetails(player); // 선수 상세 정보 표시
-                    displayPlayerRecord(player); // 선수 기록 표시
-                    document.getElementById('player-details').style.display = 'block'; // 상세 정보 숨김
-                    document.getElementById('player-list').style.display = 'none'; // 선수 목록 표시
-                } else {
-                    console.error(`Player not found for number: ${playerNumber}`);
-                }
-            } else {
-                console.error('Cached data or players not available');
+                // 클릭 이벤트 추가
+                card.addEventListener('click', function () {
+                    if (cachedData && cachedData.players) {
+                        const player = cachedData.players[number];
+                        if (player) {
+                            displayPlayerDetails(player); // 선수 상세 정보 표시
+                            displayPlayerRecord(player); // 선수 기록 표시
+                            document.getElementById('player-details').style.display = 'block'; // 상세 정보 표시
+                            document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
+                        } else {
+                            console.error(`Player not found for number: ${number}`);
+                        }
+                    } else {
+                        console.error('Cached data or players not available');
+                    }
+                });
+
+                const playerImage = document.createElement('img');
+                playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_P.png`;
+                playerImage.alt = player.name;
+                playerImage.onerror = () => {
+                    playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default_P.png`;
+                };
+
+                const playerName = document.createElement('div');
+                playerName.className = 'player-name';
+                playerName.textContent = player.name;
+
+                const playerInfo = document.createElement('div');
+                playerInfo.className = 'player-info';
+                playerInfo.textContent = `no.${number}`;
+
+                card.appendChild(playerImage);
+                card.appendChild(playerName);
+                card.appendChild(playerInfo);
+                section.appendChild(card);
             }
         });
 
-        modifyButton.setAttribute('data-player-number', number);
-
-        playerRow.appendChild(playerInfo);
-        playerRow.appendChild(modifyButton);
-        container.appendChild(playerRow);
+        container.appendChild(section);
     });
 }
 
@@ -249,6 +262,14 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = 'index.html';
     });
 
+    // 화면 빈 여백 클릭 시 검색 결과 닫기
+    document.addEventListener('click', function (event) {
+        // 클릭한 요소가 검색 결과나 검색창이 아닌 경우 닫기
+        if (!searchResultsElement.contains(event.target) && event.target !== searchInputElement) {
+            searchResultsElement.style.display = 'none';
+        }
+    });
+
     // 검색 입력 이벤트 리스너
     searchInputElement.addEventListener('input', function () {
         const searchTerm = searchInputElement.value.trim().toLowerCase();
@@ -257,11 +278,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 .filter(([_, player]) => player.name.toLowerCase().includes(searchTerm))
                 .slice(0, 5);
             if (filteredPlayers.length > 0) {
-                let resultsHtml = "<ul>";
+                let resultsHtml = '<ul class="search-results-list">';
                 filteredPlayers.forEach(([_, player]) => {
-                    resultsHtml += `<li data-player-name="${player.name}">${player.name} - NO.${player.number}</li>`;
+                    resultsHtml += `
+            <li class="search-results-item" data-player-name="${player.name}">
+                ${player.name}     no.${player.number}
+            </li>`;
                 });
-                resultsHtml += "</ul>";
+                resultsHtml += '</ul>';
                 searchResultsElement.innerHTML = resultsHtml;
                 searchResultsElement.style.display = 'block';
             } else {
@@ -277,8 +301,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 검색 결과 클릭 이벤트 리스너 수정
     searchResultsElement.addEventListener('click', function (event) {
-        if (event.target && event.target.tagName === 'LI') {
-            const playerName = event.target.getAttribute('data-player-name');
+        const target = event.target.closest('li'); // 클릭한 LI 요소 찾기
+        if (target) {
+            const playerName = target.getAttribute('data-player-name');
             if (cachedData && cachedData.players) {
                 const player = Object.values(cachedData.players).find(p => p.name === playerName);
                 if (player) {
@@ -286,7 +311,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     displayPlayerRecord(player);
                     searchResultsElement.innerHTML = ""; // 검색 결과 닫기
                     searchResultsElement.style.display = 'none'; // 검색 결과 숨기기
-                    searchInputElement.style.display = ""; // 검색창 숨기기
                     searchInputElement.value = ""; // 검색창 비우기
                 }
             }
