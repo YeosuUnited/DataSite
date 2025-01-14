@@ -20,10 +20,6 @@
       "them": 0
     },
     "location": "영등포공원",
-    "goal": [
-    ],
-    "assist": [
-    ],
     "comment": ""
   },
   "match_00030": {
@@ -54,6 +50,8 @@
     ],
     "assist": [
     ],
+    "subGoal":[],
+    "subAssist"[],
     "comment": ""
   },
   "match_00029": {
@@ -231,6 +229,8 @@
     ],
     "assist": [
     ],
+    "subGoal":[],
+    "subAssist"[],
     "comment": ""
   },
   "match_00021": {
@@ -314,6 +314,8 @@
       "김대원",
       "임상규"
     ],
+    "subGoal":[],
+    "subAssist"[],
     "comment": ""
   },
   "match_00018": {
@@ -343,6 +345,8 @@
     ],
     "assist": [
     ],
+    "subGoal":[],
+    "subAssist"[],
     "comment": ""
   },
   "match_00017": {
@@ -363,8 +367,6 @@
       "them": 0
     },
     "location": "이촌동",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00016": {
@@ -386,8 +388,6 @@
       "them": 0
     },
     "location": "용산더베이스6구장",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00015": {
@@ -420,6 +420,8 @@
     "assist": [
       "강성용"
     ],
+    "subGoal":[],
+    "subAssist"[],
     "comment": ""
   },
   "match_00014": {
@@ -439,8 +441,6 @@
       "them": 0
     },
     "location": "중대부고4구장",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00013": {
@@ -463,8 +463,6 @@
       "them": 0
     },
     "location": "서서울호수공원",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00012": {
@@ -486,8 +484,6 @@
       "them": 0
     },
     "location": "중대부고",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00011": {
@@ -523,6 +519,8 @@
       "임용철",
       "이덕환"
     ],
+    "subGoal":[],
+    "subAssist"[],
     "comment": ""
   },
   "match_00010": {
@@ -542,8 +540,6 @@
       "them": 0
     },
     "location": "안양천풋살장",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00009": {
@@ -576,6 +572,8 @@
       "임용철"
     ],
     "assist": [],
+    "subGoal":[],
+    "subAssist"[],
     "comment": ""
   },
   "match_00008": {
@@ -597,8 +595,6 @@
       "them": 0
     },
     "location": "수도공고",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00007": {
@@ -636,6 +632,8 @@
       "노재옥",
       "임용철"
     ],
+    "subGoal":[],
+    "subAssist"[],
     "comment": ""
   },
   "match_00006": {
@@ -662,8 +660,6 @@
       "them": 0
     },
     "location": "동대문 홈플러스",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00005": {
@@ -685,8 +681,6 @@
       "them": 0
     },
     "location": "영등포공원",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00004": {
@@ -722,6 +716,8 @@
     ],
     "assist": [
     ],
+    "subGoal":[],
+    "subAssist"[],
     "comment": ""
   },
   "match_00003": {
@@ -743,8 +739,6 @@
       "them": 0
     },
     "location": "중대부고",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00002": {
@@ -765,8 +759,6 @@
       "them": 0
     },
     "location": "중대부고",
-    "goal": [],
-    "assist": [],
     "comment": ""
   },
   "match_00001": {
@@ -786,8 +778,6 @@
       "them": 0
     },
     "location": "중대부고",
-    "goal": [],
-    "assist": [],
     "comment": ""
   }
 }
