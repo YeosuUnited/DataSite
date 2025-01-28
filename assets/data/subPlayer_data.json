@@ -1,5 +1,11 @@
 {
   "김경근": {
+    "2024": {
+      "goals": 0,
+      "assists": 1,
+      "attackP": 0,
+      "matches": 2
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -8,6 +14,12 @@
     }
   },
   "김원진": {
+    "2024": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 2
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -16,6 +28,12 @@
     }
   },
   "김종석": {
+    "2024": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 1
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -24,6 +42,18 @@
     }
   },
   "김현근": {
+    "2023": {
+      "goals": 2,
+      "assists": 0,
+      "attackP": 2,
+      "matches": 5
+    },
+    "2024": {
+      "goals": 0,
+      "assists": 2,
+      "attackP": 2,
+      "matches": 8
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -32,6 +62,12 @@
     }
   },
   "배의선": {
+    "2024": {
+      "goals": 1,
+      "assists": 0,
+      "attackP": 1,
+      "matches": 4
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -40,6 +76,12 @@
     }
   },
   "안성현": {
+    "2024": {
+      "goals": 2,
+      "assists": 3,
+      "attackP": 5,
+      "matches": 6
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -48,6 +90,12 @@
     }
   },
   "왕수호": {
+    "2024": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 1
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -56,6 +104,12 @@
     }
   },
   "왕승민": {
+    "2024": {
+      "goals": 1,
+      "assists": 1,
+      "attackP": 2,
+      "matches": 3
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -64,6 +118,12 @@
     }
   },
   "이희수": {
+    "2024": {
+      "goals": 1,
+      "assists": 1,
+      "attackP": 2,
+      "matches": 3
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -72,6 +132,18 @@
     }
   },
   "정이레": {
+    "2023": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 1
+    },
+    "2024": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 1
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -80,6 +152,12 @@
     }
   },
   "함다혁": {
+    "2024": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 3
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
@@ -88,6 +166,18 @@
     }
   },
   "황선우": {
+    "2023": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 1
+    },
+    "2024": {
+      "goals": 0,
+      "assists": 0,
+      "attackP": 0,
+      "matches": 12
+    },
     "2025": {
       "goals": 0,
       "assists": 0,
