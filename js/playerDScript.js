@@ -81,18 +81,40 @@ function renderPlayerList() {
                 playerImage.onerror = () => {
                     playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default_P.png`;
                 };
-
-                const playerName = document.createElement('div');
-                playerName.className = 'player-name';
-                playerName.textContent = player.name;
-
-                const playerInfo = document.createElement('div');
-                playerInfo.className = 'player-info';
-                playerInfo.textContent = `no.${number}`;
+                playerImage.className = 'player-list-Img';
 
                 card.appendChild(playerImage);
-                card.appendChild(playerName);
-                card.appendChild(playerInfo);
+
+                // role이 captain인 경우
+                if (player.role && player.role === "captain") {
+                    const captainIcon = document.createElement('img');
+                    captainIcon.src = "https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/captain_list.gif";
+                    captainIcon.alt = "Captain Icon";
+
+                    // [클래스 추가 부분]
+                    captainIcon.classList.add('captain-icon-list'); 
+
+                    card.prepend(captainIcon);
+
+                    const playerName = document.createElement('div');
+                    playerName.className = 'captain-name';
+                    playerName.innerHTML = `${player.name} <span style="color: gray; font-size: 0.9em; font-weight: normal">no.${number}</span>`;
+
+                    card.appendChild(playerName);
+                }
+                else{
+                    const playerName = document.createElement('div');
+                    playerName.className = 'player-name';
+                    playerName.textContent = player.name;
+
+                    const playerInfo = document.createElement('div');
+                    playerInfo.className = 'player-info';
+                    playerInfo.textContent = `no.${number}`;
+                    
+                    card.appendChild(playerName);
+                    card.appendChild(playerInfo);
+                }
+
                 section.appendChild(card);
             }
         });
@@ -138,6 +160,9 @@ function displayPlayerDetails(player) {
                                                 alt="${player.name}"
                                                 style="width: 120px; height: 150px; border-radius: 10px; object-fit: cover; margin-top:-10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"
                                                 onerror="this.src='https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png';">
+
+                                                <!-- 주장 또는 부주장 텍스트 추가 -->
+                                                ${player.role ? `<div class="role-badge">${player.role === 'captain' ? '주장' : '부주장'}</div>` : ''}
                                             </div>
                                         </div>
                                     </div>
