@@ -30,7 +30,7 @@
     "posi": "DF",
     "weight": "80",
     "bloodType": "B",
-    "phone": "01045006509"
+    "phone": "01045006509",
     "role" : "vice-captain"
   },
   "6": {
@@ -86,7 +86,7 @@
     "posi": "MF",
     "weight": "70",
     "bloodType": "A",
-    "phone": "01024965075"
+    "phone": "01024965075",
     "role" : "captain"
   },
   "11": {
