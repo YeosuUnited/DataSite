@@ -31,6 +31,7 @@
     "weight": "80",
     "bloodType": "B",
     "phone": "01045006509"
+    "role" : "vice-captain"
   },
   "6": {
     "birth": "19900223",
@@ -86,6 +87,7 @@
     "weight": "70",
     "bloodType": "A",
     "phone": "01024965075"
+    "role" : "captain"
   },
   "11": {
     "birth": "19900328",
