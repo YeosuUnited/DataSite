@@ -5,7 +5,7 @@ async function fetchData() {
     const now = new Date().getTime();
     const cachedLastUpdated = parseInt(localStorage.getItem('lastUpdated'), 10);
 
-    if (!cachedLastUpdated || (now - cachedLastUpdated) > 60000) {
+    if (!cachedLastUpdated || (now - cachedLastUpdated) > 300000) {
         try {
             const urls = [
                 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/data/token_1.text',
