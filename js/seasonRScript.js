@@ -246,7 +246,7 @@ function setSortCriteria(criteria) {
         };
         const columnKey = columnMapping[criteria];
 
-        if (isSub) {
+        if (isSub && !isTotal) {
             // 용병 데이터를 정렬하기 위한 로직
             const subPlayerData = Object.keys(data).map(playerName => {
                 const playerData = data[playerName][currentYear] || {};
