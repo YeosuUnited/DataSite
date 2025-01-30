@@ -73,13 +73,8 @@ function createCard(container, players, key, unit) {
             const imageContainer = document.createElement('div');
             imageContainer.className = 'player-image-container';
 
-            const playerImage = document.createElement('img');
-            playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
-            playerImage.alt = player.name;
+            const playerImage = loadPlayerImage(player) || document.createElement('img'); // null 방지                    
             playerImage.className = 'player-image';
-            playerImage.onerror = () => {
-                playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-            };
 
             imageContainer.appendChild(playerImage);
 
@@ -115,13 +110,8 @@ function createCard(container, players, key, unit) {
             rank.textContent = player.rank;
             rank.className = 'rank-number';
 
-            const playerImage = document.createElement('img');
-            playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
-            playerImage.alt = player.name;
+            const playerImage = loadPlayerImage(player) || document.createElement('img'); // null 방지    
             playerImage.className = 'player-image-small';
-            playerImage.onerror = () => {
-                playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-            };
 
             const nameAndPositionContainer = document.createElement('div');
             nameAndPositionContainer.style.display = 'flex';
