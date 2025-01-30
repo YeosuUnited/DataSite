@@ -80,12 +80,12 @@ async function fetchData() {
 
 
             const nowYear = new Date().getFullYear();
-            
             data.recordAll = await addMissingYearData(
                 nowYear,
                 data.recordAll,
                 recordAllSha
             );
+
             data.subPlayer = await addMissingSubYearData(
                 nowYear,
                 data.subPlayer,
@@ -146,7 +146,7 @@ function useCachedData() {
 
     const cached = localStorage.getItem('cachedData');
     if (cached) {
-        cachedData = JSON.parse(cached);
+        cachedData = JSON.parse(cached);                
         console.log("캐싱된 데이터를 사용 중입니다.");
     } else {
         throw new Error("캐싱된 데이터가 없습니다.");
@@ -273,4 +273,50 @@ function utf8ToBase64(str) {
 // Base64 문자열을 UTF-8로 변환
 function base64ToUtf8(str) {
     return decodeURIComponent(escape(atob(str)));
+}
+
+function loadPlayerImage(player) {
+    const img = document.createElement('img');
+    const imageKey = `playerImage_${player.number}`; // localStorage 키 설정
+    const cachedImage = localStorage.getItem(imageKey); // 캐시된 이미지 확인
+
+    if (cachedImage) {
+        // 캐시된 이미지가 있으면 그대로 사용
+        img.src = cachedImage;
+    } else {
+        // 없으면 GitHub에서 가져온 후 캐시에 저장
+        img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
+
+        img.onload = () => {
+            localStorage.setItem(imageKey, img.src); // 이미지 캐싱
+        };
+
+        img.onerror = () => {
+            img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+        };
+    }
+    return img;
+}
+
+function loadPlayerProfileImage(player) {
+    const img = document.createElement('img');
+    const imageKey = `profileImage_${player.number}`; // localStorage 키 설정
+    const cachedImage = localStorage.getItem(imageKey); // 캐시된 이미지 확인
+
+    if (cachedImage) {
+        // 캐시된 이미지가 있으면 그대로 사용
+        img.src = cachedImage;
+    } else {
+        // 없으면 GitHub에서 가져온 후 캐시에 저장
+        img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_P.png`;
+
+        img.onload = () => {
+            localStorage.setItem(imageKey, img.src); // 이미지 캐싱
+        };
+
+        img.onerror = () => {
+            img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default_P.png`;
+        };
+    }
+    return img;
 }
