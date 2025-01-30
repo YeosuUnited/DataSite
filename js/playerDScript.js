@@ -31,10 +31,10 @@ function renderPlayerList() {
 
     // 포지션 매핑 및 한글 이름
     const positionMapping = {
-        GK: "골키퍼",
-        DF: "수비수",
-        MF: "미드필더",
-        FW: "공격수"
+        GK: "Goal Keeper",
+        DF: "Defender",
+        MF: "Midfielder",
+        FW: "Foward"
     };
 
     // 포지션별 섹션 생성
@@ -42,14 +42,28 @@ function renderPlayerList() {
         // 섹션 생성
         const section = document.createElement('div');
         section.className = 'position-section';
-        section.style.marginBottom = '20px';
 
-        const title = document.createElement('h2');                
-        title.className = 'position-title'
-        title.textContent = positionMapping[position];
+        const titleWrapper = document.createElement('div');
+        titleWrapper.className = 'position-title-wrapper';
 
-        section.appendChild(title);
+        // 큰 타이틀 (GK, DF, MF, FW)
+        const title = document.createElement('span');                
+        title.className = 'position-title';
+        title.textContent = position;
 
+        // 작은 설명 (Goal Keeper 등)
+        const subtitle = document.createElement('span');
+        subtitle.className = 'position-subtitle';
+        subtitle.textContent = positionMapping[position];
+
+        // 타이틀과 설명을 묶음
+        titleWrapper.appendChild(title);
+        titleWrapper.appendChild(subtitle);
+
+        section.appendChild(titleWrapper);
+
+        const playerList = document.createElement('div');
+        playerList.className = 'player-position-list';
         // 해당 포지션 선수 카드 생성
         Object.entries(cachedData.players).forEach(([number, player]) => {
             // 포지션 분류
@@ -76,105 +90,175 @@ function renderPlayerList() {
                 });
 
                 const playerImage = document.createElement('img');
-                playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_P.png`;
+                playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
                 playerImage.alt = player.name;
                 playerImage.onerror = () => {
-                    playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default_P.png`;
+                    playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
                 };
                 playerImage.className = 'player-list-Img';
 
                 card.appendChild(playerImage);
 
+                const playerText = document.createElement('div');
+                playerText.className = 'player-text';
+
+                // 이름과 뱃지를 감쌀 div 생성
+                const nameGroup = document.createElement('div');
+                nameGroup.className = 'name-group';
+
+                const playerName = document.createElement('div');
+                playerName.className = 'player-name';
+                playerName.textContent = player.name;
+
+                const playerInfo = document.createElement('div');
+                playerInfo.className = 'player-info';
+                playerInfo.textContent = `${player.number}`;
+
                 // role이 captain인 경우
                 if (player.role && player.role === "captain") {
-                    const captainIcon = document.createElement('img');
-                    captainIcon.src = "https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/captain_list.gif";
-                    captainIcon.alt = "Captain Icon";
+                    const captainBadge = document.createElement('div');
+                    captainBadge.textContent = "C"; // "C" 글자 추가
+                    captainBadge.classList.add('captain-badge'); // 클래스 추가
 
-                    // [클래스 추가 부분]
-                    captainIcon.classList.add('captain-icon-list'); 
+                    nameGroup.appendChild(playerName);
+                    nameGroup.appendChild(captainBadge);
+                }
+                else if(player.role && player.role === "vice-captain"){
+                    const captainBadge = document.createElement('div');
+                    captainBadge.textContent = "VC"; // "C" 글자 추가
+                    captainBadge.classList.add('viceCaptain-badge'); // 클래스 추가
 
-                    card.prepend(captainIcon);
-
-                    const playerName = document.createElement('div');
-                    playerName.className = 'captain-name';
-                    playerName.innerHTML = `${player.name} <span style="color: gray; font-size: 0.9em; font-weight: normal">no.${number}</span>`;
-
-                    card.appendChild(playerName);
+                    nameGroup.appendChild(playerName);
+                    nameGroup.appendChild(captainBadge);
                 }
                 else{
-                    const playerName = document.createElement('div');
-                    playerName.className = 'player-name';
-                    playerName.textContent = player.name;
-
-                    const playerInfo = document.createElement('div');
-                    playerInfo.className = 'player-info';
-                    playerInfo.textContent = `no.${number}`;
-                    
-                    card.appendChild(playerName);
-                    card.appendChild(playerInfo);
+                    nameGroup.appendChild(playerName);
                 }
+                    
+                // 텍스트를 묶어 추가
+                playerText.appendChild(playerInfo);
+                playerText.appendChild(nameGroup);
+                card.appendChild(playerText);
 
-                section.appendChild(card);
+                playerList.appendChild(card);
             }
         });
 
+        section.appendChild(playerList);
         container.appendChild(section);
     });
 }
 
 function displayPlayerDetails(player) {
     const playerDetailsElement = document.getElementById('player-details');
+    playerDetailsElement.innerHTML = ''; // 기존 내용 초기화
+
     playerDetailsElement.style.display = 'block'; // 상세 정보 표시
     document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
+    let thirdBar = document.getElementById('thirdBar');
+    thirdBar.style.visibility = 'visible';
+    thirdBar.style.opacity = '0';
 
-    playerDetailsElement.innerHTML = `
-                                    <button id="back-to-list" class="back-button" style="margin-bottom: 10px;">선수 목록</button>
-                                    <div class="divider"></div>
-                                     <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; margin-bottom: -10px">
-                                     <!-- 정보 섹션 -->
-                                        <div style="flex: 1; margin-right: 20px; margin-left: -10px;">
-                                            <div>
-                                                <span class="label">신체: </span><span class="value">${player.height}cm</span>, <span class="value">${player.weight}kg</span>
-                                            </div>
-                                            <div>
-                                                <span class="label">이름: </span><span class="value">${player.name}</span> <span class="label">NO.${player.number}</span>
-                                            </div>
-                                            <div>
-                                                <span class="label">출생: </span><span class="value">${formatBirthdate(player.birth)}</span>
-                                            </div>
-                                            <div>
-                                                <span class="label">포지션: </span><span class="value">${player.posi}</span>
-                                            </div>
-                                            <div>
-                                                <span class="label">혈액형: </span><span class="value">${player.bloodType}</span>
-                                            </div>
-                                            <div>
-                                                <span class="label">번호: </span><span class="value">${formatPhoneNumber(player.phone)}</span>
-                                            </div>
-                                        </div>
-                                    <!-- 사진 섹션 -->
-                                        <div style="flex-shrink: 0;">
-                                            <img
-                                                src="https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png"
-                                                alt="${player.name}"
-                                                style="width: 120px; height: 150px; border-radius: 10px; object-fit: cover; margin-top:-10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"
-                                                onerror="this.src='https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png';">
+    history.pushState(
+                        { page: "playerDetails", number: player.number },
+                        "", 
+                        "#player" + player.number
+                    );
 
-                                                <!-- 주장 또는 부주장 텍스트 추가 -->
-                                                ${player.role ? `<div class="role-badge">${player.role === 'captain' ? '주장' : '부주장'}</div>` : ''}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="divider"></div>
-                                `;
+    const imageContainer = document.createElement('div');
+    imageContainer.classList.add('profileImg-container');
+    const profileImg = document.createElement('img');
+    profileImg.classList.add('player-info-photo');
+    profileImg.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_P.png`;
+    profileImg.alt = player.name;
+    profileImg.onerror = () => {
+        profileImg.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default_P.png`;
+    };
+    imageContainer.appendChild(profileImg);
 
-    // "선수 목록" 버튼 이벤트 리스너 등록
-    const backButton = document.getElementById('back-to-list');
-    backButton.addEventListener('click', function () {
-        playerDetailsElement.style.display = 'none'; // 상세 정보 숨김
-        document.getElementById('player-list').style.display = 'block'; // 선수 목록 표시
-    });
+    // 주장 또는 부주장 배지 추가
+    if (player.role) {
+        const roleBadge = document.createElement('div');
+        roleBadge.classList.add('role-badge');
+        roleBadge.textContent = player.role === 'captain' ? '주장' : '부주장';
+        imageContainer.appendChild(roleBadge);
+    }
+
+    // 정보 섹션
+    const playerInfoText = document.createElement('div');
+    playerInfoText.classList.add('player-info-text');
+
+    // 정보 추가 함수 수정
+    const addInfoRow = (label, value, parent = playerInfoText) => {
+        const row = document.createElement('div');
+        row.classList.add('info-item'); // 줄 정렬을 위한 클래스 추가
+
+        const labelSpan = document.createElement('span');
+        labelSpan.classList.add('label');
+        labelSpan.innerHTML = label + '<br>'; // 줄바꿈 추가
+
+        const valueSpan = document.createElement('span');
+        valueSpan.classList.add('value');
+        valueSpan.textContent = value;
+
+        row.appendChild(labelSpan);
+        row.appendChild(valueSpan);
+        parent.appendChild(row);
+    };
+
+    // 출생
+    addInfoRow('출생', formatBirthdate(player.birth));
+
+    // 이름과 혈액형을 한 줄에 배치할 컨테이너 생성
+    const nameBloodContainer = document.createElement('div');
+    nameBloodContainer.classList.add('info-row'); // 가로 정렬을 위한 클래스 추가
+
+    // 이름 추가
+    const nameRow = document.createElement('div');
+    addInfoRow('이름', player.name, nameRow);
+    nameBloodContainer.appendChild(nameRow);
+
+    // 혈액형 추가
+    const bloodRow = document.createElement('div');
+    bloodRow.classList.add('info-item', 'offset');
+    addInfoRow('혈액형', player.bloodType, bloodRow);
+    nameBloodContainer.appendChild(bloodRow);
+
+    // 컨테이너를 playerInfoText에 추가
+    playerInfoText.appendChild(nameBloodContainer);
+
+    // 포지션과 번호을 한 줄에 배치할 컨테이너 생성
+    const positionNumContainer = document.createElement('div');
+    positionNumContainer.classList.add('info-row'); // 줄 정렬을 위한 클래스 추가
+
+    // 포지션 추가
+    const positionRow = document.createElement('div');
+    addInfoRow('포지션', player.posi, positionRow);
+    positionNumContainer.appendChild(positionRow);
+
+    // 번호 추가
+    const numberRow = document.createElement('div');
+    numberRow.classList.add('info-item', 'offset'); // 왼쪽에서 40% 위치 조정
+    addInfoRow('등번호', player.number, numberRow);
+    positionNumContainer.appendChild(numberRow);
+
+    // 컨테이너를 playerInfoText에 추가
+    playerInfoText.appendChild(positionNumContainer);
+
+    // 신체 정보
+    addInfoRow('신체', `${player.height}cm, ${player.weight}kg`);
+
+    // 전화번호
+    addInfoRow('번호', formatPhoneNumber(player.phone));
+
+    // 요소 조립
+    playerDetailsElement.appendChild(imageContainer);
+    playerDetailsElement.appendChild(playerInfoText);
+
+    // 구분선 추가
+    const divider = document.createElement('div');
+    divider.classList.add('divider');
+    playerDetailsElement.appendChild(divider);            
 }
 
 function formatBirthdate(birthdate) {
@@ -267,20 +351,24 @@ function displayPlayerRecord(player) {
     playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
 }
 
-// "선수 목록" 버튼 클릭 시 동작
-document.addEventListener('DOMContentLoaded', function () {
-    const backButton = document.getElementById('back-to-list');
-    backButton.addEventListener('click', function () {
-        document.getElementById('player-details').style.display = 'none'; // 상세 정보 숨김
-        document.getElementById('player-list').style.display = 'block'; // 선수 목록 표시
-    });
-});
-
 document.addEventListener("DOMContentLoaded", function () {
     const searchInputElement = document.getElementById('search-input');
     const searchResultsElement = document.getElementById('search-results');
     const logoElement = document.getElementById('logo');
     const playerDetailsElement = document.getElementById('player-details');
+
+    // 뒤로가기 버튼 감지하여 선수 목록으로 돌아가기
+    window.addEventListener("popstate", function (event) {
+        console.log(">>> popstate fired!", event.state); // 추가
+
+        if (!event.state || event.state.page === "playerDetails") {
+            document.getElementById('player-details').style.display = 'none';
+            document.getElementById('player-list').style.display = 'block';
+            let thirdBar = document.getElementById('thirdBar');
+            thirdBar.style.visibility = 'visible';
+            thirdBar.style.opacity = '1';
+        }
+    });
 
     // 로고 클릭 시 index 화면으로 이동
     logoElement.addEventListener('click', function () {
@@ -368,6 +456,10 @@ document.addEventListener("DOMContentLoaded", function () {
             renderPlayerList();
         } catch (error) {
             console.error('초기화 중 오류 발생:', error);
+        }
+        // 페이지 새로고침 시 기본 목록 표시
+        if (!history.state) {
+            history.replaceState({ page: "playerList" }, "", location.pathname);
         }
     };
 });
