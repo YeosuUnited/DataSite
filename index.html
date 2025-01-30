@@ -19,14 +19,14 @@
             justify-content: center;
             margin-bottom: 20px;
         }
-
+        
         .emblem {
             width: 80px;
             height: auto;
             margin-top: 10px;
             margin-bottom: -10px;
         }
-
+        
         .fixed-top-right {
             position: fixed; /* 화면에 고정 */
             top: 30px; /* 상단에서 20px 떨어짐 */
@@ -36,17 +36,17 @@
             z-index: 1000; /* 다른 요소 위에 표시 */
             cursor: pointer; /* 클릭 가능한 느낌 */
         }
-
+        
         .bold-number {
             font-weight: bold;
         }
-
+        
         h1 {
             font-size: 2em;
             color: #2565D0;
             margin: 0;
         }
-
+        
         .navbar {
             background-color: #4071e3;
             padding: 10px 0;
@@ -54,7 +54,7 @@
             height: 28px;
             min-width: 260px;
         }
-
+        
             .navbar ul {
                 display: flex;
                 justify-content: space-evenly;
@@ -62,22 +62,22 @@
                 padding: 0;
                 margin: 0;
             }
-
+        
                 .navbar ul li {
                     margin: 0 15px;
                 }
-
+        
                     .navbar ul li a {
                         color: #d7e1f8;
                         text-decoration: none;
                         font-size: 1em;
                         font-weight: bold;
                     }
-
+        
                         .navbar ul li a:hover {
                             text-decoration: underline;
                         }
-
+        
         .card-section {
             display: flex;
             justify-content: center;
@@ -86,41 +86,41 @@
             min-width: 900px;
             user-select: none; /* 텍스트 선택 방지 */
         }
-
-            .card-section-container {
-                width: 100%;
-                overflow-x: auto;
-                cursor: grab;
-                user-select: none;
-                padding-left: 70px;
-                padding-right: 70px;
-                box-sizing: border-box; /* 패딩을 폭 계산에 포함 */
-            }
-
+        
+        .card-section-container {
+            width: 100%;
+            overflow-x: auto;
+            cursor: grab;
+            user-select: none;
+            padding-left: 70px;
+            padding-right: 70px;
+            box-sizing: border-box; /* 패딩을 폭 계산에 포함 */
+        }
+        
         .card-container {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-
+        
             .card-container::-webkit-scrollbar {
                 display: none;
             }
-
+        
             .card-container::-webkit-scrollbar-thumb {
                 background-color: #888;
                 border-radius: 10px;
             }
-
+        
             .card-container::-webkit-scrollbar-track {
                 background: #f1f1f1;
             }
-
+        
         .card-section-container {
             scrollbar-width: none; /* Firefox용 */
         }
-
-
+        
+        
         .card-title {
             font-size: 1em;
             font-weight: bold;
@@ -129,8 +129,8 @@
             width: 125%; /* 카드 내에서 왼쪽에 붙도록 설정 */
             padding-left: 0px; /* 왼쪽 여백 추가 */
             margin-left: -8px; /* 텍스트를 더 왼쪽으로 이동 */
-        }        
-
+        }
+        
         .card-column {
             display: flex;
             flex-direction: column;
@@ -138,7 +138,7 @@
             width: 185px;
             margin: 0 15px;
         }
-
+        
         .card {
             background-color: #ffffff;
             border: 1px solid #ddd;
@@ -149,7 +149,7 @@
             text-align: center;
             position: relative; /* 배지 위치를 위한 설정 */
         }
-
+        
             /* 배지 스타일 추가 */
             .card .badge {
                 position: absolute;
@@ -159,7 +159,7 @@
                 height: auto;
                 z-index: 2; /* 다른 요소 위에 표시 */
             }
-
+        
         .card-title-container {
             display: flex;
             justify-content: space-around;
@@ -169,13 +169,13 @@
             color: #2565D0;
             font-weight: bold;
         }
-
-
+        
+        
             .card-title-container .card-title {
                 width: 200px; /* 각 항목이 카드와 동일한 폭을 가짐 */
                 text-align: center;
             }
-
+        
         .player-info {
             display: flex;
             align-items: center;
@@ -184,85 +184,87 @@
             font-size: 1em;
             width: 100%;
         }
-
+        
         .player-image {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             margin-right: 0px;
-            border: 3px solid rgb(236, 236, 236); /* 두께: 2px, 색상: 회색 */
-            object-fit: cover; /* 이미지를 잘라내며 원래 비율 유지 */
+            border: 3px solid rgb(236, 236, 236);
+            object-fit: cover;
         }
-
+        
         .rank {
             font-weight: bold;
             margin-right: 5px;
         }
-
+        
         .rank-number {
             font-weight: bold;
             color: gray;
             margin-right: 10px;
         }
-
+        
         .inline-container {
             display: flex;
             align-items: center;
             gap: 5px; /* 요소 사이 여백 */
             margin-left: -5px; /* 기록을 오른쪽으로 배치 */
         }
-
+        
         .stat-value-right {
             color: black;
             margin-left: auto; /* 기록을 오른쪽으로 배치 */
             margin-right: -10px;
         }
-
+        
         .player-image-small {
-            width: 30px;
-            height: 30px;
+            width: 37px;
+            height: 37px;
             border-radius: 50%;
             object-fit: cover;
-            margin-right: 10px;
+            margin-left:-5px;
+            margin-right: 5px;
+            object-position: 50% -5%; /* Y축 기준 20%로 올림 */
         }
-
+        
         .stat-value {
             color: #2565D0;
         }
-
+        
         .first-place-number {
             font-weight: bold;
             color: #2565D0;
         }
-
+        
         .other-place-number {
             color: gray;
         }
-
+        
         .player-name-container {
             display: flex;
             align-items: center;
             gap: 3px; /* 이름과 포지션 간격 */
         }
-
+        
         .player-name {
             font-size: 1em;
             color: black;
             margin-bottom: -5px; /* 이름 아래 간격 추가 */
         }
-
+        
         .player-position {
             font-size: 0.8em;
             text-align: left; /* 텍스트 왼쪽 정렬 */
             margin-top: 3px;
             color: gray;
         }
-
+        
         .debug-message {
             color: red;
             font-weight: bold;
         }
-
+        
         .view-more {
             margin-top: 10px;
             font-size: 0.9em;
@@ -270,14 +272,14 @@
             cursor: pointer;
             text-decoration: underline;
         }
-
+        
         .player-position-first {
             font-size: 0.9em; /* 포지션 글씨 크기 */
             font-weight: normal;
             color: gray; /* 포지션 글씨 색상 */
             margin-top: 10px; /* 이름과의 높이 */
         }
-
+        
         /* 1등 플레이어에 대한 스타일 추가 */
         .first-place {
             display: flex;
@@ -292,7 +294,7 @@
             text-align: center; /* 가운데 정렬 */
             z-index: 1; /* 다른 요소 위로 표시 */
         }
-
+        
             .first-place .player-image {
                 width: 80px; /* 사진 크기 */
                 height: auto; /* 비율 유지 */
@@ -302,8 +304,9 @@
                 top: 0; /* 위치 조정 */
                 left: 0; /* 위치 조정 */
                 transform: none; /* 중앙 보정 제거 */
+                transform: scale(1.4); /* 1.4배 확대 */
             }
-
+        
             .first-place .player-image-container {
                 position: relative;
                 overflow: hidden;
@@ -312,7 +315,7 @@
                 height: auto; /* 원본 비율 유지 */
                 border: none; /* 테두리 제거 */
             }
-
+        
                 .first-place .player-image-container::before,
                 .first-place .player-image-container::after {
                     content: '';
@@ -324,15 +327,14 @@
                     /*background: linear-gradient(to bottom, white, rgba(255, 255, 255, 0));*/
                     z-index: 1;
                 }
-
+        
                 .first-place .player-image-container::after {
                     bottom: 0;
                     top: auto;
-                    background: linear-gradient(to top, white, rgba(255, 255, 255, 0)),
-                                linear-gradient(to left, white, rgba(255, 255, 255, 0) 30%), /* 오른쪽 */
-                                linear-gradient(to right, white, rgba(255, 255, 255, 0) 30%); /* 왼쪽 */
+                    background: linear-gradient(to top, white, rgba(255, 255, 255, 0)), linear-gradient(to left, white, rgba(255, 255, 255, 0) 30%), /* 오른쪽 */
+                    linear-gradient(to right, white, rgba(255, 255, 255, 0) 30%); /* 왼쪽 */
                 }
-
+        
             /* 1등 이름과 기록의 색상 수정 */
             .first-place .player-name {
                 color: black; /* 이름을 검정색으로 설정 */
@@ -341,7 +343,7 @@
                 position: relative; /* 위치 조정을 위해 설정 */
                 left: 0px; /* 왼쪽으로 10px 이동 (값은 조정 가능) */
             }
-
+        
             .first-place .stat-value {
                 color: #2565D0; /* 기록을 파란색으로 설정 */
                 font-weight: bold;
@@ -351,7 +353,7 @@
                 position: relative; /* 위치 조정을 위해 설정 */
                 left: -7px; /* 왼쪽으로 10px 이동 (값은 조정 가능) */
             }
-
+        
         /* 팝업창 기본 스타일 */
         .popup {
             position: fixed;
@@ -365,11 +367,11 @@
             justify-content: center;
             z-index: 2000; /* 다른 요소 위에 표시 */
         }
-
+        
             .popup.hidden {
                 display: none; /* 숨김 */
             }
-
+        
         .popup-content {
             background: white;
             padding: 20px;
@@ -380,24 +382,24 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             animation: popupFadeIn 0.3s ease;
         }
-
+        
         @keyframes popupFadeIn {
             from {
                 transform: scale(0.9);
                 opacity: 0;
             }
-
+        
             to {
                 transform: scale(1);
                 opacity: 1;
             }
         }
-
+        
         .popup-content h3 {
             font-size: 1.2em;
             margin-bottom: 15px;
         }
-
+        
         .popup-content input {
             width: 100%;
             padding: 10px;
@@ -407,11 +409,11 @@
             font-size: 1em;
             box-sizing: border-box;
         }
-
+        
             .popup-content input::placeholder {
                 color: gray;
             }
-
+        
         .popup-content button {
             padding: 10px 20px;
             font-size: 1em;
@@ -421,11 +423,11 @@
             color: white;
             cursor: pointer;
         }
-
+        
             .popup-content button:hover {
                 background-color: #305ec1;
             }
-
+        
         .close-btn {
             position: absolute;
             top: 10px;
@@ -434,7 +436,7 @@
             height: 20px;
             cursor: pointer;
         }
-
+        
         /* 오류 메시지 스타일 */
         .error-message {
             color: red;
@@ -444,8 +446,8 @@
         }
     </style>
 
-    <script src="https://yeosuunited.com/js/commonScript.js?v=1.04"></script>
-    <script src="https://yeosuunited.com/js/mainScript.js?v=1.01"></script>
+    <script src="https://yeosuunited.com/js/commonScript.js?v=1.05"></script>
+    <script src="https://yeosuunited.com/js/mainScript.js?v=1.02"></script>
 </head>
 
 <body>
