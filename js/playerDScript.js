@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("popstate", function (event) {
         console.log(">>> popstate fired!", event.state); // 추가
 
-        if (!event.state || event.state.page === "playerDetails") {
+        if (!event.state || event.state.page === "playerList") {
             document.getElementById('player-details').style.display = 'none';
             document.getElementById('player-list').style.display = 'block';
             let thirdBar = document.getElementById('thirdBar');
