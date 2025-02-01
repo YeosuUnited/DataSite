@@ -6,6 +6,7 @@
     <title>선수 기록 보기</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         * {
             margin: 0;
             padding: 0;
@@ -13,80 +14,162 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
         
-        .firstHeader {
-            background-color: white;
-            color: white;
-            height: 43px;
-            width: 100%;            
+        .sponserList {
             display: flex;
-        }
-        
-            .logo {
-                height: 35px;
-                cursor: pointer;
-                margin: 7px 0 0 7px;
-            }
-        
-            .pageTitleText{
-                color: black;
-                font-weight: bold;
-                font-size: 20px;
-                margin: 9px 0 0 9px;
-            }
-        
-        
-        .secondHeader {
-            background-color: white;
-            color: white;
-            height: 43px;
+            align-items: center; /* 세로 중앙 정렬 */
+            justify-content: flex-end; /* 우측 정렬 */
+            background-color: black;
+            height: 45px;
             width: 100%;
-            min-width: 270px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            z-index: 1000;
         }
         
-            .movePageLeft-button, .movePage-button, .nowPage-button {
-                background-color: white;
-                text-decoration: none; /* 밑줄 제거 */
-                position: relative;
-                border: none;
-                font-size: 16px;
+        .sponser-image{
+            margin-right: 6px;
+            margin-top:3px;
+            width: 45px;
+            height: auto;
+        }
+        
+        .sponser-image:last-child {
+            margin-right: 10px; /* 첫 번째 이미지 오른쪽 여백 */
+        }
+        
+        .header {
+            position: fixed; /* 항상 고정 */
+            left: 0;
+            width: 100%;
+            background-color: #16418d;
+            align-items: center; /* 세로 중앙 정렬 */            
+            justify-content: flex-start; /* 좌측 정렬 */
+            height: 60px;
+            display: flex;            
+            z-index: 1000;
+            transition: transform 0.3s ease; /* 부드러운 이동 효과 */
+        }
+        
+        .header.hidden {
+            transform: translateY(-100%); /* 스크롤 올릴 때 헤더 숨기기 */
+        }
+        
+        .emblem {
+            width: auto;
+            height: 52px;
+            margin-left: 10px;
+        }
+        
+        .hamburger-menu {
+            margin-left: 24px;
+            width: 25px;
+            height: 35px;
+            cursor: pointer;
+            z-index: 1500;
+        }
+        
+        .hamburger-menu div {
+            width: 100%;
+            height: 2px;
+            background-color: #d8d8d8;
+            margin: 7px 0;
+            border-radius: 5px;
+        }
+        
+        /* Full-screen 메뉴 스타일 */
+        .full-menu {
+            position: fixed;
+            top: 45px; /* 스폰서 높이만큼 아래에 배치 */
+            left: 0;
+            width: 100%;
+            height: 100%; /* header와 동일한 높이 */
+            background-color: #0A2A47; /* 배경색 변경 */
+            display: none; /* 기본적으로 숨김 */
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            color: white;
+            font-size: 1.2em;
+            z-index: 2000;
+        }
+        
+        .full-menu.fixed {
+            position: fixed; /* 스크롤 시 최상단에 고정 */
+            top: 0;
+        }
+        
+            .full-menu-emblem{
+                height: 56px;
+                width: auto;
+                margin-left: 10px;
+                margin-top: 5px;
+            }
+        
+            /* 메뉴 상단 헤더 */
+            .menu-header {
+                width: 100%;
+                display: flex;
+                align-items: center; /* 세로 중앙 정렬 */            
+                justify-content: flex-start; /* 좌측 정렬 */                
+                position: relative;    
+            }
+        
+            /* 엠블럼 스타일 */
+            .menu-header img {
+                width: 50px;
+                height: auto;
+            }
+        
+            /* 닫기 버튼 (X 버튼) */
+            .close-menu {         
+                top:5px;
+                margin-left: 26px;
+                font-size: 26px;
                 cursor: pointer;
-                transition: all 0.3s;
+                color: white;
             }
         
-            .movePageLeft-button{
-                margin-left: 40px;
-            }
-        
-            .movePage-button {
-                color: black;
+            .fixed-top-left {
+                position: fixed; /* 화면 기준으로 고정 */
+                bottom: 20px; /* 화면 상단에서 10px */
+                right: 13px; /* 화면 왼쪽에서 10px */
+                width: 25px;
+                height: auto;
                 cursor: pointer;
+                z-index: 1000;
             }
         
-            .nowPage-button {
-                margin-right: 40px;
-                color: #2565D0;
+            /* 메뉴 리스트 */
+            .full-menu ul {
+                list-style: none;
+                padding: 0;
+                width: 100%;
+                text-align: left; /* 글씨 왼쪽 정렬 */
+            }
+        
+            /* 메뉴 항목 스타일 */
+            .full-menu li {
+                width: 100%;
+                padding: 15px 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                transition: background 0.3s;
+            }
+        
+            .full-menu li:hover {
+                background-color: rgba(255, 255, 255, 0.1); /* 마우스 올릴 때 효과 */
+            }
+        
+            /* 메뉴 링크 스타일 */
+            .full-menu a {
+                color: white;
+                text-decoration: none;
+                display: block; /* 클릭 가능 영역 전체 확장 */
+                width: 100%;
                 font-weight: bold;
-                position: relative; /* 상대 위치 조정을 위해 추가 */
             }
-        
-                .nowPage-button::after {
-                    content: ""; /* 가상 요소 생성 */
-                    position: absolute;
-                    bottom: -10px; /* 밑줄을 더 아래로 이동 (-5px은 원하는 거리로 조정) */
-                    left: 0;
-                    width: 100%;
-                    height: 3px; /* 밑줄 두께 */
-                    background-color: #2565D0; /* 밑줄 색상 */
-                }
         
         .thirdHeader {
-            background-color: #2565D0;
+            margin-top: 55px;
             color: white;
-            height: 55px;
+            height: 45px;
             width: 100%;
             min-width: 270px;
             text-align: center;
@@ -96,11 +179,11 @@
         }
         
             .toggleL-button, .toggleR-button {
+                background-color: transparent;
                 position: relative;
                 font-size: 16px;
                 border: none;
-                background-color: #2565D0;
-                color: #a5bcf1;
+                color: gray;
                 cursor: pointer;
                 transition: all 0.3s;
             }
@@ -114,11 +197,30 @@
             }
         
                 .toggleL-button.active, .toggleR-button.active {
-                    background-color: #2565D0;
-                    color: white;
+                    color: black;
                     font-weight: bold;
                     border: none;
-                }
+                }        
+        
+            .toggleL-button.active::after, 
+            .toggleR-button.active::after {
+                content: "";
+                position: absolute;
+                bottom: -10px; /* 밑줄 위치 조정 */
+                left: 0;
+                width: 100%; /* 텍스트 아래 전체 밑줄 */
+                height: 3px; /* 밑줄 두께 */
+                background-color: #16418d; /* 밑줄 색상 (파란색) */
+            }
+        
+        .year-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top:10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
         
         .year-navigation.disabled {
             pointer-events: none; /* 클릭 차단 */
@@ -128,7 +230,6 @@
         .lowerbutton-container {
             display: flex;
             gap: 70px;
-            margin-top: 10px;
             justify-content: center;
         }
         
@@ -158,15 +259,7 @@
             justify-content: space-between;
         }
         
-        .year-navigation {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 10px 0;
-            font-size: 20px;
-            font-weight: bold;
-            gap: 10px; /* 버튼 간 간격 추가 */
-        }
+        
         
         .year-arrow {
             display: inline-block; /* 인라인 블록으로 표시 */
@@ -260,25 +353,150 @@
             margin: 0; /* 여백 제거 */
             line-height: normal; /* 라인 높이 초기화 */
         }
+        
+        .managerPage {
+            position: fixed; /* 화면 기준으로 고정 */
+            bottom: 20px; /* 화면 상단에서 10px */
+            right: 13px; /* 화면 왼쪽에서 10px */
+            width: 25px;
+            height: auto;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        
+            /* 팝업창 기본 스타일 */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000; /* 다른 요소 위에 표시 */
+        }
+        
+            .popup.hidden {
+                display: none; /* 숨김 */
+            }
+        
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: popupFadeIn 0.3s ease;
+        }
+        
+        @keyframes popupFadeIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+        
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .popup-content h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        
+        .popup-content input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        
+            .popup-content input::placeholder {
+                color: gray;
+            }
+        
+        .popup-content button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #4071e3;
+            color: white;
+            cursor: pointer;
+        }
+        
+            .popup-content button:hover {
+                background-color: #305ec1;
+            }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        /* 오류 메시지 스타일 */
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 
-    <script src="https://yeosuunited.com/js/commonScript.js?v=1.05"></script>
-    <script src="https://yeosuunited.com/js/seasonRScript.js?v=1.01"></script>
+    <script src="https://yeosuunited.com/js/commonScript.js?v=1.06"></script>
+    <script src="https://yeosuunited.com/js/seasonRScript.js?v=1.02"></script>
 </head>
 <body>
-    <div class="firstHeader">
-        <img id="logo" src="https://github.com/YeosuUnited/DataSite/blob/main/assets/images/homeIcon.png?raw=true" alt="Home Icon" class="logo">
-        <span class="pageTitleText">선수 기록</span>
+    <div class="sponserList">    
+        <img data-image-name="myNormal" alt="마이노멀 로고" class="sponser-image">
+        <img data-image-name="yeosuCity" alt="여수시 로고" class="sponser-image">
     </div>
-    <div class="secondHeader">
-        <a href="playerData.html" class="movePageLeft-button">프로필</a>
-        <a href="matchRecord.html" class="movePage-button">팀 일정</a>
-        <span class="nowPage-button">선수 기록</span>
+    
+    <div class="header">
+        <img data-image-name="Emblem" alt="엠블럼" class="emblem">
+        <!-- 햄버거 메뉴 추가 -->
+        <div class="hamburger-menu" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
     </div>
+    
+    <!-- 전체 화면 메뉴 -->
+    <div class="full-menu" id="fullMenu">
+        <div class="menu-header">
+            <img data-image-name="Emblem" alt="엠블럼" class="full-menu-emblem">
+            <span class="close-menu" onclick="toggleMenu()">✕</span>            
+        </div>
+        <ul>
+            <li><a href="index.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Home</a></li>
+            <img data-image-name="setting" alt="설정 이미지" class="managerPage">
+            <li><a style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">News</a></li>
+            <li><a href="https://www.youtube.com/@FC-wf9ev" target="_blank" style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Video</a></li>
+            <li><a href="playerData.html" style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Player</a></li>
+            <li><a href="matchRecord.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Results</a></li>
+            <li><a href="seasonRecord.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Record</a></li>            
+        </ul>
+    </div>
+    
     <div class="thirdHeader">
         <button id="officialButton" class="toggleL-button">정회원</button>
         <button id="subButton" class="toggleR-button">용병</button>
     </div>
+    <div class="divider"></div>
     <div class="year-navigation">
         <button id="prevYear" class="year-arrow">&lt;</button>
         <span id="currentYear"></span>
@@ -312,6 +530,17 @@
         <div id="fixedColumn"></div>
         <div class="scrollable-table-container">
             <div id="scrollableTable"></div>
+        </div>
+    </div>
+    
+    <!-- 팝업창 HTML -->
+    <div id="password-popup" class="popup hidden">
+        <div class="popup-content">
+            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/btn_X.png"
+                 alt="닫기 버튼" class="close-btn">
+            <h3>관리자 페이지로 이동하기 위해 비밀번호를 입력하세요</h3>
+            <input type="password" id="password-input" placeholder="비밀번호">
+            <button id="login-button">로그인</button>
         </div>
     </div>
 </body>
