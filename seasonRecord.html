@@ -51,6 +51,12 @@
         .header.hidden {
             transform: translateY(-100%); /* 스크롤 올릴 때 헤더 숨기기 */
         }
+
+        @media (max-width: 768px) {
+          .header {
+            position: fixed !important;
+          }
+        }
         
         .emblem {
             width: auto;
