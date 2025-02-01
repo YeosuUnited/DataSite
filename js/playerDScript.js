@@ -89,14 +89,13 @@ function renderPlayerList() {
                     }
                 });
 
-                const playerImage = document.createElement('img');
-                playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
-                playerImage.alt = player.name;
-                playerImage.onerror = () => {
-                    playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-                };
-                playerImage.className = 'player-list-Img';
-
+                const playerImage = loadPlayerImage(player) || document.createElement('img');
+                if (position === 'FW') {
+                    playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_test.png`;
+                    playerImage.className = 'player-list-Img-test';
+                } else {
+                    playerImage.className = 'player-list-Img';
+                }
                 card.appendChild(playerImage);
 
                 const playerText = document.createElement('div');
