@@ -175,6 +175,94 @@ function getSortedPlayers(data, key) {
     return sorted;
 }
 
+function toggleMenu() {
+    const menu = document.getElementById('fullMenu');
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function toggleMenu() {
+    const menu = document.getElementById('fullMenu');
+    if (menu.style.display === 'flex') {
+        menu.style.display = 'none';
+    } else {
+        menu.style.display = 'flex';
+    }
+}
+
+function updateMatchCards(matchesTotal) {
+    const serverTime = new Date(); // 현재 서버 시간
+    let upcomingMatch = null;
+    let lastMatch = null;
+
+    Object.values(matchesTotal).forEach(match => {
+        const matchDate = new Date(match.date);
+
+        if (matchDate >= serverTime) {
+            if (!upcomingMatch || matchDate < new Date(upcomingMatch.date)) {
+                upcomingMatch = match;
+            }
+        } else {
+            if (!lastMatch || matchDate > new Date(lastMatch.date)) {
+                lastMatch = match;
+            }
+        }
+    });
+
+    // 다음 경기 카드 업데이트
+    const upcomingMatchInfo = document.getElementById('upcoming-match-info');
+    if (upcomingMatch) {
+        upcomingMatchInfo.innerHTML = generateMatchCardHTML(upcomingMatch, true);
+    } else {
+        upcomingMatchInfo.innerHTML = `<span class="no-match">다음 예정 경기 없음</span>`;
+    }
+
+    // 마지막 경기 카드 업데이트
+    const lastMatchInfo = document.getElementById('last-match-info');
+    if (lastMatch) {
+        lastMatchInfo.innerHTML = generateMatchCardHTML(lastMatch, false);
+    }
+}
+
+function generateMatchCardHTML(match, isUpcoming) {
+    const typeLabels = { "0": "경기", "1": "풋살", "2": "자체전" };
+    const typeText = typeLabels[match.type] || "기타";
+
+    let scoreHTML = `<span class="match-vs">VS</span>`;
+    if (match.type === "0") {
+        scoreHTML = `<span class="match-vs">${match.score.us} : ${match.score.them}</span>`;
+    }
+
+    let opponentHTML = `<span class="opponent-team">${match.opponent}</span>`;
+    if (match.type === "2") {
+        opponentHTML = ""; // 자체전이면 상대팀 삭제
+    }
+
+    return `
+        <div class="match-header">
+            <span>${isUpcoming ? "다음 경기 일정" : "마지막 경기"}</span>
+            <span class="match-type" style="color: black; font-size: 0.9em">${typeText}</span>
+            <a href="matchRecord.html" class="match-link">전체 경기 일정 →</a>
+        </div>
+        <hr class="match-divider">
+        <div class="match-info">
+            <span class="match-date">${formatDate(match.date)}</span>
+            <span class="match-league">${match.location || ""}</span>
+            <div class="match-details">
+                <div class="team-box">
+                    <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" class="team-emblem">
+                </div>
+                ${scoreHTML}
+                <div class="team-box">${opponentHTML}</div>
+            </div>
+        </div>
+    `;
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
 function enableDragScroll() {
     const cardSectionContainer = document.querySelector('.card-section-container');
     let isDown = false;
@@ -214,6 +302,7 @@ window.onload = async function () {
         const currentYear = new Date().getFullYear();
         const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
         createCards(cachedData.players, thisYearRecords);
+        updateMatchCards(cachedData.matchesTotal);
 
         enableDragScroll();
     } catch (error) {
@@ -230,7 +319,7 @@ window.onload = async function () {
     errorMessage.classList.add('error-message');
     popup.querySelector('.popup-content').appendChild(errorMessage);
 
-    document.querySelector('.fixed-top-right').addEventListener('click', () => {
+    document.querySelector('.fixed-top-left').addEventListener('click', () => {
         const isAuthenticated = localStorage.getItem('isAuthenticated');
         if (isAuthenticated === 'true') {
             // 이미 인증된 경우 바로 managerMain.html로 이동
