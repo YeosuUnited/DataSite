@@ -6,13 +6,15 @@
     <title>메인 페이지</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dokdo&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Dokdo&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
         html, body {
             overflow-x: hidden;
             width: 100%;
         }
         
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         * {
             margin: 0;
             padding: 0;
@@ -52,6 +54,10 @@
             display: flex;            
             z-index: 1000;
             transition: transform 0.3s ease; /* 부드러운 이동 효과 */
+        }
+        
+        .header.hidden {
+            transform: translateY(-100%); /* 스크롤 올릴 때 헤더 숨기기 */
         }
         
         .emblem {
@@ -278,7 +284,7 @@
             height: 3px;
             background: #2565D0;
             border: none;
-            margin: 10px 0;
+            margin: 5px 0;
         }
         
         .match-info {
@@ -288,12 +294,14 @@
         
         .match-date {
             font-weight: bold;
-            font-size: 1.2em;
+            font-size: 1.4em;
+            font-family: "Do Hyeon", serif;
         }
         
         .match-league {
             color: #6b7280;
             font-size: 1em;
+            font-family: "Do Hyeon", serif;
         }
         
         .match-details {
@@ -301,7 +309,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin: 10px 0;
+            margin-top: 5px;
         }
         
         .team-box {
@@ -324,11 +332,12 @@
             font-size: 1.5em;
             font-weight: bold;
             color: #1e3a8a;
+            font-family: "Do Hyeon", serif;
         }
         
         .opponent-team {
-            font-size: 1.2em;
-            font-weight: bold;
+            font-size: 1.3em;
+            font-family: "Do Hyeon", serif;
         }
         
         .cardSection-title {
@@ -338,7 +347,7 @@
             margin-left: 20px;
             margin-top: 0px;            
             margin-bottom: -20px;
-            font-family: 'Bebas Neue', sans-serif;
+            font-family: "Do Hyeon", serif;
             letter-spacing: 1.5px;
         }
         
@@ -409,8 +418,8 @@
             border: 1px solid #ddd;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            width: 200px;
-            padding: 20px;
+            width: 240px;
+            padding: 25px;
             text-align: center;
             position: relative; /* 배지 위치를 위한 설정 */
         }
