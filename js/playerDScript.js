@@ -551,5 +551,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 imgElement.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
             }
         }
+
+        document.getElementById('loader').style.display = 'none';
     };
 });
