@@ -441,6 +441,44 @@ function updateSortMenu() {
         .join('');
 }
 
+window.addEventListener("scroll", function () {
+    const header = document.querySelector(".header");
+    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+    
+    if (window.scrollY > sponserListHeight) {
+        header.style.position = "fixed";
+        header.style.top = "0";
+    } else {
+        header.style.position = "absolute";
+        header.style.top = sponserListHeight + "px";
+    }
+});
+
+window.addEventListener("scroll", function () {
+    const fullMenu = document.querySelector(".full-menu");
+    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+
+    if (window.scrollY > sponserListHeight) {
+        fullMenu.classList.add("fixed");
+    } else {
+        fullMenu.classList.remove("fixed");
+    }
+});
+
+function toggleMenu() {
+    const menu = document.getElementById('fullMenu');
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function toggleMenu() {
+    const menu = document.getElementById('fullMenu');
+    if (menu.style.display === 'flex') {
+        menu.style.display = 'none';
+    } else {
+        menu.style.display = 'flex';
+    }
+}
+
 function getTotalRecords(records, playerInfo, isSub) {
     const totalRecords = {};
 
@@ -573,6 +611,8 @@ document.addEventListener('click', function (event) {
     }
 });
 
+
+
 window.onload = async function () {
     const prevYearButton = document.getElementById('prevYear');
     const nextYearButton = document.getElementById('nextYear');
@@ -605,10 +645,82 @@ window.onload = async function () {
 
             // 초기 버튼 상태 업데이트
             updateYearNavigationButtons();
+
         } else {
             console.log("데이터를 불러오는 중 오류가 발생했습니다.");
         }
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
+    }
+
+    //관리자 관련
+    const popup = document.getElementById('password-popup');
+    const closeBtn = document.querySelector('.close-btn');
+    const passwordInput = document.getElementById('password-input');
+    const loginButton = document.getElementById('login-button');
+
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('error-message');
+    popup.querySelector('.popup-content').appendChild(errorMessage);
+
+    document.querySelector('.managerPage').addEventListener('click', () => {
+        const isAuthenticated = localStorage.getItem('isAuthenticated');
+        if (isAuthenticated === 'true') {
+            // 이미 인증된 경우 바로 managerMain.html로 이동
+            window.location.href = 'managerMain.html';
+        }
+        popup.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+        popup.classList.add('hidden');
+        clearPopup();
+    });
+
+    popup.addEventListener('click', (e) => {
+        if (e.target.id === 'password-popup') {
+            popup.classList.add('hidden');
+            clearPopup();
+        }
+    });
+
+    loginButton.addEventListener('click', () => handleLogin());
+
+    passwordInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    });
+
+    function handleLogin() {
+        const password = passwordInput.value;
+
+        if (password === 'dutndusgkq1990') {
+            localStorage.setItem('isAuthenticated', 'true'); // 인증 상태 저장
+            window.location.href = 'managerMain.html';
+        } else {
+            errorMessage.textContent = '비밀번호가 틀렸습니다.';
+            errorMessage.style.display = 'block';
+
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 2000);
+        }
+    }
+
+    function clearPopup() {
+        passwordInput.value = '';
+        errorMessage.style.display = 'none';
+    }
+
+    const imgElements = document.querySelectorAll('img[data-image-name]');
+    for (const imgElement of imgElements) {
+        const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${imgElement.dataset.imageName}.png`;
+        try {
+            const blobUrl = await getCachedImageUrl(imageUrl);
+            imgElement.src = blobUrl;
+        } catch (error) {
+            imgElement.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+        }
     }
 };
