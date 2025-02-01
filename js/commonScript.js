@@ -277,69 +277,109 @@ function base64ToUtf8(str) {
 
 function loadPlayerImage(player) {
     const img = document.createElement('img');
-    const imageKey = `playerImage_${player.number}`; // localStorage 키 설정
-    const cachedImage = localStorage.getItem(imageKey); // 캐시된 이미지 확인
+    const imageKey = `playerImage_${player.number}`;
+    const cachedImage = localStorage.getItem(imageKey);
 
     if (cachedImage) {
-        // 캐시된 이미지가 있으면 그대로 사용
         img.src = cachedImage;
     } else {
-        // 없으면 GitHub에서 가져온 후 캐시에 저장
-        img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
+        const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
 
-        img.onload = () => {
-            localStorage.setItem(imageKey, img.src); // 이미지 캐싱
-        };
-
-        img.onerror = () => {
-            img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-        };
+        fetch(imageUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('Image not found');
+                return response.blob();
+            })
+            .then(blob => {
+                const objectURL = URL.createObjectURL(blob);
+                img.src = objectURL;
+                localStorage.setItem(imageKey, objectURL);
+            })
+            .catch(() => {
+                img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+            });
     }
     return img;
 }
 
 function loadPlayerProfileImage(player) {
     const img = document.createElement('img');
-    const imageKey = `profileImage_${player.number}`; // localStorage 키 설정
-    const cachedImage = localStorage.getItem(imageKey); // 캐시된 이미지 확인
+    const imageKey = `profileImage_${player.number}`;
+    const cachedImage = localStorage.getItem(imageKey);
 
     if (cachedImage) {
-        // 캐시된 이미지가 있으면 그대로 사용
         img.src = cachedImage;
     } else {
-        // 없으면 GitHub에서 가져온 후 캐시에 저장
-        img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_P.png`;
+        const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_P.png`;
 
-        img.onload = () => {
-            localStorage.setItem(imageKey, img.src); // 이미지 캐싱
-        };
-
-        img.onerror = () => {
-            img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default_P.png`;
-        };
+        fetch(imageUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('Image not found');
+                return response.blob();
+            })
+            .then(blob => {
+                const objectURL = URL.createObjectURL(blob);
+                img.src = objectURL;
+                localStorage.setItem(imageKey, objectURL);
+            })
+            .catch(() => {
+                img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default_P.png`;
+            });
     }
     return img;
 }
 
 function loadPlayerCardImage(player) {
     const img = document.createElement('img');
-    const imageKey = `playerCardImg_${player.number}`; // localStorage 키 설정
-    const cachedImage = localStorage.getItem(imageKey); // 캐시된 이미지 확인
+    const imageKey = `playerCardImg_${player.number}`;
+    const cachedImage = localStorage.getItem(imageKey);
 
     if (cachedImage) {
-        // 캐시된 이미지가 있으면 그대로 사용
         img.src = cachedImage;
     } else {
-        // 없으면 GitHub에서 가져온 후 캐시에 저장
-        img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/card/${player.number || 'default'}_C_.png`;
+        const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/card/${player.number || 'default'}_C_.png`;
 
-        img.onload = () => {
-            localStorage.setItem(imageKey, img.src); // 이미지 캐싱
-        };
+        fetch(imageUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('Image not found');
+                return response.blob();
+            })
+            .then(blob => {
+                const objectURL = URL.createObjectURL(blob);
+                img.src = objectURL;
+                localStorage.setItem(imageKey, objectURL);
+            })
+            .catch(() => {
+                img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+            });
+    }
+    return img;
+}
 
-        img.onerror = () => {
-            img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-        };
+
+function loadMainPictureImage(pictureName) {
+    const img = document.createElement('img');
+    const imageKey = `picture_${pictureName}`;
+    const cachedImage = localStorage.getItem(imageKey);
+
+    if (cachedImage) {
+        img.src = cachedImage;
+    } else {
+        const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${pictureName}.png`;
+
+        fetch(imageUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('Image not found');
+                return response.blob();
+            })
+            .then(blob => {
+                const objectURL = URL.createObjectURL(blob);
+                img.src = objectURL;
+                localStorage.setItem(imageKey, objectURL); // Blob URL 저장
+            })
+            .catch(() => {
+                img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+            });
     }
     return img;
 }
