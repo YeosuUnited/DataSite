@@ -8,12 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Dokdo&display=swap" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-
-        body {
-            font-family: 'Noto Sans KR', sans-serif; /* 전체에 Gothic A1 적용 */
-            line-height: 1.5;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
         }
         
         .sponserList {
@@ -48,10 +47,6 @@
             display: flex;            
             z-index: 1000;
             transition: transform 0.3s ease; /* 부드러운 이동 효과 */
-        }
-        
-        .header.hidden {
-            transform: translateY(-100%); /* 스크롤 올릴 때 헤더 숨기기 */
         }
         
         .emblem {
@@ -243,7 +238,7 @@
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
-            margin-top: -15px;
+            margin-top: 0px;
         }
         
         .section-title {
