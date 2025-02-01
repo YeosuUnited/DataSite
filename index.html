@@ -55,11 +55,6 @@
             margin-left: 10px;
         }
         
-        .header-divider {            
-            width: 100%; /* 전체 너비 설정 */
-            height: 60px; /* 높이 유지 */
-        }
-        
         /* 메인 이미지 */
         .main-image {
             width: 100%;
@@ -69,8 +64,9 @@
         }
         
         .main-image-wrapper {
+            margin-top:60px;
             position: relative;
-            display: inline-block;
+            display: flex;
             width: 100%;
         }
         
@@ -711,7 +707,7 @@
     </style>
 
     <script src="https://yeosuunited.com/js/commonScript.js?v=1.06"></script>
-    <script src="https://yeosuunited.com/js/mainScript.js?v=1.06"></script>
+    <script src="https://yeosuunited.com/js/mainScript.js?v=1.07"></script>
 </head>
 
 <body>
@@ -751,7 +747,6 @@
         </ul>
     </div>
     
-    <div class="header-divider"></div>
     <div class="main-image-wrapper">
         <img data-image-name="main_img" alt="메인 이미지" class="main-image">
         <img data-image-name="mainPicText" alt="메인 사진 글씨" class="main-pic-text">
