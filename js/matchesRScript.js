@@ -648,7 +648,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // 날짜 및 시간 포맷팅
-                const formattedDate = matchDate.toLocaleDateString('ko-KR`'); // 예: "2024. 12. 17."
+                const formattedDate = matchDate.toLocaleDateString('ko-KR'); // 예: "2024. 12. 17."
                 const formattedTime = matchDate.toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
