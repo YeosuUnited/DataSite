@@ -17,31 +17,42 @@ function renderRecentMatches(matches) {
         const rowClass = index % 2 === 0 ? 'light-row' : 'dark-row'; // 번갈아 색상 적용
         matchBox.className = `match-box ${rowClass}`;
 
+        const [date, time] = key.split('_');
         const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
-        const formattedTime = new Date(match.date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+        const formattedTime = new Date(match.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-        const matchType = match.type === "1" ? '풋살' : match.type === "2" ? '자체전' : '경기';
-
-        let scoreText = '';
+        const typeLabels = { "0": "축구", "1": "풋살", "2": "자체전" };
+        const typeText = typeLabels[match.type] || "기타";
+                        
+        let scoreHTML = `<span class="match-vs">VS</span>`;
         if (match.type === "0") {
-            const usScore = match.score.us;
-            const themScore = match.score.them;
-            const result = usScore > themScore ? '승' : usScore < themScore ? '패' : '무';
-            scoreText = `<span>${usScore}</span> : <span>${themScore}</span> (<span>${result}</span>)`;
+            scoreHTML = `<span class="match-vs">${match.score.us} : ${match.score.them}</span>`;
+        }
+
+        let opponentHTML = `<span class="opponent-team">${match.opponent}</span>`;
+        if (match.type === "2") {
+            opponentHTML = ""; // 자체전이면 상대팀 삭제
         }
 
         matchBox.innerHTML = `
-                                        <div class="date-time">
-                                            <div class="date">${formattedDate}</div>
-                                            <div class="time">${formattedTime}</div>
+                                <div class="match-header">
+                                    <span class="match-type" style="color: black; font-size: 0.9em">${typeText}</span>                                            
+                                    <span class="match-location">${match.location || ""}</span>
+                                    <button class="popup-button" data-key="${key}">상세정보</button>
+                                </div>
+                                <hr class="match-divider">
+                                <div class="match-info">
+                                    <span class="match-date">${formattedDate}</span>
+                                    <span class="match-time">${formattedTime}</span>                                            
+                                    <div class="match-details">
+                                        <div class="team-box">
+                                            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" class="team-emblem">
                                         </div>
-                                        <div class="opponent-location">
-                                            <div class="opponent">${match.opponent}</div>
-                                            <div class="location">${match.location}</div>
-                                            ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
-                                        </div>
-                                        <button class="popup-button" data-key="${key}">기록</button>
-                                    `;
+                                        ${scoreHTML}
+                                        <div class="team-box">${opponentHTML}</div>
+                                    </div>
+                                </div>
+                            `;
         matchContainer.appendChild(matchBox);
     });
 }
@@ -62,34 +73,43 @@ function renderTotalMatches(matches) {
 
         const [date, time] = key.split('_');
         const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
-        const formattedTime = new Date(match.date).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+        const formattedTime = new Date(match.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-        const matchType = match.type === "1" ? '풋살' : match.type === "2" ? '자체전' : '경기';
-
-        let scoreText = '';
+        const typeLabels = { "0": "축구", "1": "풋살", "2": "자체전" };
+        const typeText = typeLabels[match.type] || "기타";
+                        
+        let scoreHTML = `<span class="match-vs">VS</span>`;
         if (match.type === "0") {
-            const usScore = match.score.us;
-            const themScore = match.score.them;
-            const result = usScore > themScore ? '승' : usScore < themScore ? '패' : '무';
-            scoreText = `<span>${usScore}</span> : <span>${themScore}</span> (<span>${result}</span>)`;
+            scoreHTML = `<span class="match-vs">${match.score.us} : ${match.score.them}</span>`;
+        }
+
+        let opponentHTML = `<span class="opponent-team">${match.opponent}</span>`;
+        if (match.type === "2") {
+            opponentHTML = ""; // 자체전이면 상대팀 삭제
         }
 
         matchBox.innerHTML = `
-                                        <div class="date-time">
-                                            <div class="date">${formattedDate}</div>
-                                            <div class="time">${formattedTime}</div>
+                                <div class="match-header">
+                                    <span class="match-type" style="color: black; font-size: 0.9em">${typeText}</span>                                            
+                                    <span class="match-location">${match.location || ""}</span>
+                                    <button class="popup-button" data-key="${key}">상세정보</button>
+                                </div>
+                                <hr class="match-divider">
+                                <div class="match-info">
+                                    <span class="match-date">${formattedDate}</span>
+                                    <span class="match-time">${formattedTime}</span>
+                                    <div class="match-details">
+                                        <div class="team-box">
+                                            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" class="team-emblem">
                                         </div>
-                                        <div class="opponent-location">
-                                            <div class="opponent">${match.opponent}</div>
-                                            <div class="location">${match.location}</div>
-                                            ${scoreText ? `<div class="score">${scoreText}</div>` : `<div class="score">${matchType}</div>`}
-                                        </div>
-                                        <button class="popup-button" data-key="${key}">기록</button>
-                                    `;
+                                        ${scoreHTML}
+                                        <div class="team-box">${opponentHTML}</div>
+                                    </div>
+                                </div>
+                            `;
         matchContainer.appendChild(matchBox);
     });
 }
-
 
 function openPopup() {
     const popup = document.querySelector('.popup');
@@ -98,6 +118,7 @@ function openPopup() {
     if (popup && overlay) {
         popup.style.display = 'block';
         overlay.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // 스크롤 막기
     } else {
         console.error('팝업 또는 오버레이 요소를 찾을 수 없습니다.');
     }
@@ -110,6 +131,7 @@ function closePopup() {
     if (popup && overlay) {
         popup.style.display = 'none';
         overlay.style.display = 'none';
+        document.body.style.overflow = 'auto'; // 스크롤 다시 활성화
     } else {
         console.error('팝업 또는 오버레이 요소를 찾을 수 없습니다.');
     }
@@ -163,18 +185,20 @@ function renderPopup(matchData, teamName) {
     const header = `<h2 style="">${matchTypeText}</h2>`;
 
     // 선수별 골 및 어시스트 집계
-    const playerStats = matchData.players.map(playerName => {
+    const playerStats = (Array.isArray(matchData.players) ? matchData.players : []).map(playerName => {
         const playerInfo = Object.values(cachedData.players).find(player => player.name === playerName);
         const position = playerInfo ? playerInfo.posi : "알 수 없음";
-        const goals = matchData.type === "0" ? matchData.goal.filter(name => name === playerName).length : null; // 경기 타입이 "0"일 때만 득점 계산
-        const assists = matchData.type === "0" ? matchData.assist.filter(name => name === playerName).length : null; // 경기 타입이 "0"일 때만 도움 계산
+        const goals = matchData.type === "0" ? (matchData.goal || []).filter(name => name === playerName).length : null;
+        const assists = matchData.type === "0" ? (matchData.assist || []).filter(name => name === playerName).length : null;
         return { name: playerName, position, goals, assists };
     });
+
+    
 
     // 테이블 생성
     let playersTable = `<h3 class="styled-table-title">참여 선수 기록</h3>
                                 <table class="styled-table" border="0" cellspacing="0" cellpadding="5">
-                        `;
+`;
 
     // 테이블 헤더
     if (matchData.type === "0") {
@@ -225,13 +249,11 @@ function renderPopup(matchData, teamName) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // 용병별 골 및 어시스트 집계
-    const subPlayerStats = matchData.subP.map(subPlayerName => {
-        const goals = matchData.type === "0" ? matchData.subGoal.filter(name => name === subPlayerName).length : null; // 정규 경기일 때만 득점 계산
-        const assists = matchData.type === "0" ? matchData.subAssist.filter(name => name === subPlayerName).length : null; // 정규 경기일 때만 도움 계산
+    const subPlayerStats = (Array.isArray(matchData.subP) ? matchData.subP : []).map(subPlayerName => {
+        const goals = matchData.type === "0" ? (matchData.subGoal || []).filter(name => name === subPlayerName).length : null;
+        const assists = matchData.type === "0" ? (matchData.subAssist || []).filter(name => name === subPlayerName).length : null;
         return { name: subPlayerName, goals, assists };
     });
-
-    console.log("subPlayer", subPlayerStats);
 
     // 용병 테이블 생성
     
@@ -361,18 +383,52 @@ function convertTo24HourFormat(timeStr) {
     return `${String(formattedHours).padStart(2, '0')}:00`;
 }
 
+window.addEventListener("scroll", function () {
+    const header = document.querySelector(".header");
+    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+
+    if (window.scrollY > sponserListHeight) {
+        header.style.position = "fixed";
+        header.style.top = "0";
+    } else {
+        header.style.position = "absolute";
+        header.style.top = sponserListHeight + "px";
+    }
+});
+
+window.addEventListener("scroll", function () {
+    const fullMenu = document.querySelector(".full-menu");
+    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+
+    if (window.scrollY > sponserListHeight) {
+        fullMenu.classList.add("fixed");
+    } else {
+        fullMenu.classList.remove("fixed");
+    }
+});
+
+function toggleMenu() {
+    const menu = document.getElementById('fullMenu');
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function toggleMenu() {
+    const menu = document.getElementById('fullMenu');
+    if (menu.style.display === 'flex') {
+        menu.style.display = 'none';
+    } else {
+        menu.style.display = 'flex';
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-    const logoElement = document.getElementById('logo');
     const recentButton = document.getElementById('recentButton');
     const allButton = document.getElementById('allButton');
     const searchButton = document.getElementById('searchButton'); // 검색 버튼 추가
     const searchContainer = document.getElementById('searchContainer');
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('searchResults');
-
-    logoElement.addEventListener('click', function () {
-        window.location.href = 'index.html';
-    });
+    
 
     function toggleButton(clickedButton, ...otherButtons) {
         clickedButton.classList.add('active');
@@ -554,8 +610,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function handleMatchButtonClick(matchBox) {
         if (!matchBox) return;
 
-        const matchDate = matchBox.querySelector('.date').innerText.trim();
-        const matchTimeRaw = matchBox.querySelector('.time').innerText.trim();
+        const matchDate = matchBox.querySelector('.match-date').innerText.trim();
+        const matchTimeRaw = matchBox.querySelector('.match-time').innerText.trim();
         const matchTime = convertTo24HourFormat(matchTimeRaw);
 
         const matchKey = matchBox.querySelector('.popup-button').dataset.key;
@@ -592,8 +648,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // 날짜 및 시간 포맷팅
-                const formattedDate = matchDate.toLocaleDateString('ko-KR'); // 예: "2024. 12. 17."
-                const formattedTime = matchDate.toLocaleTimeString('ko-KR', {
+                const formattedDate = matchDate.toLocaleDateString('ko-KR`'); // 예: "2024. 12. 17."
+                const formattedTime = matchDate.toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
                 }); // 예: "오후 9:07"
@@ -657,5 +713,65 @@ window.onload = async function () {
         renderRecentMatches(cachedData.matchesTotal);                
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
+    }
+
+    //관리자 관련
+    const popup = document.getElementById('password-mangerPopup');
+    const closeBtn = document.querySelector('.close-btn');
+    const passwordInput = document.getElementById('password-input');
+    const loginButton = document.getElementById('login-button');
+
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('error-message');
+    popup.querySelector('.mangerPopup-content').appendChild(errorMessage);
+
+    document.querySelector('.managerPage').addEventListener('click', () => {
+        const isAuthenticated = localStorage.getItem('isAuthenticated');
+        if (isAuthenticated === 'true') {
+            // 이미 인증된 경우 바로 managerMain.html로 이동
+            window.location.href = 'managerMain.html';
+        }
+        popup.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+        popup.classList.add('hidden');
+        clearPopup();
+    });
+
+    popup.addEventListener('click', (e) => {
+        if (e.target.id === 'password-mangerPopup') {
+            popup.classList.add('hidden');
+            clearPopup();
+        }
+    });
+
+    loginButton.addEventListener('click', () => handleLogin());
+
+    passwordInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    });
+
+    function handleLogin() {
+        const password = passwordInput.value;
+
+        if (password === 'dutndusgkq1990') {
+            localStorage.setItem('isAuthenticated', 'true'); // 인증 상태 저장
+            window.location.href = 'managerMain.html';
+        } else {
+            errorMessage.textContent = '비밀번호가 틀렸습니다.';
+            errorMessage.style.display = 'block';
+
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 2000);
+        }
+    }
+
+    function clearPopup() {
+        passwordInput.value = '';
+        errorMessage.style.display = 'none';
     }
 }
