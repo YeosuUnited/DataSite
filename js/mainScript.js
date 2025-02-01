@@ -224,7 +224,7 @@ function updateMatchCards(matchesTotal) {
 }
 
 function generateMatchCardHTML(match, isUpcoming) {
-    const typeLabels = { "0": "경기", "1": "풋살", "2": "자체전" };
+    const typeLabels = { "0": "축구", "1": "풋살", "2": "자체전" };
     const typeText = typeLabels[match.type] || "기타";
 
     let scoreHTML = `<span class="match-vs">VS</span>`;
@@ -295,6 +295,30 @@ function enableDragScroll() {
     });
 }
 
+window.addEventListener("scroll", function () {
+    const header = document.querySelector(".header");
+    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+    
+    if (window.scrollY > sponserListHeight) {
+        header.style.position = "fixed";
+        header.style.top = "0";
+    } else {
+        header.style.position = "absolute";
+        header.style.top = sponserListHeight + "px";
+    }
+});
+
+window.addEventListener("scroll", function () {
+    const fullMenu = document.querySelector(".full-menu");
+    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+
+    if (window.scrollY > sponserListHeight) {
+        fullMenu.classList.add("fixed");
+    } else {
+        fullMenu.classList.remove("fixed");
+    }
+});
+
 window.onload = async function () {
     try {
         await fetchData();
@@ -319,7 +343,7 @@ window.onload = async function () {
     errorMessage.classList.add('error-message');
     popup.querySelector('.popup-content').appendChild(errorMessage);
 
-    document.querySelector('.fixed-top-left').addEventListener('click', () => {
+    document.querySelector('.managerPage').addEventListener('click', () => {
         const isAuthenticated = localStorage.getItem('isAuthenticated');
         if (isAuthenticated === 'true') {
             // 이미 인증된 경우 바로 managerMain.html로 이동
@@ -364,18 +388,19 @@ window.onload = async function () {
         }
     }
 
-    // 페이지 로드 시 인증 상태 확인
-    function checkAuthentication() {
-        const isAuthenticated = localStorage.getItem('isAuthenticated');
-
-        if (isAuthenticated !== 'true') { // 인증되지 않은 경우
-            alert('인증되지 않은 접근입니다.');
-            window.location.href = 'index.html'; // 메인 페이지로 이동
-        }
-    }
-
     function clearPopup() {
         passwordInput.value = '';
         errorMessage.style.display = 'none';
+    }
+
+    const imgElements = document.querySelectorAll('img[data-image-name]');
+    for (const imgElement of imgElements) {
+        const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${imgElement.dataset.imageName}.png`;
+        try {
+            const blobUrl = await getCachedImageUrl(imageUrl);
+            imgElement.src = blobUrl;
+        } catch (error) {
+            imgElement.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+        }
     }
 };
