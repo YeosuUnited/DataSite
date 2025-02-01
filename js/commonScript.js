@@ -338,24 +338,13 @@ function loadPlayerCardImage(player) {
     return img;
 }
 
-
-function loadMainPictureImage(pictureName) {
-    const img = document.createElement('img');
-    const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${pictureName}.png`;
-
-    caches.open('my-image-cache').then(cache => {
-        cache.match(imageUrl).then(response => {
-            if (response) return response.blob();
-            return fetch(imageUrl).then(networkResponse => {
-                cache.put(imageUrl, networkResponse.clone());
-                return networkResponse.blob();
-            });
-        }).then(blob => {
-            const objectURL = URL.createObjectURL(blob);
-            img.src = objectURL;
-        }).catch(() => {
-            img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-        });
-    });
-    return img;
+async function getCachedImageUrl(imageUrl) {
+    const cache = await caches.open('my-image-cache');
+    let response = await cache.match(imageUrl);
+    if (!response) {
+        response = await fetch(imageUrl);
+        await cache.put(imageUrl, response.clone());
+    }
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
 }
