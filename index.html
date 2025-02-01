@@ -48,6 +48,16 @@
             z-index: 1000;
             transition: transform 0.3s ease; /* 부드러운 이동 효과 */
         }
+
+        .header.hidden {
+            transform: translateY(-100%); /* 스크롤 올릴 때 헤더 숨기기 */
+        }
+        
+        @media (max-width: 768px) {
+          .header {
+            position: fixed !important;
+          }
+        }
         
         .emblem {
             width: auto;
