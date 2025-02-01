@@ -320,3 +320,26 @@ function loadPlayerProfileImage(player) {
     }
     return img;
 }
+
+function loadPlayerCardImage(player) {
+    const img = document.createElement('img');
+    const imageKey = `playerCardImg_${player.number}`; // localStorage 키 설정
+    const cachedImage = localStorage.getItem(imageKey); // 캐시된 이미지 확인
+
+    if (cachedImage) {
+        // 캐시된 이미지가 있으면 그대로 사용
+        img.src = cachedImage;
+    } else {
+        // 없으면 GitHub에서 가져온 후 캐시에 저장
+        img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/card/${player.number || 'default'}_C_.png`;
+
+        img.onload = () => {
+            localStorage.setItem(imageKey, img.src); // 이미지 캐싱
+        };
+
+        img.onerror = () => {
+            img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+        };
+    }
+    return img;
+}
