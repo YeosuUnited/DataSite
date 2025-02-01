@@ -299,12 +299,17 @@ window.addEventListener("scroll", function () {
     const header = document.querySelector(".header");
     const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
     
-    if (window.scrollY > sponserListHeight) {
+    if (window.innerWidth <= 768) {
         header.style.position = "fixed";
         header.style.top = "0";
-    } else {
-        header.style.position = "absolute";
-        header.style.top = sponserListHeight + "px";
+      } else {
+        if (window.scrollY > sponserListHeight) {
+          header.style.position = "fixed";
+          header.style.top = "0";
+        } else {
+          header.style.position = "absolute";
+          header.style.top = sponserListHeight + "px";
+        }
     }
 });
 
