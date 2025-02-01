@@ -89,13 +89,8 @@ function renderPlayerList() {
                     }
                 });
 
-                const playerImage = loadPlayerImage(player) || document.createElement('img');
-                if (position === 'FW') {
-                    playerImage.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_test.png`;
-                    playerImage.className = 'player-list-Img-test';
-                } else {
-                    playerImage.className = 'player-list-Img';
-                }
+                const playerImage = loadPlayerCardImage(player) || document.createElement('img');
+                playerImage.classList.add('player-list-Img');
                 card.appendChild(playerImage);
 
                 const playerText = document.createElement('div');
@@ -166,13 +161,8 @@ function displayPlayerDetails(player) {
 
     const imageContainer = document.createElement('div');
     imageContainer.classList.add('profileImg-container');
-    const profileImg = document.createElement('img');
-    profileImg.classList.add('player-info-photo');
-    profileImg.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_P.png`;
-    profileImg.alt = player.name;
-    profileImg.onerror = () => {
-        profileImg.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default_P.png`;
-    };
+    const profileImg = loadPlayerProfileImage(player) || document.createElement('img'); // null 방지
+    profileImg.classList.add('player-info-photo');            
     imageContainer.appendChild(profileImg);
 
     // 주장 또는 부주장 배지 추가
@@ -350,16 +340,51 @@ function displayPlayerRecord(player) {
     playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
 }
 
+window.addEventListener("scroll", function () {
+    const header = document.querySelector(".header");
+    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+    
+    if (window.scrollY > sponserListHeight) {
+        header.style.position = "fixed";
+        header.style.top = "0";
+    } else {
+        header.style.position = "absolute";
+        header.style.top = sponserListHeight + "px";
+    }
+});
+
+window.addEventListener("scroll", function () {
+    const fullMenu = document.querySelector(".full-menu");
+    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+
+    if (window.scrollY > sponserListHeight) {
+        fullMenu.classList.add("fixed");
+    } else {
+        fullMenu.classList.remove("fixed");
+    }
+});
+
+function toggleMenu() {
+    const menu = document.getElementById('fullMenu');
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function toggleMenu() {
+    const menu = document.getElementById('fullMenu');
+    if (menu.style.display === 'flex') {
+        menu.style.display = 'none';
+    } else {
+        menu.style.display = 'flex';
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const searchInputElement = document.getElementById('search-input');
     const searchResultsElement = document.getElementById('search-results');
-    const logoElement = document.getElementById('logo');
     const playerDetailsElement = document.getElementById('player-details');
 
     // 뒤로가기 버튼 감지하여 선수 목록으로 돌아가기
     window.addEventListener("popstate", function (event) {
-        console.log(">>> popstate fired!", event.state); // 추가
-
         if (!event.state || event.state.page === "playerList") {
             document.getElementById('player-details').style.display = 'none';
             document.getElementById('player-list').style.display = 'block';
@@ -367,11 +392,6 @@ document.addEventListener("DOMContentLoaded", function () {
             thirdBar.style.visibility = 'visible';
             thirdBar.style.opacity = '1';
         }
-    });
-
-    // 로고 클릭 시 index 화면으로 이동
-    logoElement.addEventListener('click', function () {
-        window.location.href = 'index.html';
     });
 
     // 화면 빈 여백 클릭 시 검색 결과 닫기
@@ -459,6 +479,77 @@ document.addEventListener("DOMContentLoaded", function () {
         // 페이지 새로고침 시 기본 목록 표시
         if (!history.state) {
             history.replaceState({ page: "playerList" }, "", location.pathname);
+        }
+
+        //관리자 관련
+        const popup = document.getElementById('password-popup');
+        const closeBtn = document.querySelector('.close-btn');
+        const passwordInput = document.getElementById('password-input');
+        const loginButton = document.getElementById('login-button');
+
+        const errorMessage = document.createElement('div');
+        errorMessage.classList.add('error-message');
+        popup.querySelector('.popup-content').appendChild(errorMessage);
+
+        document.querySelector('.managerPage').addEventListener('click', () => {
+            const isAuthenticated = localStorage.getItem('isAuthenticated');
+            if (isAuthenticated === 'true') {
+                // 이미 인증된 경우 바로 managerMain.html로 이동
+                window.location.href = 'managerMain.html';
+            }
+            popup.classList.remove('hidden');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            popup.classList.add('hidden');
+            clearPopup();
+        });
+
+        popup.addEventListener('click', (e) => {
+            if (e.target.id === 'password-popup') {
+                popup.classList.add('hidden');
+                clearPopup();
+            }
+        });
+
+        loginButton.addEventListener('click', () => handleLogin());
+
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
+        function handleLogin() {
+            const password = passwordInput.value;
+
+            if (password === 'dutndusgkq1990') {
+                localStorage.setItem('isAuthenticated', 'true'); // 인증 상태 저장
+                window.location.href = 'managerMain.html';
+            } else {
+                errorMessage.textContent = '비밀번호가 틀렸습니다.';
+                errorMessage.style.display = 'block';
+
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        function clearPopup() {
+            passwordInput.value = '';
+            errorMessage.style.display = 'none';
+        }
+
+        const imgElements = document.querySelectorAll('img[data-image-name]');
+        for (const imgElement of imgElements) {
+            const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${imgElement.dataset.imageName}.png`;
+            try {
+                const blobUrl = await getCachedImageUrl(imageUrl);
+                imgElement.src = blobUrl;
+            } catch (error) {
+                imgElement.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+            }
         }
     };
 });
