@@ -5,132 +5,221 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>경기 기록 보기</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Dokdo&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Noto Sans KR', sans-serif;
         }
-    
-        .firstHeader {
-            background-color: white;
-            color: white;
-            height: 43px;
-            width: 100%;
+        
+        .sponserList {
             display: flex;
+            align-items: center; /* 세로 중앙 정렬 */
+            justify-content: flex-end; /* 우측 정렬 */
+            background-color: black;
+            height: 45px;
+            width: 100%;
+            z-index: 1000;
         }
-    
-        .logo {
+        
+        .sponser-image{
+            margin-right: 6px;
+            margin-top:3px;
+            width: 45px;
+            height: auto;
+        }
+        
+        .sponser-image:last-child {
+            margin-right: 10px; /* 첫 번째 이미지 오른쪽 여백 */
+        }
+        
+        .header {
+            position: fixed; /* 항상 고정 */
+            left: 0;
+            width: 100%;
+            background-color: #16418d;
+            align-items: center; /* 세로 중앙 정렬 */            
+            justify-content: flex-start; /* 좌측 정렬 */
+            height: 60px;
+            display: flex;            
+            z-index: 1000;
+            transition: transform 0.3s ease; /* 부드러운 이동 효과 */
+        }
+        
+        .header.hidden {
+            transform: translateY(-100%); /* 스크롤 올릴 때 헤더 숨기기 */
+        }
+        
+        .emblem {
+            width: auto;
+            height: 52px;
+            margin-left: 10px;
+        }
+        
+        .hamburger-menu {
+            margin-left: 24px;
+            width: 25px;
             height: 35px;
             cursor: pointer;
-            margin: 7px 0 0 7px;
+            z-index: 1500;
         }
-    
-        .pageTitleText {
-            color: black;
-            font-weight: bold;
-            font-size: 20px;
-            margin: 9px 0 0 9px;
-        }
-    
-    
-        .secondHeader {
-            background-color: white;
-            color: white;
-            height: 43px;
+        
+        .hamburger-menu div {
             width: 100%;
-            min-width: 270px;
-            text-align: center;
-            display: flex;
+            height: 2px;
+            background-color: #d8d8d8;
+            margin: 7px 0;
+            border-radius: 5px;
+        }
+        
+        /* Full-screen 메뉴 스타일 */
+        .full-menu {
+            position: fixed;
+            top: 45px; /* 스폰서 높이만큼 아래에 배치 */
+            left: 0;
+            width: 100%;
+            height: 100%; /* header와 동일한 높이 */
+            background-color: #0A2A47; /* 배경색 변경 */
+            display: none; /* 기본적으로 숨김 */
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: start;
+            color: white;
+            font-size: 1.2em;
+            z-index: 2000;
         }
-    
-        .movePageLeft-button, .movePageRight-button, .nowPage-button {
-            background-color: white;
-            text-decoration: none; /* 밑줄 제거 */
-            position: relative;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
+        
+        .full-menu.fixed {
+            position: fixed; /* 스크롤 시 최상단에 고정 */
+            top: 0;
         }
-    
-        .movePageLeft-button {
-            margin-left: 40px;
-        }
-    
-        .movePageRight-button {
-            margin-right: 40px;
-        }
-    
-        .movePage-button {
-            color: black;
-            cursor: pointer;
-        }
-    
-        .nowPage-button {
-            color: #2565D0;
-            font-weight: bold;
-            position: relative; /* 상대 위치 조정을 위해 추가 */
-        }
-    
-            .nowPage-button::after {
-                content: ""; /* 가상 요소 생성 */
-                position: absolute;
-                bottom: -10px; /* 밑줄을 더 아래로 이동 (-5px은 원하는 거리로 조정) */
-                left: 0;
-                width: 100%;
-                height: 3px; /* 밑줄 두께 */
-                background-color: #2565D0; /* 밑줄 색상 */
+        
+            .full-menu-emblem{
+                height: 56px;
+                width: auto;
+                margin-left: 10px;
+                margin-top: 5px;
             }
-    
+        
+            /* 메뉴 상단 헤더 */
+            .menu-header {
+                width: 100%;
+                display: flex;
+                align-items: center; /* 세로 중앙 정렬 */            
+                justify-content: flex-start; /* 좌측 정렬 */                
+                position: relative;    
+            }
+        
+            /* 엠블럼 스타일 */
+            .menu-header img {
+                width: 50px;
+                height: auto;
+            }
+        
+            /* 닫기 버튼 (X 버튼) */
+            .close-menu {         
+                top:5px;
+                margin-left: 26px;
+                font-size: 26px;
+                cursor: pointer;
+                color: white;
+            }
+        
+            .fixed-top-left {
+                position: fixed; /* 화면 기준으로 고정 */
+                bottom: 20px; /* 화면 상단에서 10px */
+                right: 13px; /* 화면 왼쪽에서 10px */
+                width: 25px;
+                height: auto;
+                cursor: pointer;
+                z-index: 1000;
+            }
+        
+            /* 메뉴 리스트 */
+            .full-menu ul {
+                list-style: none;
+                padding: 0;
+                width: 100%;
+                text-align: left; /* 글씨 왼쪽 정렬 */
+            }
+        
+            /* 메뉴 항목 스타일 */
+            .full-menu li {
+                width: 100%;
+                padding: 15px 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                transition: background 0.3s;
+            }
+        
+            .full-menu li:hover {
+                background-color: rgba(255, 255, 255, 0.1); /* 마우스 올릴 때 효과 */
+            }
+        
+            /* 메뉴 링크 스타일 */
+            .full-menu a {
+                color: white;
+                text-decoration: none;
+                display: block; /* 클릭 가능 영역 전체 확장 */
+                width: 100%;
+                font-weight: bold;
+            }
+        
         .thirdHeader {
-            background-color: #2565D0;
-            color: white;
-            height: 55px;
+            height: 50px;
             width: 100%;
             min-width: 270px;
             text-align: center;
             display: flex;
             align-items: center;
+            margin-top: 60px;
             justify-content: space-between;
         }
-    
+        
         .toggleL-button, .toggleR-button, .toggle-button {
+            background-color: transparent;
             position: relative;
             font-size: 16px;
             border: none;
-            background-color: #2565D0;
-            color: #a5bcf1;
+            color: gray;
             cursor: pointer;
             transition: all 0.3s;
         }
-    
+        
         .toggleL-button {
             margin-left: 40px;
         }
-    
+        
         .toggleR-button {
             margin-right: 40px;
         }
-    
+        
             .toggleL-button.active, .toggleR-button.active, .toggle-button.active {
-                background-color: #2565D0;
-                color: white;
+                color: black;
                 font-weight: bold;
                 border: none;
             }
-    
+        
+        .toggleL-button.active::after, 
+        .toggleR-button.active::after, 
+        .toggle-button.active::after {
+            content: "";
+            position: absolute;
+            bottom: -5px; /* 밑줄 위치 조정 */
+            left: 0;
+            width: 100%; /* 텍스트 아래 전체 밑줄 */
+            height: 3px; /* 밑줄 두께 */
+            background-color: #16418d; /* 밑줄 색상 (파란색) */
+        }
+        
         .matches-defaultBox {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
             padding: 0 10px;
         }
-    
+        
         .match-box {
             width: 100%;
             background-color: #f1f1f1;
@@ -141,150 +230,40 @@
             display: grid;
             grid-template-columns: 1fr;
             align-items: start;
-            gap: 10px;
-            margin-top: 3px; /* 위 간격 */
-            margin-bottom: 3px; /* 아래 간격 */
+            margin-top: 5px; /* 위 간격 */
+            margin-bottom: 5px; /* 아래 간격 */
         }
-    
-            .match-box .date-time {
-                font-size: 0.9em;
-                color: #333;
-                align-self: start;
-                display: flex;
-                flex-direction: row;
-                gap: 5px; /* 날짜와 시간을 약간 간격을 둡니다 */
-            }
-    
-                .match-box .date-time .date {
-                    font-size: 1em;
-                    color: #555; /* 날짜 색상 */
-                }
-    
-                .match-box .date-time .time {
-                    margin-top: 2px;
-                    font-size: 0.75em; /* 시간 크기 */
-                    color: gray; /* 시간 색상 */
-                }
-    
-            .match-box .opponent-location {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: 4px;
-            }
-    
-            .match-box .opponent {
-                font-size: 1.2em;
-                font-weight: bold;
-                text-align: left;
-            }
-    
-            .match-box .location {
-                font-size: 0.78em;
-                color: gray;
-                text-align: left;
-                margin-top: 5px;
-            }
-    
-            .match-box .score {
-                position: absolute;
-                top: 50%;
-                right: 35%;
-                transform: translate(50%, -50%);
-                font-weight: bold;
-                font-size: 1.2em;
-                display: inline-flex;
-                justify-content: center;
-                align-items: center;
-                gap: 5px;
-                text-align: center;
-            }
-    
+            
         #allMatchesContainer {
-            margin-top: 20px; /* 버튼과 컨테이너 간의 간격 추가 */
         }
-    
+        
         .matchtotal-box {
             width: 100%;
             background-color: #f1f1f1;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #ccc;
             border-radius: 10px;
             position: relative;
             display: grid;
             grid-template-columns: 1fr;
             align-items: start;
-            margin-top: 2px; /* 위 간격 */
-            margin-bottom: 2px; /* 아래 간격 */
+            margin-top: 5px; /* 위 간격 */
+            margin-bottom: 5px; /* 아래 간격 */
         }
-    
-            .matchtotal-box .date-time {
-                font-size: 0.9em;
-                color: #333;
-                align-self: start;
-                display: flex;
-                flex-direction: row;
-                gap: 5px; /* 날짜와 시간을 약간 간격을 둡니다 */
-            }
-    
-                .matchtotal-box .date-time .date {
-                    font-size: 1em;
-                    color: #555; /* 날짜 색상 */
-                }
-    
-                .matchtotal-box .date-time .time {
-                    margin-top: 2px;
-                    font-size: 0.75em; /* 시간 크기 */
-                    color: gray; /* 시간 색상 */
-                }
-    
-            .matchtotal-box .opponent-location {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: 4px;
-            }
-    
-            .matchtotal-box .opponent {
-                font-size: 1.2em;
-                font-weight: bold;
-                text-align: left;
-            }
-    
-            .matchtotal-box .location {
-                font-size: 0.78em;
-                color: gray;
-                text-align: left;
-                margin-top: 5px;
-            }
-    
-            .matchtotal-box .score {
-                position: absolute;
-                top: 50%;
-                right: 35%;
-                transform: translate(50%, -50%);
-                font-weight: bold;
-                font-size: 1.2em;
-                display: inline-flex;
-                justify-content: center;
-                align-items: center;
-                gap: 5px;
-                text-align: center;
-            }
-    
+        
         .popup-button {
             position: absolute;
-            top: 50%;
             right: 10px;
-            transform: translateY(-50%);
-            background-color: #f1f1f1;
             color: black;
-            border: 1px solid #aaa;
             padding: 5px 10px;
-            border-radius: 5px;
             cursor: pointer;
+            background: none; /* 배경 제거 */
+            font-size: 1.1em;
+            border: none; /* 테두리 제거 */
+            outline: none; /* 포커스 테두리 제거 */
+            font-family: "Do Hyeon", serif;
         }
-    
+        
         .popup {
             position: fixed;
             top: 50%;
@@ -302,57 +281,54 @@
             overflow-y: auto; /* 수직 스크롤바 추가 */
             overflow-x: hidden; /* 수평 스크롤바 제거 */
         }
-    
+        
         .popup-timeNdate {
             text-align: center; /* 부모 요소에서 중앙 정렬 */
             margin-bottom: 5px;
             margin-top: -30px;
         }
-    
+        
         .popup-time {
             font-size: 0.7em;
             color: gray;
         }
-    
+        
         .popup-date {
         }
-    
+        
         .popup .close-button {
             position: sticky;
-            top: 0px;
+            top: -10px; /* 위쪽 여백 조정 */
+            right: -10px; /* 오른쪽 여백 조정 */
             margin-left: auto;
-            right: 0px;
             background-color: transparent; /* 버튼 배경 제거 */
             border: none; /* 버튼 테두리 제거 */
             cursor: pointer;
             width: 30px; /* 버튼 크기 */
             height: 30px; /* 버튼 크기 */
-            padding: 0;
             display: flex;
-            align-items: center;
-            justify-content: center;
             z-index: 1001; /* 다른 요소 위로 보이도록 z-index 설정 */
         }
-    
+        
             .popup .close-button img {
                 width: 100%; /* 버튼 크기에 맞게 이미지 크기 조정 */
                 height: 100%; /* 버튼 크기에 맞게 이미지 크기 조정 */
                 object-fit: contain; /* 이미지가 왜곡되지 않도록 설정 */
             }
-    
+        
         .popup h2 {
             text-align: center; /* 텍스트를 가운데 정렬 */
             font-size: 1.5em; /* 필요하면 글씨 크기를 조정 */
             margin-bottom: 20px; /* 텍스트 아래에 여백 추가 */
         }
-    
+        
             .popup h2:first-child { /* 팝업창 상단 날짜 */
                 font-size: 1.2em;
                 text-align: center;
                 color: gray;
                 margin-bottom: 10px;
             }
-    
+        
         .overlay {
             position: fixed;
             top: 0;
@@ -363,7 +339,7 @@
             z-index: 999;
             display: none;
         }
-    
+        
         .styled-table {
             width: 100%;
             border-collapse: collapse;
@@ -371,43 +347,44 @@
             font-size: 14px;
             border: 1px solid #ccc; /* 테두리 기본 색상 */
         }
-    
+        
             .styled-table th, .styled-table td {
                 border: 1px solid #ddd; /* 내부 선을 옅은 회색으로 설정 */
                 padding: 8px;
             }
-    
+        
             .styled-table th {
                 background-color: #f4f4f4; /* 헤더 배경색 */
                 font-weight: bold;
             }
-    
+        
             .styled-table .light-row {
                 background-color: #f9f9f9; /* 연한 회색 */
             }
-    
+        
             .styled-table .dark-row {
                 background-color: #ffffff; /* 흰색 */
             }
-    
+        
             .styled-table tr:hover {
                 background-color: #f1f1f1; /* 행 마우스 오버 시 색상 */
             }
-    
+        
         .styled-table-title {
             font-size: 15px; /* 텍스트 크기 */
             text-align: center; /* 텍스트 중앙 정렬 */
             margin-bottom: 5px; /* 아래쪽 여백 추가 */
             color: #2565D0; /* 텍스트 색상 */
+            margin-top: 15px;
         }
-    
+        
         .recent-matches-popup {
             text-align: center; /* 텍스트 중앙 정렬 */
             list-style: none; /* 불릿 포인트 제거 */
             padding: 0;
             margin: 0 auto; /* 수평 중앙 정렬 */
         }
-    
+        
         .recent-matches-popup-head {
             font-size: 15px; /* 텍스트 크기 */
             text-align: center; /* 텍스트 중앙 정렬 */
@@ -415,34 +392,242 @@
             margin-bottom: 1px;
             color: #2565D0; /* 텍스트 색상 */
         }
-    
+        
         .recent-matches-popup li {
             margin: 3px 0; /* 위아래 간격을 3px로 설정 */
             padding: 0; /* 내부 여백 제거 */
             line-height: 1.4; /* 줄 간격 설정 */
         }
-    
+        
         .light-row { /*match랑 matchTotal box에서 사용되는 스타일링*/
             background-color: #f7f7f7; /* 흰색 */
         }
-    
+        
         .dark-row { /*match랑 matchTotal box에서 사용되는 스타일링*/
             background-color: #e8e8e8; /* 옅은 회색 */
         }
+        
+        .match-header {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-top: -10px; 
+            margin-bottom: 3px;
+        }
+        
+        .match-time {
+            color: #6b7280;
+            font-size: 1em;
+            font-family: "Do Hyeon", serif;
+        }
+        
+        .match-link {
+            font-size: 0.9em;
+            color: #2565D0;
+            text-decoration: none;
+        }
+        
+        .match-divider {
+            height: 2px;
+            background: #2565D0;
+            border: none;     
+        }
+        
+        .match-info {
+            margin-top:3px;
+            margin-bottom:-3px;
+            text-align: center;
+            font-size: 1em;
+        }
+        
+        .match-date {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .match-location {            
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: lighter;
+            color: #6b7280;
+            font-size: 1em;
+            font-family: "Do Hyeon", serif;
+        }
+        
+        .match-details {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .team-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            margin-bottom: -15px;
+        }
+        
+        .team-emblem {
+            width: 50px;
+            height: auto;
+        }
+        
+        .match-vs {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+        
+        .opponent-team {
+            font-size: 1.2em;
+            font-family: "Do Hyeon", serif;
+        }
+        
+        .managerPage {
+                position: fixed; /* 화면 기준으로 고정 */
+                bottom: 20px; /* 화면 상단에서 10px */
+                right: 13px; /* 화면 왼쪽에서 10px */
+                width: 25px;
+                height: auto;
+                cursor: pointer;
+                z-index: 1000;
+            }
+        
+            /* 팝업창 기본 스타일 */
+        .mangerPopup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000; /* 다른 요소 위에 표시 */
+        }
+        
+            .mangerPopup.hidden {
+                display: none; /* 숨김 */
+            }
+        
+        .mangerPopup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: popupFadeIn 0.3s ease;
+        }
+        
+        @keyframes mangerPopupFadeIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+        
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .mangerPopup-content h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        
+        .mangerPopup-content input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        
+            .mangerPopup-content input::placeholder {
+                color: gray;
+            }
+        
+        .mangerPopup-content button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #4071e3;
+            color: white;
+            cursor: pointer;
+        }
+        
+            .mangerPopup-content button:hover {
+                background-color: #305ec1;
+            }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        /* 오류 메시지 스타일 */
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 
-    <script src="https://yeosuunited.com/js/commonScript.js?v=1.05"></script>
-    <script src="https://yeosuunited.com/js/matchesRScript.js?v=1.02"></script>
+    <script src="https://yeosuunited.com/js/commonScript.js?v=1.06"></script>
+    <script src="https://yeosuunited.com/js/matchesRScript.js?v=1.03"></script>
 </head>
 <body>
-    <div class="firstHeader">
-        <img id="logo" src="https://github.com/YeosuUnited/DataSite/blob/main/assets/images/homeIcon.png?raw=true" alt="Home Icon" class="logo">
-        <span class="pageTitleText">팀 일정</span>
+    <div class="sponserList">    
+        <img data-image-name="myNormal" alt="마이노멀 로고" class="sponser-image">
+        <img data-image-name="yeosuCity" alt="여수시 로고" class="sponser-image">
     </div>
-    <div class="secondHeader">
-        <a href="playerData.html" class="movePageLeft-button">프로필</a>
-        <span class="nowPage-button">팀 일정</span>
-        <a href="seasonRecord.html" class="movePageRight-button">선수 기록</a>
+    
+    <div class="header">
+        <img data-image-name="Emblem" alt="엠블럼" class="emblem">
+        <!-- 햄버거 메뉴 추가 -->
+        <div class="hamburger-menu" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    
+    <!-- 전체 화면 메뉴 -->
+    <div class="full-menu" id="fullMenu">
+        <div class="menu-header">
+            <img data-image-name="Emblem" alt="엠블럼" class="full-menu-emblem">
+            <span class="close-menu" onclick="toggleMenu()">✕</span>            
+        </div>
+        <ul>
+            <li><a href="index.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Home</a></li>
+            <img data-image-name="setting" alt="설정 이미지" class="managerPage">
+            <li><a style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">News</a></li>
+            <li><a href="https://www.youtube.com/@FC-wf9ev" target="_blank" style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Video</a></li>
+            <li><a href="playerData.html" style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Player</a></li>
+            <li><a href="matchRecord.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Results</a></li>
+            <li><a href="seasonRecord.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Record</a></li>            
+        </ul>
     </div>
     <div class="thirdHeader">
         <button id="recentButton" class="toggleL-button">최근 10경기</button>
@@ -464,6 +649,17 @@
         <button class="close-button">x</button>
         <h2>vs 상대팀이름 풋살</h2>
         <p>팝업 내용입니다.</p>
+    </div>
+    
+    <!-- 팝업창 HTML -->
+    <div id="password-mangerPopup" class="mangerPopup hidden">
+        <div class="mangerPopup-content">
+            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/btn_X.png"
+                 alt="닫기 버튼" class="close-btn">
+            <h3>관리자 페이지로 이동하기 위해 비밀번호를 입력하세요</h3>
+            <input type="password" id="password-input" placeholder="비밀번호">
+            <button id="login-button">로그인</button>
+        </div>
     </div>
 </body>
 </html>
