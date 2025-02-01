@@ -785,4 +785,6 @@ window.onload = async function () {
             imgElement.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
         }
     }
+
+    document.getElementById('loader').style.display = 'none';
 }
