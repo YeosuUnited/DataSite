@@ -541,17 +541,6 @@ document.addEventListener("DOMContentLoaded", function () {
             errorMessage.style.display = 'none';
         }
 
-        const imgElements = document.querySelectorAll('img[data-image-name]');
-        for (const imgElement of imgElements) {
-            const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${imgElement.dataset.imageName}.png`;
-            try {
-                const blobUrl = await getCachedImageUrl(imageUrl);
-                imgElement.src = blobUrl;
-            } catch (error) {
-                imgElement.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-            }
-        }
-
         document.getElementById('loader').style.display = 'none';
     };
 });
