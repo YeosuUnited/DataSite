@@ -134,7 +134,8 @@ function validateCachedData(data) {
         typeof data === 'object' &&
         data.players &&
         data.recordAll &&
-        data.matchesTotal
+        data.matchesTotal&&
+        data.youtubeLink
     );
 }
 
