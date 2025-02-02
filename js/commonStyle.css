@@ -115,7 +115,8 @@
     }
 
     /* 닫기 버튼 (X 버튼) */
-    .close-menu {         
+    .close-menu {      
+        position: absolute; /* 부모(.menu-header)를 기준으로 배치 */
         top:5px;
         margin-left: 26px;
         font-size: 26px;
@@ -124,9 +125,9 @@
     }
 
     .fixed-top-left {
-        position: fixed; /* 화면 기준으로 고정 */
-        bottom: 20px; /* 화면 상단에서 10px */
-        right: 13px; /* 화면 왼쪽에서 10px */
+        position: fixed; 
+        bottom: 20px; 
+        right: 13px; 
         width: 25px;
         height: auto;
         cursor: pointer;
