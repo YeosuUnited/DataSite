@@ -431,6 +431,8 @@ function initManagerPopup() {
 }
 
 function handleLogin() {
+    const passwordInput = document.getElementById('password-input');
+    const errorMessage = document.querySelector('#password-managerPopup .error-message');
     const password = passwordInput.value;
 
     if (password === 'dutndusgkq1990') {
@@ -439,7 +441,6 @@ function handleLogin() {
     } else {
         errorMessage.textContent = '비밀번호가 틀렸습니다.';
         errorMessage.style.display = 'block';
-
         setTimeout(() => {
             errorMessage.style.display = 'none';
         }, 2000);
@@ -447,8 +448,9 @@ function handleLogin() {
 }
 
 function clearPopup() {
-    passwordInput.value = '';
-    errorMessage.style.display = 'none';
+    document.getElementById('password-input').value = '';
+    const errorMessage = document.querySelector('#password-managerPopup .error-message');
+    if(errorMessage) errorMessage.style.display = 'none';
 }
 
 async function loadCommonBody() {
