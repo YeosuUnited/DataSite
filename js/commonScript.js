@@ -426,6 +426,8 @@ function initManagerPopup() {
             handleLogin();
         }
     });
+
+    popup.classList.add('hidden'); // 팝업에 기본적으로 hidden 클래스 추가
 }
 
 function handleLogin() {
