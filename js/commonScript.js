@@ -39,6 +39,7 @@ async function fetchData() {
                 'assets/data/records_allTime.json',
                 'assets/data/matches_total.json',
                 'assets/data/subPlayer_data.json',
+                'assets/data/youtube_link.json',
             ];
 
             // 병렬 요청 수행
@@ -65,6 +66,10 @@ async function fetchData() {
                 subPlayer:
                     responses[3].status === 'fulfilled'
                         ? responses[3].value.content
+                        : {},
+                youtubeLink:
+                    responses[4].status === 'fulfilled'
+                        ? responses[4].value.content
                         : {},
             };
 
