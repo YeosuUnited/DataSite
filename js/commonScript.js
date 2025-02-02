@@ -45,7 +45,7 @@ async function fetchData() {
             // 병렬 요청 수행
             const responses = await Promise.allSettled(
                 files.map((filePath) =>
-                    getGitHubFile('YeosuUnited', 'DataSite', filePath, token)
+                    getGitHubFile('YeosuUnited', 'DataSite', filePath)
                 )
             );
 
