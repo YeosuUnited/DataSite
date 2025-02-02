@@ -175,20 +175,6 @@ function getSortedPlayers(data, key) {
     return sorted;
 }
 
-function toggleMenu() {
-    const menu = document.getElementById('fullMenu');
-    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-}
-
-function toggleMenu() {
-    const menu = document.getElementById('fullMenu');
-    if (menu.style.display === 'flex') {
-        menu.style.display = 'none';
-    } else {
-        menu.style.display = 'flex';
-    }
-}
-
 function updateMatchCards(matchesTotal) {
     const serverTime = new Date(); // 현재 서버 시간
     let upcomingMatch = null;
@@ -295,33 +281,12 @@ function enableDragScroll() {
     });
 }
 
-window.addEventListener("scroll", function () {
-    const header = document.querySelector(".header");
-    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
-    
-    if (window.scrollY > sponserListHeight) {
-        header.style.position = "fixed";
-        header.style.top = "0";
-    } else {
-        header.style.position = "absolute";
-        header.style.top = sponserListHeight + "px";
-    }
-});
-
-window.addEventListener("scroll", function () {
-    const fullMenu = document.querySelector(".full-menu");
-    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
-
-    if (window.scrollY > sponserListHeight) {
-        fullMenu.classList.add("fixed");
-    } else {
-        fullMenu.classList.remove("fixed");
-    }
-});
-
 window.onload = async function () {
     try {
+        // 공통 요소 로드
+        await loadCommonBody();
         await fetchData();
+        initManagerPopup();
 
         const currentYear = new Date().getFullYear();
         const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
@@ -331,66 +296,6 @@ window.onload = async function () {
         enableDragScroll();
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
-    }
-
-    // 팝업 관련 요소 초기화
-    const popup = document.getElementById('password-popup');
-    const closeBtn = document.querySelector('.close-btn');
-    const passwordInput = document.getElementById('password-input');
-    const loginButton = document.getElementById('login-button');
-
-    const errorMessage = document.createElement('div');
-    errorMessage.classList.add('error-message');
-    popup.querySelector('.popup-content').appendChild(errorMessage);
-
-    document.querySelector('.managerPage').addEventListener('click', () => {
-        const isAuthenticated = localStorage.getItem('isAuthenticated');
-        if (isAuthenticated === 'true') {
-            // 이미 인증된 경우 바로 managerMain.html로 이동
-            window.location.href = 'managerMain.html';
-        }
-        popup.classList.remove('hidden');
-    });
-
-    closeBtn.addEventListener('click', () => {
-        popup.classList.add('hidden');
-        clearPopup();
-    });
-
-    popup.addEventListener('click', (e) => {
-        if (e.target.id === 'password-popup') {
-            popup.classList.add('hidden');
-            clearPopup();
-        }
-    });
-
-    loginButton.addEventListener('click', () => handleLogin());
-
-    passwordInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            handleLogin();
-        }
-    });
-
-    function handleLogin() {
-        const password = passwordInput.value;
-
-        if (password === 'dutndusgkq1990') {
-            localStorage.setItem('isAuthenticated', 'true'); // 인증 상태 저장
-            window.location.href = 'managerMain.html';
-        } else {
-            errorMessage.textContent = '비밀번호가 틀렸습니다.';
-            errorMessage.style.display = 'block';
-
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
-            }, 2000);
-        }
-    }
-
-    function clearPopup() {
-        passwordInput.value = '';
-        errorMessage.style.display = 'none';
     }
 
     document.getElementById('loader').style.display = 'none';
