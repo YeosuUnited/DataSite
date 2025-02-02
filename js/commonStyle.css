@@ -115,7 +115,8 @@
     }
 
     /* 닫기 버튼 (X 버튼) */
-    .close-full-menu {      
+    .close-full-menu {
+        margin-right: 20px;
         top:5px;
         margin-left: 26px;
         font-size: 26px;
