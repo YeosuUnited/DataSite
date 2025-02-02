@@ -384,7 +384,7 @@ window.addEventListener("scroll", function () {
     }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+function initManagerPopup() {
     const popup = document.getElementById('password-managerPopup');
     const closeBtn = document.querySelector('.mg-popup-close-btn');
     const passwordInput = document.getElementById('password-input');
