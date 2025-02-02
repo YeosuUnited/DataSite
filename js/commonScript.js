@@ -383,3 +383,68 @@ window.addEventListener("scroll", function () {
         fullMenu.classList.remove("fixed");
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const popup = document.getElementById('password-managerPopup');
+    const closeBtn = document.querySelector('.mg-popup-close-btn');
+    const passwordInput = document.getElementById('password-input');
+    const loginButton = document.getElementById('login-button');
+
+    if (!popup || !closeBtn || !passwordInput || !loginButton) {
+        console.error("🚨 관리자 팝업 관련 요소를 찾을 수 없습니다.");
+        return;
+    }
+
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('error-message');
+    popup.querySelector('.managerPopup-content').appendChild(errorMessage);
+
+    document.querySelector('.managerPage').addEventListener('click', () => {
+        const isAuthenticated = localStorage.getItem('isAuthenticated');
+        if (isAuthenticated === 'true') {
+            window.location.href = 'managerMain.html';
+        }
+        popup.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+        popup.classList.add('hidden');
+        clearPopup();
+    });
+
+    popup.addEventListener('click', (e) => {
+        if (e.target.id === 'password-managerPopup') {
+            popup.classList.add('hidden');
+            clearPopup();
+        }
+    });
+
+    loginButton.addEventListener('click', () => handleLogin());
+
+    passwordInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    });
+
+    function handleLogin() {
+        const password = passwordInput.value;
+
+        if (password === 'dutndusgkq1990') {
+            localStorage.setItem('isAuthenticated', 'true');
+            window.location.href = 'managerMain.html';
+        } else {
+            errorMessage.textContent = '비밀번호가 틀렸습니다.';
+            errorMessage.style.display = 'block';
+
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 2000);
+        }
+    }
+
+    function clearPopup() {
+        passwordInput.value = '';
+        errorMessage.style.display = 'none';
+    }
+});
