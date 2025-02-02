@@ -354,3 +354,8 @@ async function getCachedImageUrl(imageUrl) {
     const blob = await response.blob();
     return URL.createObjectURL(blob);
 }
+
+function toggleMenu() {
+    const menu = document.getElementById('fullMenu');
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
