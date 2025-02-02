@@ -4,168 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>선수 기록 보기</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://yeosuunited.github.io/DataSite/js/commonStyle.css?v=1.05">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
-        
-        .sponserList {
-            display: flex;
-            align-items: center; /* 세로 중앙 정렬 */
-            justify-content: flex-end; /* 우측 정렬 */
-            background-color: black;
-            height: 45px;
-            width: 100%;
-            z-index: 1000;
-        }
-        
-        .sponser-image{
-            margin-right: 6px;
-            margin-top:3px;
-            width: 45px;
-            height: auto;
-        }
-        
-        .sponser-image:last-child {
-            margin-right: 10px; /* 첫 번째 이미지 오른쪽 여백 */
-        }
-        
-        .header {
-            position: fixed; /* 항상 고정 */
-            left: 0;
-            width: 100%;
-            background-color: #16418d;
-            align-items: center; /* 세로 중앙 정렬 */            
-            justify-content: flex-start; /* 좌측 정렬 */
-            height: 60px;
-            display: flex;            
-            z-index: 1000;
-            transition: transform 0.3s ease; /* 부드러운 이동 효과 */
-        }
-        
-        .header.hidden {
-            transform: translateY(-100%); /* 스크롤 올릴 때 헤더 숨기기 */
-        }
-        
-        .emblem {
-            width: auto;
-            height: 52px;
-            margin-left: 10px;
-        }
-        
-        .hamburger-menu {
-            margin-left: 24px;
-            width: 25px;
-            height: 35px;
-            cursor: pointer;
-            z-index: 1500;
-        }
-        
-        .hamburger-menu div {
-            width: 100%;
-            height: 2px;
-            background-color: #d8d8d8;
-            margin: 7px 0;
-            border-radius: 5px;
-        }
-        
-        /* Full-screen 메뉴 스타일 */
-        .full-menu {
-            position: fixed;
-            top: 45px; /* 스폰서 높이만큼 아래에 배치 */
-            left: 0;
-            width: 100%;
-            height: 100%; /* header와 동일한 높이 */
-            background-color: #0A2A47; /* 배경색 변경 */
-            display: none; /* 기본적으로 숨김 */
-            flex-direction: column;
-            align-items: center;
-            justify-content: start;
-            color: white;
-            font-size: 1.2em;
-            z-index: 2000;
-        }
-        
-        .full-menu.fixed {
-            position: fixed; /* 스크롤 시 최상단에 고정 */
-            top: 0;
-        }
-        
-            .full-menu-emblem{
-                height: 56px;
-                width: auto;
-                margin-left: 10px;
-                margin-top: 5px;
-            }
-        
-            /* 메뉴 상단 헤더 */
-            .menu-header {
-                width: 100%;
-                display: flex;
-                align-items: center; /* 세로 중앙 정렬 */            
-                justify-content: flex-start; /* 좌측 정렬 */                
-                position: relative;    
-            }
-        
-            /* 엠블럼 스타일 */
-            .menu-header img {
-                width: 50px;
-                height: auto;
-            }
-        
-            /* 닫기 버튼 (X 버튼) */
-            .close-menu {         
-                top:5px;
-                margin-left: 26px;
-                font-size: 26px;
-                cursor: pointer;
-                color: white;
-            }
-        
-            .fixed-top-left {
-                position: fixed; /* 화면 기준으로 고정 */
-                bottom: 20px; /* 화면 상단에서 10px */
-                right: 13px; /* 화면 왼쪽에서 10px */
-                width: 25px;
-                height: auto;
-                cursor: pointer;
-                z-index: 1000;
-            }
-        
-            /* 메뉴 리스트 */
-            .full-menu ul {
-                list-style: none;
-                padding: 0;
-                width: 100%;
-                text-align: left; /* 글씨 왼쪽 정렬 */
-            }
-        
-            /* 메뉴 항목 스타일 */
-            .full-menu li {
-                width: 100%;
-                padding: 15px 20px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-                transition: background 0.3s;
-            }
-        
-            .full-menu li:hover {
-                background-color: rgba(255, 255, 255, 0.1); /* 마우스 올릴 때 효과 */
-            }
-        
-            /* 메뉴 링크 스타일 */
-            .full-menu a {
-                color: white;
-                text-decoration: none;
-                display: block; /* 클릭 가능 영역 전체 확장 */
-                width: 100%;
-                font-weight: bold;
-            }
-        
         .thirdHeader {
             margin-top: 55px;
             color: white;
@@ -177,7 +17,7 @@
             align-items: center;
             justify-content: space-between;
         }
-        
+
             .toggleL-button, .toggleR-button {
                 background-color: transparent;
                 position: relative;
@@ -187,21 +27,21 @@
                 cursor: pointer;
                 transition: all 0.3s;
             }
-        
+
             .toggleL-button{
                 margin-left:80px;
             }
-        
+
             .toggleR-button{
                 margin-right:80px;
             }
-        
+
                 .toggleL-button.active, .toggleR-button.active {
                     color: black;
                     font-weight: bold;
                     border: none;
                 }        
-        
+
             .toggleL-button.active::after, 
             .toggleR-button.active::after {
                 content: "";
@@ -212,7 +52,7 @@
                 height: 3px; /* 밑줄 두께 */
                 background-color: #16418d; /* 밑줄 색상 (파란색) */
             }
-        
+
         .year-navigation {
             display: flex;
             align-items: center;
@@ -221,18 +61,18 @@
             font-size: 20px;
             font-weight: bold;
         }
-        
+
         .year-navigation.disabled {
             pointer-events: none; /* 클릭 차단 */
             opacity: 0.3; /* 흐리게 표시 */
         }        
-        
+
         .lowerbutton-container {
             display: flex;
             gap: 70px;
             justify-content: center;
         }
-        
+
         .text-button {
             font-size: 16px;
             padding: 10px 5px;
@@ -242,14 +82,14 @@
             color: #000;
             cursor: pointer;            
         }
-        
+
             .text-button.active {
                 background-color: white;
                 color: #2565D0;
                 font-weight: bold;
                 border-bottom: 3px solid #2565D0; /* 밑줄 추가 */
             }
-        
+
         .divider {
             background-color: #eaeaea;
             height: 10px;
@@ -258,9 +98,9 @@
             align-items: center;
             justify-content: space-between;
         }
+
         
-        
-        
+
         .year-arrow {
             display: inline-block; /* 인라인 블록으로 표시 */
             background-color: transparent; /* 배경색 제거 */
@@ -272,56 +112,56 @@
             font-size: 24px; /* 글자 크기 */
             line-height: 1; /* 세로 정렬 간격 최소화 */
         }
-        
+
             .year-arrow:hover {
                 background-color: white;
             }
-        
+
             .year-arrow:disabled {
                 opacity: 0;
                 cursor: not-allowed;
             }
-        
+
         #currentYear {
             color: black;
             font-weight: bold;
             font-size: 24px;
         }
-        
+
         .table-container {
             width: 100%;
             margin: 0;
             display: flex;
             overflow: hidden;
         }
-        
+
         .fixed-column {
             width: 80px;
             border-collapse: collapse;
             background-color: white;
         }
-        
+
             .fixed-column th, .fixed-column td {
                 padding: 10px;
                 text-align: center;
                 border: 1px solid lightgray;
                 background-color: white;
             }
-        
+
         .scrollable-table-container {
             width: 100%; /* 화면 크기에 맞게 너비 설정 */
             border-collapse: collapse;
             background-color: white;
             table-layout: fixed; /* 고정된 레이아웃으로 설정 */
         }
-        
+
         .scrollable-table {
             width: 100%;
             border-collapse: collapse;
             background-color: white;
             min-width: 150px;
         }
-        
+
             .scrollable-table th, .scrollable-table td {
                 width: 25%; /* 1/4 등분 */
                 text-align: center;
@@ -332,7 +172,7 @@
                 border-left: none; /* 세로줄 제거 */
                 border-right: none; /* 세로줄 제거 */
             }
-        
+
             .scrollable-table th {
                 position: sticky;
                 top: 0;
@@ -340,12 +180,12 @@
                 background-color: white;
                 cursor: pointer; /* 클릭 가능한 손 모양 커서 추가 */
             }
-        
+
                 .scrollable-table td.selected, .scrollable-table th.selected {
                     background-color: white;
                     color: #6495ED;
                 }
-        
+
         #sortMenu span:hover {
             background: #f0f0f0;
             display: inline; /* 기존 block을 inline으로 변경하여 빈칸 제거 */
@@ -353,7 +193,7 @@
             margin: 0; /* 여백 제거 */
             line-height: normal; /* 라인 높이 초기화 */
         }
-        
+
         .managerPage {
             position: fixed; /* 화면 기준으로 고정 */
             bottom: 20px; /* 화면 상단에서 10px */
@@ -363,7 +203,7 @@
             cursor: pointer;
             z-index: 1000;
         }
-        
+
             /* 팝업창 기본 스타일 */
         .popup {
             position: fixed;
@@ -377,11 +217,11 @@
             justify-content: center;
             z-index: 2000; /* 다른 요소 위에 표시 */
         }
-        
+
             .popup.hidden {
                 display: none; /* 숨김 */
             }
-        
+
         .popup-content {
             background: white;
             padding: 20px;
@@ -392,24 +232,24 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             animation: popupFadeIn 0.3s ease;
         }
-        
+
         @keyframes popupFadeIn {
             from {
                 transform: scale(0.9);
                 opacity: 0;
             }
-        
+
             to {
                 transform: scale(1);
                 opacity: 1;
             }
         }
-        
+
         .popup-content h3 {
             font-size: 1.2em;
             margin-bottom: 15px;
         }
-        
+
         .popup-content input {
             width: 100%;
             padding: 10px;
@@ -419,11 +259,11 @@
             font-size: 1em;
             box-sizing: border-box;
         }
-        
+
             .popup-content input::placeholder {
                 color: gray;
             }
-        
+
         .popup-content button {
             padding: 10px 20px;
             font-size: 1em;
@@ -433,11 +273,11 @@
             color: white;
             cursor: pointer;
         }
-        
+
             .popup-content button:hover {
                 background-color: #305ec1;
             }
-        
+
         .close-btn {
             position: absolute;
             top: 10px;
@@ -446,7 +286,7 @@
             height: 20px;
             cursor: pointer;
         }
-        
+
         /* 오류 메시지 스타일 */
         .error-message {
             color: red;
@@ -460,50 +300,8 @@
     <script src="https://yeosuunited.com/js/seasonRScript.js?v=1.04"></script>
 </head>
 <body>
-    <div id="loader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; display: flex; align-items: center; justify-content: center;">
-        <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/loading.gif" alt="Loading" style="transform: scale(2.5);">
-    </div>
-    
-    <div class="sponserList">    
-         <a href="https://mynormal.shop/main" target="_blank">
-             <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/myNormal.png" alt="마이노멀 로고" class="sponser-image">
-         </a>
-         <a href="https://www.yeosu.go.kr/" target="_blank">
-             <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/yeosuCity.png" alt="여수시 로고" class="sponser-image">
-         </a>
-     </div>
-    
-    <div class="header">
-        <a href="https:/www.yeosuunited.com" target="_blank">
-            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" alt="엠블럼" class="emblem">
-        </a>
-        <!-- 햄버거 메뉴 추가 -->
-        <div class="hamburger-menu" onclick="toggleMenu()">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-    
-    <!-- 전체 화면 메뉴 -->
-    <div class="full-menu" id="fullMenu">
-        <div class="menu-header">
-            <a href="https:/www.yeosuunited.com" target="_blank">
-                <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" alt="엠블럼" class="full-menu-emblem">
-            </a>
-            <span class="close-menu" onclick="toggleMenu()">✕</span>            
-        </div>
-        <ul>
-            <li><a href="index.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Home</a></li>
-            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/setting.png" alt="설정 이미지" class="managerPage">
-            <li><a style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">News</a></li>
-            <li><a href="https://www.youtube.com/@FC-wf9ev" target="_blank" style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Video</a></li>
-            <li><a href="playerData.html" style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Player</a></li>
-            <li><a href="matchRecord.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Results</a></li>
-            <li><a href="seasonRecord.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Record</a></li>            
-        </ul>
-    </div>
-    
+    <div id="common-container"></div>
+
     <div class="thirdHeader">
         <button id="officialButton" class="toggleL-button">정회원</button>
         <button id="subButton" class="toggleR-button">용병</button>
@@ -543,17 +341,6 @@
         <div class="scrollable-table-container">
             <div id="scrollableTable"></div>
         </div>
-    </div>
-    
-    <!-- 팝업창 HTML -->
-    <div id="password-popup" class="popup hidden">
-        <div class="popup-content">
-            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/btn_X.png"
-                 alt="닫기 버튼" class="close-btn">
-            <h3>관리자 페이지로 이동하기 위해 비밀번호를 입력하세요</h3>
-            <input type="password" id="password-input" placeholder="비밀번호">
-            <button id="login-button">로그인</button>
-        </div>
-    </div>
+    </div>    
 </body>
 </html>
