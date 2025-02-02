@@ -429,25 +429,25 @@ function initManagerPopup() {
 }
 
 function handleLogin() {
-        const password = passwordInput.value;
+    const password = passwordInput.value;
 
-        if (password === 'dutndusgkq1990') {
-            localStorage.setItem('isAuthenticated', 'true');
-            window.location.href = 'managerMain.html';
-        } else {
-            errorMessage.textContent = '비밀번호가 틀렸습니다.';
-            errorMessage.style.display = 'block';
+    if (password === 'dutndusgkq1990') {
+        localStorage.setItem('isAuthenticated', 'true');
+        window.location.href = 'managerMain.html';
+    } else {
+        errorMessage.textContent = '비밀번호가 틀렸습니다.';
+        errorMessage.style.display = 'block';
 
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
-            }, 2000);
-        }
+        setTimeout(() => {
+            errorMessage.style.display = 'none';
+        }, 2000);
     }
+}
 
-    function clearPopup() {
-        passwordInput.value = '';
-        errorMessage.style.display = 'none';
-    }
+function clearPopup() {
+    passwordInput.value = '';
+    errorMessage.style.display = 'none';
+}
 
 async function loadCommonBody() {
     try {
