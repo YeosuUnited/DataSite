@@ -3,170 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>경기 기록 보기</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Dokdo&display=swap" rel="stylesheet">
+    <title>경기 기록</title>
+    <link rel="stylesheet" href="https://yeosuunited.github.io/DataSite/js/commonStyle.css?v=1.04">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
-        
-        .sponserList {
-            display: flex;
-            align-items: center; /* 세로 중앙 정렬 */
-            justify-content: flex-end; /* 우측 정렬 */
-            background-color: black;
-            height: 45px;
-            width: 100%;
-            z-index: 1000;
-        }
-        
-        .sponser-image{
-            margin-right: 6px;
-            margin-top:3px;
-            width: 45px;
-            height: auto;
-        }
-        
-        .sponser-image:last-child {
-            margin-right: 10px; /* 첫 번째 이미지 오른쪽 여백 */
-        }
-        
-        .header {
-            position: fixed; /* 항상 고정 */
-            left: 0;
-            width: 100%;
-            background-color: #16418d;
-            align-items: center; /* 세로 중앙 정렬 */            
-            justify-content: flex-start; /* 좌측 정렬 */
-            height: 60px;
-            display: flex;            
-            z-index: 1000;
-            transition: transform 0.3s ease; /* 부드러운 이동 효과 */
-        }
-        
-        .header.hidden {
-            transform: translateY(-100%); /* 스크롤 올릴 때 헤더 숨기기 */
-        }
-        
-        .emblem {
-            width: auto;
-            height: 52px;
-            margin-left: 10px;
-        }
-        
-        .hamburger-menu {
-            margin-left: 24px;
-            width: 25px;
-            height: 35px;
-            cursor: pointer;
-            z-index: 1500;
-        }
-        
-        .hamburger-menu div {
-            width: 100%;
-            height: 2px;
-            background-color: #d8d8d8;
-            margin: 7px 0;
-            border-radius: 5px;
-        }
-        
-        /* Full-screen 메뉴 스타일 */
-        .full-menu {
-            position: fixed;
-            top: 45px; /* 스폰서 높이만큼 아래에 배치 */
-            left: 0;
-            width: 100%;
-            height: 100%; /* header와 동일한 높이 */
-            background-color: #0A2A47; /* 배경색 변경 */
-            display: none; /* 기본적으로 숨김 */
-            flex-direction: column;
-            align-items: center;
-            justify-content: start;
-            color: white;
-            font-size: 1.2em;
-            z-index: 2000;
-        }
-        
-        .full-menu.fixed {
-            position: fixed; /* 스크롤 시 최상단에 고정 */
-            top: 0;
-        }
-        
-            .full-menu-emblem{
-                height: 56px;
-                width: auto;
-                margin-left: 10px;
-                margin-top: 5px;
-            }
-        
-            /* 메뉴 상단 헤더 */
-            .menu-header {
-                width: 100%;
-                display: flex;
-                align-items: center; /* 세로 중앙 정렬 */            
-                justify-content: flex-start; /* 좌측 정렬 */                
-                position: relative;    
-            }
-        
-            /* 엠블럼 스타일 */
-            .menu-header img {
-                width: 50px;
-                height: auto;
-            }
-        
-            /* 닫기 버튼 (X 버튼) */
-            .close-menu {         
-                top:5px;
-                margin-left: 26px;
-                font-size: 26px;
-                cursor: pointer;
-                color: white;
-            }
-        
-            .fixed-top-left {
-                position: fixed; /* 화면 기준으로 고정 */
-                bottom: 20px; /* 화면 상단에서 10px */
-                right: 13px; /* 화면 왼쪽에서 10px */
-                width: 25px;
-                height: auto;
-                cursor: pointer;
-                z-index: 1000;
-            }
-        
-            /* 메뉴 리스트 */
-            .full-menu ul {
-                list-style: none;
-                padding: 0;
-                width: 100%;
-                text-align: left; /* 글씨 왼쪽 정렬 */
-            }
-        
-            /* 메뉴 항목 스타일 */
-            .full-menu li {
-                width: 100%;
-                padding: 15px 20px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-                transition: background 0.3s;
-            }
-        
-            .full-menu li:hover {
-                background-color: rgba(255, 255, 255, 0.1); /* 마우스 올릴 때 효과 */
-            }
-        
-            /* 메뉴 링크 스타일 */
-            .full-menu a {
-                color: white;
-                text-decoration: none;
-                display: block; /* 클릭 가능 영역 전체 확장 */
-                width: 100%;
-                font-weight: bold;
-            }
-        
         .thirdHeader {
             height: 50px;
             width: 100%;
@@ -175,9 +14,10 @@
             display: flex;
             align-items: center;
             margin-top: 60px;
+            margin-bottom: 15px;
             justify-content: space-between;
         }
-        
+
         .toggleL-button, .toggleR-button, .toggle-button {
             background-color: transparent;
             position: relative;
@@ -187,21 +27,21 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        
+
         .toggleL-button {
             margin-left: 40px;
         }
-        
+
         .toggleR-button {
             margin-right: 40px;
         }
-        
+
             .toggleL-button.active, .toggleR-button.active, .toggle-button.active {
                 color: black;
                 font-weight: bold;
                 border: none;
             }
-        
+
         .toggleL-button.active::after, 
         .toggleR-button.active::after, 
         .toggle-button.active::after {
@@ -213,30 +53,24 @@
             height: 3px; /* 밑줄 두께 */
             background-color: #16418d; /* 밑줄 색상 (파란색) */
         }
-        
+
         .matches-defaultBox {
             display: flex;
             flex-direction: column;
             padding: 0 10px;
         }
-        
+
         .match-box {
             width: 100%;
-            background-color: #f1f1f1;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
             position: relative;
             display: grid;
             grid-template-columns: 1fr;
             align-items: start;
-            margin-top: 5px; /* 위 간격 */
-            margin-bottom: 5px; /* 아래 간격 */
         }
             
         #allMatchesContainer {
         }
-        
+
         .matchtotal-box {
             width: 100%;
             background-color: #f1f1f1;
@@ -250,20 +84,20 @@
             margin-top: 5px; /* 위 간격 */
             margin-bottom: 5px; /* 아래 간격 */
         }
-        
+
         .popup-button {
             position: absolute;
-            right: 10px;
-            color: black;
+            right: 0;
+            color: #3f3f3f;
             padding: 5px 10px;
             cursor: pointer;
             background: none; /* 배경 제거 */
-            font-size: 1.1em;
+            font-size: 0.9em;
             border: none; /* 테두리 제거 */
             outline: none; /* 포커스 테두리 제거 */
             font-family: "Do Hyeon", serif;
         }
-        
+
         .popup {
             position: fixed;
             top: 50%;
@@ -281,21 +115,21 @@
             overflow-y: auto; /* 수직 스크롤바 추가 */
             overflow-x: hidden; /* 수평 스크롤바 제거 */
         }
-        
+
         .popup-timeNdate {
             text-align: center; /* 부모 요소에서 중앙 정렬 */
             margin-bottom: 5px;
             margin-top: -30px;
         }
-        
+
         .popup-time {
             font-size: 0.7em;
             color: gray;
         }
-        
+
         .popup-date {
         }
-        
+
         .popup .close-button {
             position: sticky;
             top: -10px; /* 위쪽 여백 조정 */
@@ -309,26 +143,26 @@
             display: flex;
             z-index: 1001; /* 다른 요소 위로 보이도록 z-index 설정 */
         }
-        
+
             .popup .close-button img {
                 width: 100%; /* 버튼 크기에 맞게 이미지 크기 조정 */
                 height: 100%; /* 버튼 크기에 맞게 이미지 크기 조정 */
                 object-fit: contain; /* 이미지가 왜곡되지 않도록 설정 */
             }
-        
+
         .popup h2 {
             text-align: center; /* 텍스트를 가운데 정렬 */
             font-size: 1.5em; /* 필요하면 글씨 크기를 조정 */
             margin-bottom: 20px; /* 텍스트 아래에 여백 추가 */
         }
-        
+
             .popup h2:first-child { /* 팝업창 상단 날짜 */
                 font-size: 1.2em;
                 text-align: center;
                 color: gray;
                 margin-bottom: 10px;
             }
-        
+
         .overlay {
             position: fixed;
             top: 0;
@@ -339,7 +173,7 @@
             z-index: 999;
             display: none;
         }
-        
+
         .styled-table {
             width: 100%;
             border-collapse: collapse;
@@ -347,29 +181,29 @@
             font-size: 14px;
             border: 1px solid #ccc; /* 테두리 기본 색상 */
         }
-        
+
             .styled-table th, .styled-table td {
                 border: 1px solid #ddd; /* 내부 선을 옅은 회색으로 설정 */
                 padding: 8px;
             }
-        
+
             .styled-table th {
                 background-color: #f4f4f4; /* 헤더 배경색 */
                 font-weight: bold;
             }
-        
+
             .styled-table .light-row {
                 background-color: #f9f9f9; /* 연한 회색 */
             }
-        
+
             .styled-table .dark-row {
                 background-color: #ffffff; /* 흰색 */
             }
-        
+
             .styled-table tr:hover {
                 background-color: #f1f1f1; /* 행 마우스 오버 시 색상 */
             }
-        
+
         .styled-table-title {
             font-size: 15px; /* 텍스트 크기 */
             text-align: center; /* 텍스트 중앙 정렬 */
@@ -377,14 +211,14 @@
             color: #2565D0; /* 텍스트 색상 */
             margin-top: 15px;
         }
-        
+
         .recent-matches-popup {
             text-align: center; /* 텍스트 중앙 정렬 */
             list-style: none; /* 불릿 포인트 제거 */
             padding: 0;
             margin: 0 auto; /* 수평 중앙 정렬 */
         }
-        
+
         .recent-matches-popup-head {
             font-size: 15px; /* 텍스트 크기 */
             text-align: center; /* 텍스트 중앙 정렬 */
@@ -392,256 +226,122 @@
             margin-bottom: 1px;
             color: #2565D0; /* 텍스트 색상 */
         }
-        
+
         .recent-matches-popup li {
             margin: 3px 0; /* 위아래 간격을 3px로 설정 */
             padding: 0; /* 내부 여백 제거 */
             line-height: 1.4; /* 줄 간격 설정 */
         }
-        
+
         .light-row { /*match랑 matchTotal box에서 사용되는 스타일링*/
             background-color: #f7f7f7; /* 흰색 */
         }
-        
+
         .dark-row { /*match랑 matchTotal box에서 사용되는 스타일링*/
             background-color: #e8e8e8; /* 옅은 회색 */
         }
-        
+
         .match-header {
             display: flex;
             align-items: center;
-            font-weight: bold;
-            color: #1e3a8a;
-            margin-top: -10px; 
-            margin-bottom: 3px;
+            margin-bottom: 3px;          
+            position: relative;
+            margin-top: 13px;
         }
-        
+
         .match-time {
             color: #6b7280;
-            font-size: 1em;
-            font-family: "Do Hyeon", serif;
+            font-size: 0em;
+             font-family: "Do Hyeon", serif;
         }
-        
+
         .match-link {
             font-size: 0.9em;
             color: #2565D0;
             text-decoration: none;
         }
-        
+
         .match-divider {
-            height: 2px;
+            height: 1px;
             background: #2565D0;
             border: none;     
+            opacity: 0.5; /* 투명도 50% */
         }
-        
+
         .match-info {
             margin-top:3px;
-            margin-bottom: 6px;
+            margin-bottom: 40px;
             text-align: center;
-            font-size: 1em;
+            font-size: 1em;            
         }
-        
+
         .match-date {
-            font-weight: bold;
-            font-size: 1.3em;
+            font-size: 1em;
+            color: black;
             font-family: "Do Hyeon", serif;
         }
-        
-        .match-location {            
+
+        .match-type{
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            font-weight: lighter;
-            color: #6b7280;
-            font-size: 1em;
-            font-family: "Do Hyeon", serif;
+            text-align: center;
+            font-family: "Jua", serif;
         }
-        
+
+        .match-location {            
+            position: absolute;
+            right: 0; /* 부모 요소의 맨 오른쪽 정렬 */
+            font-size: 0.95em;
+            color: #6b7280;
+            font-family: "Jua", serif;
+        }
+
         .match-details {
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-top: 8px;
+            margin-bottom: 10px;
             gap: 10px;
         }
-        
+
         .team-box {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 80px;
-            height: 80px;
+            width: 110px;
+            height: 60px;
             background: white;
-            border-radius: 10px;
-            border: 1px solid #d1d5db;
             margin-bottom: -15px;
         }
-        
+
         .team-emblem {
-            width: 50px;
+            width: 35px;
             height: auto;
         }
-        
+
         .match-vs {
             font-size: 1.5em;
             font-weight: bold;
-            color: #1e3a8a;
+            color: #275ab3;
             font-family: "Do Hyeon", serif;
+            transform: translateY(7px); /* 원하는 값으로 조정 */
         }
-        
+
         .opponent-team {
             font-size: 1.2em;
             font-family: "Do Hyeon", serif;
-        }
-        
-        .managerPage {
-                position: fixed; /* 화면 기준으로 고정 */
-                bottom: 20px; /* 화면 상단에서 10px */
-                right: 13px; /* 화면 왼쪽에서 10px */
-                width: 25px;
-                height: auto;
-                cursor: pointer;
-                z-index: 1000;
-            }
-        
-            /* 팝업창 기본 스타일 */
-        .mangerPopup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000; /* 다른 요소 위에 표시 */
-        }
-        
-            .mangerPopup.hidden {
-                display: none; /* 숨김 */
-            }
-        
-        .mangerPopup-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            position: relative;
-            width: 300px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            animation: popupFadeIn 0.3s ease;
-        }
-        
-        @keyframes mangerPopupFadeIn {
-            from {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-        
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        
-        .mangerPopup-content h3 {
-            font-size: 1.2em;
-            margin-bottom: 15px;
-        }
-        
-        .mangerPopup-content input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            box-sizing: border-box;
-        }
-        
-            .mangerPopup-content input::placeholder {
-                color: gray;
-            }
-        
-        .mangerPopup-content button {
-            padding: 10px 20px;
-            font-size: 1em;
-            border: none;
-            border-radius: 5px;
-            background-color: #4071e3;
-            color: white;
-            cursor: pointer;
-        }
-        
-            .mangerPopup-content button:hover {
-                background-color: #305ec1;
-            }
-        
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-        
-        /* 오류 메시지 스타일 */
-        .error-message {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 10px;
-            display: none;
-        }
+
+        }        
     </style>
 
-    <script src="https://yeosuunited.com/js/commonScript.js?v=1.07"></script>
-    <script src="https://yeosuunited.com/js/matchesRScript.js?v=1.08"></script>
+    <script src="https://yeosuunited.com/js/commonScript.js?v=1.08"></script>
+    <script src="https://yeosuunited.com/js/matchesRScript.js?v=1.09"></script>
 </head>
 <body>
-    <div id="loader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; display: flex; align-items: center; justify-content: center;">
-        <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/loading.gif" alt="Loading" style="transform: scale(2.5);">
-    </div>
-    
-    <div class="sponserList">    
-         <a href="https://mynormal.shop/main" target="_blank">
-             <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/myNormal.png" alt="마이노멀 로고" class="sponser-image">
-         </a>
-         <a href="https://www.yeosu.go.kr/" target="_blank">
-             <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/yeosuCity.png" alt="여수시 로고" class="sponser-image">
-         </a>
-     </div>
-    
-    <div class="header">
-        <a href="https:/www.yeosuunited.com" target="_blank">
-            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" alt="엠블럼" class="emblem">
-        </a>
-        <!-- 햄버거 메뉴 추가 -->
-        <div class="hamburger-menu" onclick="toggleMenu()">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-    
-    <!-- 전체 화면 메뉴 -->
-    <div class="full-menu" id="fullMenu">
-        <div class="menu-header">
-            <a href="https:/www.yeosuunited.com" target="_blank">
-                <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" alt="엠블럼" class="full-menu-emblem">
-            </a>
-            <span class="close-menu" onclick="toggleMenu()">✕</span>            
-        </div>
-        <ul>
-            <li><a href="index.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Home</a></li>
-            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/setting.png" alt="설정 이미지" class="managerPage">
-            <li><a style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">News</a></li>
-            <li><a href="https://www.youtube.com/@FC-wf9ev" target="_blank" style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Video</a></li>
-            <li><a href="playerData.html" style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Player</a></li>
-            <li><a href="matchRecord.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Results</a></li>
-            <li><a href="seasonRecord.html"style="letter-spacing: 1px; font-family: 'Bebas Neue', sans-serif;">Record</a></li>            
-        </ul>
-    </div>
+    <div id="common-container"></div>
+
     <div class="thirdHeader">
         <button id="recentButton" class="toggleL-button">최근 10경기</button>
         <button id="allButton" class="toggle-button">모든 경기</button>
@@ -662,17 +362,6 @@
         <button class="close-button">x</button>
         <h2>vs 상대팀이름 풋살</h2>
         <p>팝업 내용입니다.</p>
-    </div>
-    
-    <!-- 팝업창 HTML -->
-    <div id="password-mangerPopup" class="mangerPopup hidden">
-        <div class="mangerPopup-content">
-            <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/btn_X.png"
-                 alt="닫기 버튼" class="close-btn">
-            <h3>관리자 페이지로 이동하기 위해 비밀번호를 입력하세요</h3>
-            <input type="password" id="password-input" placeholder="비밀번호">
-            <button id="login-button">로그인</button>
-        </div>
     </div>
 </body>
 </html>
