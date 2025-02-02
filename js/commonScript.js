@@ -447,7 +447,7 @@ function initManagerPopup() {
         passwordInput.value = '';
         errorMessage.style.display = 'none';
     }
-});
+}
 
 async function loadCommonBody() {
     try {
