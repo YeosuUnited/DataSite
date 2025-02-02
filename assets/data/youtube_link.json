@@ -1,12 +1,12 @@
 {
-  "reco": {    
+  "reco": [    
     "https://youtu.be/fz92-w2jNcM?si=XVkTmcAlBnfRlLb0",
     "https://youtu.be/8ZPGxmzJpJE?si=h3KU77VoSB9WX5l-",
     "https://youtu.be/HFCm55y7Zeo?si=-BI6ao7zwcccCDjt",
     "https://youtu.be/MgA5v5wWUgY?si=WCB577RO28uIOc_1",
     "https://youtu.be/GHfZuOme_A4?si=Dp4b6c8uRpW6Cv2l"
-  },
-  "our": {
+  ],
+  "our": [
     "https://youtu.be/f6NzBGHUETU?si=8VWLdaSDSmKt6wTg",
     "https://youtu.be/0BFCfMR9vKc?si=o00B3EzQal9mC_yI",
     "https://youtu.be/NvtRiG-4bIQ?si=XSi6PPDceggCCfDU",
@@ -61,5 +61,5 @@
     "https://youtu.be/dtiHiTbLKrg?si=FhOUe-794KqhxvS9",
     "https://youtu.be/ienAGt_M6gw?si=T87V4YTmCMWBECcy",
     "https://youtu.be/GtX4VpzJDIU?si=GV-xcU93x1PU1k2k"
-  }
+  ]
 }
