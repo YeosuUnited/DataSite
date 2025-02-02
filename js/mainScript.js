@@ -284,8 +284,8 @@ function enableDragScroll() {
 window.onload = async function () {
     try {
         // 공통 요소 로드
-        await loadCommonBody();
         await fetchData();
+        await loadCommonBody();
         initManagerPopup();
 
         const currentYear = new Date().getFullYear();
