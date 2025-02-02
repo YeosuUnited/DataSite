@@ -231,11 +231,13 @@ async function addMissingSubYearData(year, subPlayer, subSha) {
 
 // 공통 유틸리티 함수: GitHub 파일 가져오기
 async function getGitHubFile(repoOwner, repoName, filePath) {
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-        headers: {
-            Authorization: `token ${token}`,
-        },
-    });
+    //const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+    //    headers: {
+    //        Authorization: `token ${token}`,
+    //    },
+    //});
+
+    const response = await fetch(`https://raw.githubusercontent.com/YeosuUnited/DataSite/main/${filePath}`);
 
     if (response.ok) {
         const fileData = await response.json();
