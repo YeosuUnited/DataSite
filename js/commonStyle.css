@@ -173,7 +173,7 @@
     }
 
     /* 팝업창 기본 스타일 */
-.mangerPopup {
+.managerPopup {
     position: fixed;
     top: 0;
     left: 0;
@@ -186,11 +186,11 @@
     z-index: 2000; /* 다른 요소 위에 표시 */
 }
 
-    .mangerPopup.hidden {
+    .managerPopup.hidden {
         display: none; /* 숨김 */
     }
 
-.mangerPopup-content {
+.managerPopup-content {
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -201,7 +201,7 @@
     animation: popupFadeIn 0.3s ease;
 }
 
-@keyframes mangerPopupFadeIn {
+@keyframes managerPopupFadeIn {
     from {
         transform: scale(0.9);
         opacity: 0;
@@ -213,12 +213,12 @@
     }
 }
 
-.mangerPopup-content h3 {
+.managerPopup-content h3 {
     font-size: 1.2em;
     margin-bottom: 15px;
 }
 
-.mangerPopup-content input {
+.managerPopup-content input {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -228,11 +228,11 @@
     box-sizing: border-box;
 }
 
-    .mangerPopup-content input::placeholder {
+    .managerPopup-content input::placeholder {
         color: gray;
     }
 
-.mangerPopup-content button {
+.managerPopup-content button {
     padding: 10px 20px;
     font-size: 1em;
     border: none;
@@ -242,7 +242,7 @@
     cursor: pointer;
 }
 
-    .mangerPopup-content button:hover {
+    .managerPopup-content button:hover {
         background-color: #305ec1;
     }
 
