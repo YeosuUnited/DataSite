@@ -283,10 +283,10 @@ function enableDragScroll() {
 
 window.onload = async function () {
     try {
-        // 공통 요소 로드
-        await fetchData();
-        await loadCommonBody();
+        // 공통 요소 로드        
+        await loadCommonBody();        
         initManagerPopup();
+        await fetchData();        
 
         const currentYear = new Date().getFullYear();
         const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
