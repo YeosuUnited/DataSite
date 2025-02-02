@@ -426,8 +426,9 @@ function initManagerPopup() {
             handleLogin();
         }
     });
+}
 
-    function handleLogin() {
+function handleLogin() {
         const password = passwordInput.value;
 
         if (password === 'dutndusgkq1990') {
@@ -447,7 +448,6 @@ function initManagerPopup() {
         passwordInput.value = '';
         errorMessage.style.display = 'none';
     }
-}
 
 async function loadCommonBody() {
     try {
