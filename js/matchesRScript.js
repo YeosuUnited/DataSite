@@ -14,8 +14,6 @@ function renderRecentMatches(matches) {
 
     sortedMatches.forEach(([key, match], index) => {
         const matchBox = document.createElement('div');
-        const rowClass = index % 2 === 0 ? 'light-row' : 'dark-row'; // 번갈아 색상 적용
-        matchBox.className = `match-box ${rowClass}`;
 
         const [date, time] = key.split('_');
         const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
@@ -31,19 +29,18 @@ function renderRecentMatches(matches) {
 
         let opponentHTML = `<span class="opponent-team">${match.opponent}</span>`;
         if (match.type === "2") {
-            opponentHTML = ""; // 자체전이면 상대팀 삭제
+            opponentHTML = `<img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" class="team-emblem">`; // 자체전이면 우리팀 엠블럼 표시
         }
 
         matchBox.innerHTML = `
-                                <div class="match-header">
-                                    <span class="match-type" style="color: black; font-size: 0.9em">${typeText}</span>                                            
-                                    <span class="match-location">${match.location || ""}</span>
-                                    <button class="popup-button" data-key="${key}">상세정보</button>
-                                </div>
                                 <hr class="match-divider">
-                                <div class="match-info">
+                                <div class="match-header">                                                                                        
                                     <span class="match-date">${formattedDate}</span>
                                     <span class="match-time">${formattedTime}</span>                                            
+                                    <span class="match-type">${typeText}</span>
+                                    <span class="match-location">${match.location || ""}</span>                                            
+                                </div>                                        
+                                <div class="match-info">
                                     <div class="match-details">
                                         <div class="team-box">
                                             <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" class="team-emblem">
@@ -51,6 +48,7 @@ function renderRecentMatches(matches) {
                                         ${scoreHTML}
                                         <div class="team-box">${opponentHTML}</div>
                                     </div>
+                                    <button class="popup-button" data-key="${key}">상세정보 ></button>
                                 </div>
                             `;
         matchContainer.appendChild(matchBox);
@@ -68,8 +66,6 @@ function renderTotalMatches(matches) {
 
     Object.entries(matches).forEach(([key, match], index) => {
         const matchBox = document.createElement('div');
-        const rowClass = index % 2 === 0 ? 'light-row' : 'dark-row'; // 번갈아 색상 적용
-        matchBox.className = `matchtotal-box ${rowClass}`;
 
         const [date, time] = key.split('_');
         const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
@@ -85,19 +81,18 @@ function renderTotalMatches(matches) {
 
         let opponentHTML = `<span class="opponent-team">${match.opponent}</span>`;
         if (match.type === "2") {
-            opponentHTML = ""; // 자체전이면 상대팀 삭제
+            opponentHTML = `<img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" class="team-emblem">`; // 자체전이면 우리팀 엠블럼 표시
         }
 
         matchBox.innerHTML = `
-                                <div class="match-header">
-                                    <span class="match-type" style="color: black; font-size: 0.9em">${typeText}</span>                                            
-                                    <span class="match-location">${match.location || ""}</span>
-                                    <button class="popup-button" data-key="${key}">상세정보</button>
-                                </div>
                                 <hr class="match-divider">
-                                <div class="match-info">
+                                <div class="match-header">                                                                                        
                                     <span class="match-date">${formattedDate}</span>
-                                    <span class="match-time">${formattedTime}</span>
+                                    <span class="match-time">${formattedTime}</span>                                            
+                                    <span class="match-type">${typeText}</span>
+                                    <span class="match-location">${match.location || ""}</span>                                            
+                                </div>                                        
+                                <div class="match-info">
                                     <div class="match-details">
                                         <div class="team-box">
                                             <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" class="team-emblem">
@@ -105,6 +100,7 @@ function renderTotalMatches(matches) {
                                         ${scoreHTML}
                                         <div class="team-box">${opponentHTML}</div>
                                     </div>
+                                    <button class="popup-button" data-key="${key}">상세정보 ></button>
                                 </div>
                             `;
         matchContainer.appendChild(matchBox);
@@ -381,44 +377,6 @@ function convertTo24HourFormat(timeStr) {
 
     // HH:mm 형식으로 반환
     return `${String(formattedHours).padStart(2, '0')}:00`;
-}
-
-window.addEventListener("scroll", function () {
-    const header = document.querySelector(".header");
-    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
-
-    if (window.scrollY > sponserListHeight) {
-        header.style.position = "fixed";
-        header.style.top = "0";
-    } else {
-        header.style.position = "absolute";
-        header.style.top = sponserListHeight + "px";
-    }
-});
-
-window.addEventListener("scroll", function () {
-    const fullMenu = document.querySelector(".full-menu");
-    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
-
-    if (window.scrollY > sponserListHeight) {
-        fullMenu.classList.add("fixed");
-    } else {
-        fullMenu.classList.remove("fixed");
-    }
-});
-
-function toggleMenu() {
-    const menu = document.getElementById('fullMenu');
-    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-}
-
-function toggleMenu() {
-    const menu = document.getElementById('fullMenu');
-    if (menu.style.display === 'flex') {
-        menu.style.display = 'none';
-    } else {
-        menu.style.display = 'flex';
-    }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -708,72 +666,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 window.onload = async function () {
     try {
+        // 공통 요소 로드
+        await loadCommonBody();
         await fetchData();
+        initManagerPopup();
 
         renderRecentMatches(cachedData.matchesTotal);                
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
-    }
-
-    //관리자 관련
-    const popup = document.getElementById('password-mangerPopup');
-    const closeBtn = document.querySelector('.close-btn');
-    const passwordInput = document.getElementById('password-input');
-    const loginButton = document.getElementById('login-button');
-
-    const errorMessage = document.createElement('div');
-    errorMessage.classList.add('error-message');
-    popup.querySelector('.mangerPopup-content').appendChild(errorMessage);
-
-    document.querySelector('.managerPage').addEventListener('click', () => {
-        const isAuthenticated = localStorage.getItem('isAuthenticated');
-        if (isAuthenticated === 'true') {
-            // 이미 인증된 경우 바로 managerMain.html로 이동
-            window.location.href = 'managerMain.html';
-        }
-        popup.classList.remove('hidden');
-    });
-
-    closeBtn.addEventListener('click', () => {
-        popup.classList.add('hidden');
-        clearPopup();
-    });
-
-    popup.addEventListener('click', (e) => {
-        if (e.target.id === 'password-mangerPopup') {
-            popup.classList.add('hidden');
-            clearPopup();
-        }
-    });
-
-    loginButton.addEventListener('click', () => handleLogin());
-
-    passwordInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            handleLogin();
-        }
-    });
-
-    function handleLogin() {
-        const password = passwordInput.value;
-
-        if (password === 'dutndusgkq1990') {
-            localStorage.setItem('isAuthenticated', 'true'); // 인증 상태 저장
-            window.location.href = 'managerMain.html';
-        } else {
-            errorMessage.textContent = '비밀번호가 틀렸습니다.';
-            errorMessage.style.display = 'block';
-
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
-            }, 2000);
-        }
-    }
-
-    function clearPopup() {
-        passwordInput.value = '';
-        errorMessage.style.display = 'none';
-    }
+    }            
 
     document.getElementById('loader').style.display = 'none';
 }
