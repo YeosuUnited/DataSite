@@ -115,8 +115,7 @@
     }
 
     /* 닫기 버튼 (X 버튼) */
-    .close-menu {      
-        position: absolute; /* 부모(.menu-header)를 기준으로 배치 */
+    .close-full-menu {      
         top:5px;
         margin-left: 26px;
         font-size: 26px;
