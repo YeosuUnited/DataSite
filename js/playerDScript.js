@@ -149,9 +149,6 @@ function displayPlayerDetails(player) {
 
     playerDetailsElement.style.display = 'block'; // 상세 정보 표시
     document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
-    let thirdBar = document.getElementById('thirdBar');
-    thirdBar.style.visibility = 'visible';
-    thirdBar.style.opacity = '0';
 
     history.pushState(
                         { page: "playerDetails", number: player.number },
@@ -340,137 +337,35 @@ function displayPlayerRecord(player) {
     playerDetailsElement.insertAdjacentHTML('beforeend', recordHtml);
 }
 
-window.addEventListener("scroll", function () {
-    const header = document.querySelector(".header");
-    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
-    
-    if (window.scrollY > sponserListHeight) {
-        header.style.position = "fixed";
-        header.style.top = "0";
-    } else {
-        header.style.position = "absolute";
-        header.style.top = sponserListHeight + "px";
-    }
-});
-
-window.addEventListener("scroll", function () {
-    const fullMenu = document.querySelector(".full-menu");
-    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
-
-    if (window.scrollY > sponserListHeight) {
-        fullMenu.classList.add("fixed");
-    } else {
-        fullMenu.classList.remove("fixed");
-    }
-});
-
-function toggleMenu() {
-    const menu = document.getElementById('fullMenu');
-    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-}
-
-function toggleMenu() {
-    const menu = document.getElementById('fullMenu');
-    if (menu.style.display === 'flex') {
-        menu.style.display = 'none';
-    } else {
-        menu.style.display = 'flex';
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInputElement = document.getElementById('search-input');
-    const searchResultsElement = document.getElementById('search-results');
+document.addEventListener("DOMContentLoaded", function () {            
     const playerDetailsElement = document.getElementById('player-details');
 
     // 뒤로가기 버튼 감지하여 선수 목록으로 돌아가기
     window.addEventListener("popstate", function (event) {
-        if (!event.state || event.state.page === "playerList") {
+        if (event.state && event.state.page === "playerDetails") {
+            document.getElementById('player-details').style.display = 'block';
+            document.getElementById('player-list').style.display = 'none';
+        } else {
             document.getElementById('player-details').style.display = 'none';
             document.getElementById('player-list').style.display = 'block';
-            let thirdBar = document.getElementById('thirdBar');
-            thirdBar.style.visibility = 'visible';
-            thirdBar.style.opacity = '1';
+           history.replaceState({ page: "playerList" }, "", location.pathname);
         }
     });
 
-    // 화면 빈 여백 클릭 시 검색 결과 닫기
-    document.addEventListener('click', function (event) {
-        // 클릭한 요소가 검색 결과나 검색창이 아닌 경우 닫기
-        if (!searchResultsElement.contains(event.target) && event.target !== searchInputElement) {
-            searchResultsElement.style.display = 'none';
-        }
-    });
-
-    // 검색 입력 이벤트 리스너
-    searchInputElement.addEventListener('input', function () {
-        const searchTerm = searchInputElement.value.trim().toLowerCase();
-        if (cachedData && cachedData.players) {
-            const filteredPlayers = Object.entries(cachedData.players)
-                .filter(([_, player]) => player.name.toLowerCase().includes(searchTerm))
-                .slice(0, 5);
-            if (filteredPlayers.length > 0) {
-                let resultsHtml = '<ul class="search-results-list">';
-                filteredPlayers.forEach(([_, player]) => {
-                    resultsHtml += `
-            <li class="search-results-item" data-player-name="${player.name}">
-                ${player.name}     no.${player.number}
-            </li>`;
-                });
-                resultsHtml += '</ul>';
-                searchResultsElement.innerHTML = resultsHtml;
-                searchResultsElement.style.display = 'block';
-            } else {
-                searchResultsElement.innerHTML = "";
-                searchResultsElement.style.display = 'none';
-            }
-        } else {
-            searchResultsElement.innerHTML = "";
-            searchResultsElement.style.display = 'none';
-        }
-    });
-
-
-    // 검색 결과 클릭 이벤트 리스너 수정
-    searchResultsElement.addEventListener('click', function (event) {
-        const target = event.target.closest('li'); // 클릭한 LI 요소 찾기
-        if (target) {
-            const playerName = target.getAttribute('data-player-name');
-            if (cachedData && cachedData.players) {
-                const player = Object.values(cachedData.players).find(p => p.name === playerName);
-                if (player) {
-                    displayPlayerDetails(player);
-                    displayPlayerRecord(player);
-                    searchResultsElement.innerHTML = ""; // 검색 결과 닫기
-                    searchResultsElement.style.display = 'none'; // 검색 결과 숨기기
-                    searchInputElement.value = ""; // 검색창 비우기
-                }
-            }
-        }
-    });
-
-    // 검색창에서 Enter 키 입력 시 선수 세부 정보 표시
-    searchInputElement.addEventListener('keypress', function (event) {
-        if (event.key === 'Enter') {
-            const searchTerm = searchInputElement.value;
-            if (cachedData && cachedData.players) {
-                const player = Object.values(cachedData.players).find(p => p.name.includes(searchTerm));
-                if (player) {
-                    displayPlayerDetails(player);
-                    displayPlayerRecord(player);
-                    searchResultsElement.innerHTML = ""; // 검색 결과 닫기
-                    searchResultsElement.style.display = 'none'; // 검색 결과 숨기기
-                    searchInputElement.value = ""; // 검색창 비우기
-                } else {
-                    alert('선수를 찾을 수 없습니다.');
-                }
-            }
+    window.addEventListener("hashchange", function () {
+        if (!location.hash.includes("player")) {
+            document.getElementById('player-details').style.display = 'none';
+            document.getElementById('player-list').style.display = 'block';
+            history.replaceState({ page: "playerList" }, "", location.pathname);
         }
     });
 
     window.onload = async function () {
         try {
+            // 공통 요소 로드
             await fetchData();
+            await loadCommonBody();
+            initManagerPopup();
 
             renderPlayerList();
         } catch (error) {
@@ -479,66 +374,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // 페이지 새로고침 시 기본 목록 표시
         if (!history.state) {
             history.replaceState({ page: "playerList" }, "", location.pathname);
-        }
-
-        //관리자 관련
-        const popup = document.getElementById('password-popup');
-        const closeBtn = document.querySelector('.close-btn');
-        const passwordInput = document.getElementById('password-input');
-        const loginButton = document.getElementById('login-button');
-
-        const errorMessage = document.createElement('div');
-        errorMessage.classList.add('error-message');
-        popup.querySelector('.popup-content').appendChild(errorMessage);
-
-        document.querySelector('.managerPage').addEventListener('click', () => {
-            const isAuthenticated = localStorage.getItem('isAuthenticated');
-            if (isAuthenticated === 'true') {
-                // 이미 인증된 경우 바로 managerMain.html로 이동
-                window.location.href = 'managerMain.html';
-            }
-            popup.classList.remove('hidden');
-        });
-
-        closeBtn.addEventListener('click', () => {
-            popup.classList.add('hidden');
-            clearPopup();
-        });
-
-        popup.addEventListener('click', (e) => {
-            if (e.target.id === 'password-popup') {
-                popup.classList.add('hidden');
-                clearPopup();
-            }
-        });
-
-        loginButton.addEventListener('click', () => handleLogin());
-
-        passwordInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                handleLogin();
-            }
-        });
-
-        function handleLogin() {
-            const password = passwordInput.value;
-
-            if (password === 'dutndusgkq1990') {
-                localStorage.setItem('isAuthenticated', 'true'); // 인증 상태 저장
-                window.location.href = 'managerMain.html';
-            } else {
-                errorMessage.textContent = '비밀번호가 틀렸습니다.';
-                errorMessage.style.display = 'block';
-
-                setTimeout(() => {
-                    errorMessage.style.display = 'none';
-                }, 2000);
-            }
-        }
-
-        function clearPopup() {
-            passwordInput.value = '';
-            errorMessage.style.display = 'none';
         }
 
         document.getElementById('loader').style.display = 'none';
