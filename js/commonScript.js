@@ -448,3 +448,21 @@ document.addEventListener("DOMContentLoaded", () => {
         errorMessage.style.display = 'none';
     }
 });
+
+async function loadCommonBody() {
+    try {
+        const version = new Date().getTime(); // 캐싱 방지용 타임스탬프 추가
+        const response = await fetch(`https://raw.githubusercontent.com/YeosuUnited/DataSite/main/js/commonBody.html?v=${version}`);
+        if (!response.ok) throw new Error("공통 요소 로드 실패");
+        
+        const html = await response.text();
+        const commonContainer = document.getElementById('common-container');
+        if (commonContainer) {
+            commonContainer.innerHTML = html;
+        } else {
+            console.error("🚨 'common-container' 요소를 찾을 수 없습니다.");
+        }
+    } catch (error) {
+        console.error('공통 요소를 불러오는 데 실패했습니다:', error);
+    }
+}
