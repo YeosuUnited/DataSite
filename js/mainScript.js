@@ -290,6 +290,11 @@ window.onload = async function () {
 
         console.log(cachedData);
 
+        const debugDiv = document.createElement('div');
+        debugDiv.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; color: red; font-size: 30px; z-index: 9999; overflow: auto; padding: 20px;";
+        debugDiv.textContent = JSON.stringify(cachedData, null, 2);
+        document.body.appendChild(debugDiv);
+        
         const currentYear = new Date().getFullYear();
         const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
         createCards(cachedData.players, thisYearRecords);
