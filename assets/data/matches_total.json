@@ -1,6 +1,21 @@
 {
+  "match_00095": {
+    "date": "2025-02-08T10:00:00",
+    "type": "1",
+    "opponent": "GP",
+    "players": [
+    ],
+    "location": "중대부고풋살장",
+    "comment": "",
+    "subP": [
+    ],
+    "score": {
+      "us": 0,
+      "them": 0
+    }
+  },
   "match_00094": {
-    "date": "2025-02-01T01:00:00.000Z",
+    "date": "2025-02-01T10:00:00",
     "type": "1",
     "opponent": "fc아트마",
     "players": [
