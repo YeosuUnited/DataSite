@@ -246,8 +246,7 @@ async function getGitHubFile(repoOwner, repoName, filePath) {
     //} else {
     //    console.warn(`파일을 찾을 수 없습니다: ${filePath}`);
     //    return { sha: null, content: {} };
-    //}
-    
+    //}    
     const response = await fetch(`https://raw.githubusercontent.com/YeosuUnited/DataSite/main/${filePath}`);
 
     if (response.ok) {
@@ -331,59 +330,67 @@ async function loadPlayerImage(player) {
     return img;
 }
 
-// 페이지 상단이나 초기화 시 실행 (전역에 추가)
-function debugLog(message) {
-  let debugDiv = document.getElementById("debug-container");
-  if (!debugDiv) {
-    debugDiv = document.createElement("div");
-    debugDiv.id = "debug-container";
-    debugDiv.style.cssText = "position: fixed; bottom: 0; left: 0; width: 100%; max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.8); color: #fff; font-size: 14px; z-index: 10000; padding: 10px;";
-    document.body.appendChild(debugDiv);
-  }
-  const p = document.createElement("div");
-  p.textContent = message;
-  debugDiv.appendChild(p);
-}
-
-function loadPlayerProfileImage(player) {
+async function loadPlayerProfileImage(player) {
     const img = document.createElement('img');
     const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_P.png`;
 
-    caches.open('my-image-cache').then(cache => {
-        cache.match(imageUrl).then(response => {
-            if (response) return response.blob();
-            return fetch(imageUrl).then(networkResponse => {
+    if ('caches' in window) {
+        try {
+            const cache = await caches.open('my-image-cache');
+            let response = await cache.match(imageUrl);
+            let blob;
+            if (response) {
+                blob = await response.blob();
+            } else {
+                const networkResponse = await fetch(imageUrl);
+                blob = await networkResponse.blob();
                 cache.put(imageUrl, networkResponse.clone());
-                return networkResponse.blob();
-            });
-        }).then(blob => {
-            const objectURL = URL.createObjectURL(blob);
-            img.src = objectURL;
-        }).catch(() => {
+            }
+            img.src = URL.createObjectURL(blob);
+        } catch (error) {
             img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-        });
-    });
+        }
+    } else {
+        try {
+            const networkResponse = await fetch(imageUrl);
+            const blob = await networkResponse.blob();
+            img.src = URL.createObjectURL(blob);
+        } catch (error) {
+            img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+        }
+    }
     return img;
 }
 
-function loadPlayerCardImage(player) {
+async function loadPlayerCardImage(player) {
     const img = document.createElement('img');
     const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/card/${player.number || 'default'}_C_.png`;
 
-    caches.open('my-image-cache').then(cache => {
-        cache.match(imageUrl).then(response => {
-            if (response) return response.blob();
-            return fetch(imageUrl).then(networkResponse => {
+    if ('caches' in window) {
+        try {
+            const cache = await caches.open('my-image-cache');
+            let response = await cache.match(imageUrl);
+            let blob;
+            if (response) {
+                blob = await response.blob();
+            } else {
+                const networkResponse = await fetch(imageUrl);
+                blob = await networkResponse.blob();
                 cache.put(imageUrl, networkResponse.clone());
-                return networkResponse.blob();
-            });
-        }).then(blob => {
-            const objectURL = URL.createObjectURL(blob);
-            img.src = objectURL;
-        }).catch(() => {
+            }
+            img.src = URL.createObjectURL(blob);
+        } catch (error) {
             img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
-        });
-    });
+        }
+    } else {
+        try {
+            const networkResponse = await fetch(imageUrl);
+            const blob = await networkResponse.blob();
+            img.src = URL.createObjectURL(blob);
+        } catch (error) {
+            img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
+        }
+    }
     return img;
 }
 
