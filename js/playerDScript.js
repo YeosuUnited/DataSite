@@ -12,7 +12,7 @@ function classifyPosition(position) {
 }
 
 // (예) 데이터 로딩(fetchData)이 끝난 후, 로드가 완료되면 호출할 함수를 하나 추가합니다.
-function renderPlayerList() {
+async function renderPlayerList() {
     const container = document.createElement('div');
     container.id = 'player-list';
 
@@ -38,40 +38,41 @@ function renderPlayerList() {
     };
 
     // 포지션별 섹션 생성
-    Object.keys(positionMapping).forEach(position => {
+    // 포지션별 섹션 생성
+    for (const position of Object.keys(positionMapping)) {
         // 섹션 생성
         const section = document.createElement('div');
         section.className = 'position-section';
-
+    
         const titleWrapper = document.createElement('div');
         titleWrapper.className = 'position-title-wrapper';
-
+    
         // 큰 타이틀 (GK, DF, MF, FW)
         const title = document.createElement('span');                
         title.className = 'position-title';
         title.textContent = position;
-
+    
         // 작은 설명 (Goal Keeper 등)
         const subtitle = document.createElement('span');
         subtitle.className = 'position-subtitle';
         subtitle.textContent = positionMapping[position];
-
+    
         // 타이틀과 설명을 묶음
         titleWrapper.appendChild(title);
         titleWrapper.appendChild(subtitle);
-
+    
         section.appendChild(titleWrapper);
-
+    
         const playerList = document.createElement('div');
         playerList.className = 'player-position-list';
         // 해당 포지션 선수 카드 생성
-        Object.entries(cachedData.players).forEach(([number, player]) => {
+        for (const [number, player] of Object.entries(cachedData.players)) {
             // 포지션 분류
             const playerPosition = classifyPosition(player.posi || "");
             if (playerPosition === position) {
                 const card = document.createElement('div');
                 card.className = 'player-card';
-
+    
                 // 클릭 이벤트 추가
                 card.addEventListener('click', function () {
                     if (cachedData && cachedData.players) {
@@ -88,62 +89,59 @@ function renderPlayerList() {
                         console.error('Cached data or players not available');
                     }
                 });
-
-                const playerImage = loadPlayerCardImage(player) || document.createElement('img');
+    
+                // loadPlayerCardImage를 await로 처리
+                const playerImage = await loadPlayerCardImage(player) || document.createElement('img');
                 playerImage.classList.add('player-list-Img');
                 card.appendChild(playerImage);
-
+    
                 const playerText = document.createElement('div');
                 playerText.className = 'player-text';
-
+    
                 // 이름과 뱃지를 감쌀 div 생성
                 const nameGroup = document.createElement('div');
                 nameGroup.className = 'name-group';
-
+    
                 const playerName = document.createElement('div');
                 playerName.className = 'player-name';
                 playerName.textContent = player.name;
-
+    
                 const playerInfo = document.createElement('div');
                 playerInfo.className = 'player-info';
                 playerInfo.textContent = `${player.number}`;
-
+    
                 // role이 captain인 경우
                 if (player.role && player.role === "captain") {
                     const captainBadge = document.createElement('div');
-                    captainBadge.textContent = "C"; // "C" 글자 추가
-                    captainBadge.classList.add('captain-badge'); // 클래스 추가
-
+                    captainBadge.textContent = "C";
+                    captainBadge.classList.add('captain-badge');
                     nameGroup.appendChild(playerName);
                     nameGroup.appendChild(captainBadge);
-                }
-                else if(player.role && player.role === "vice-captain"){
+                } else if (player.role && player.role === "vice-captain") {
                     const captainBadge = document.createElement('div');
-                    captainBadge.textContent = "VC"; // "C" 글자 추가
-                    captainBadge.classList.add('viceCaptain-badge'); // 클래스 추가
-
+                    captainBadge.textContent = "VC";
+                    captainBadge.classList.add('viceCaptain-badge');
                     nameGroup.appendChild(playerName);
                     nameGroup.appendChild(captainBadge);
-                }
-                else{
+                } else {
                     nameGroup.appendChild(playerName);
                 }
-                    
-                // 텍스트를 묶어 추가
+    
                 playerText.appendChild(playerInfo);
                 playerText.appendChild(nameGroup);
                 card.appendChild(playerText);
-
+    
                 playerList.appendChild(card);
             }
-        });
-
+        }
+    
         section.appendChild(playerList);
         container.appendChild(section);
-    });
+    }
 }
 
-function displayPlayerDetails(player) {
+async function displayPlayerDetails(player) {
+    document.getElementById('loader').style.display = 'flex';
     const playerDetailsElement = document.getElementById('player-details');
     playerDetailsElement.innerHTML = ''; // 기존 내용 초기화
 
@@ -151,14 +149,14 @@ function displayPlayerDetails(player) {
     document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
 
     history.pushState(
-                        { page: "playerDetails", number: player.number },
-                        "", 
-                        "#player" + player.number
-                    );
+        { page: "playerDetails", number: player.number },
+        "", 
+        "#player" + player.number
+    );
 
     const imageContainer = document.createElement('div');
     imageContainer.classList.add('profileImg-container');
-    const profileImg = loadPlayerProfileImage(player) || document.createElement('img'); // null 방지
+    const profileImg = await loadPlayerProfileImage(player) || document.createElement('img');
     profileImg.classList.add('player-info-photo');            
     imageContainer.appendChild(profileImg);
 
@@ -245,6 +243,7 @@ function displayPlayerDetails(player) {
     const divider = document.createElement('div');
     divider.classList.add('divider');
     playerDetailsElement.appendChild(divider);            
+    document.getElementById('loader').style.display = 'none';
 }
 
 function formatBirthdate(birthdate) {
@@ -367,7 +366,7 @@ document.addEventListener("DOMContentLoaded", function () {
             await loadCommonBody();
             initManagerPopup();
 
-            renderPlayerList();
+            await renderPlayerList();
         } catch (error) {
             console.error('초기화 중 오류 발생:', error);
         }
