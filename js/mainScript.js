@@ -281,14 +281,18 @@ function enableDragScroll() {
     });
 }
 
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 window.onload = async function () {
     try {
-        // 공통 요소 로드
         await loadCommonBody();
+        // commonBody 삽입 후 DOM 재구성을 위해 약간 지연 (예: 100ms)
+        await delay(100);
         await fetchData();
+        await delay(100);
         initManagerPopup();
-
-        console.log(cachedData);
 
         const currentYear = new Date().getFullYear();
         const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
@@ -298,7 +302,7 @@ window.onload = async function () {
         enableDragScroll();
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
+    } finally {
+        document.getElementById('loader').style.display = 'none';
     }
-
-    document.getElementById('loader').style.display = 'none';
 };
