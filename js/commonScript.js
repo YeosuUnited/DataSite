@@ -497,13 +497,8 @@ function redirectToExternalBrowser() {
     const isMessengerApp = /KAKAOTALK|Line|FBAN|FBAV|Instagram|Telegram/i.test(userAgent);
 
     if (isMessengerApp) {
-        // ✅ 먼저 현재 창에서 외부 브라우저로 이동
+        // ✅ 현재 창에서 강제 외부 브라우저로 이동 (팝업 차단 우회)
         window.location.href = url;
-
-        // ✅ 500ms 후 새 창에서도 시도 (팝업 차단 우회)
-        setTimeout(() => {
-            window.open(url, "_blank");
-        }, 500);
     }
 }
 
