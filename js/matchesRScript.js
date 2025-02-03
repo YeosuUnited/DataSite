@@ -1,5 +1,5 @@
 function renderRecentMatches(matches) {
-    const matchContainer = document.getElementById('recentMatchesContainer');
+    const matchContainer = document.getElementById('recentMatches-list');
     matchContainer.innerHTML = '';
 
     if (!matches || Object.keys(matches).length === 0) {
@@ -14,6 +14,7 @@ function renderRecentMatches(matches) {
 
     sortedMatches.forEach(([key, match], index) => {
         const matchBox = document.createElement('div');
+        matchBox.classList.add('match-box'); // 이 줄 추가
 
         const [date, time] = key.split('_');
         const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
@@ -21,7 +22,7 @@ function renderRecentMatches(matches) {
 
         const typeLabels = { "0": "축구", "1": "풋살", "2": "자체전" };
         const typeText = typeLabels[match.type] || "기타";
-                        
+                
         let scoreHTML = `<span class="match-vs">VS</span>`;
         if (match.type === "0") {
             scoreHTML = `<span class="match-vs">${match.score.us} : ${match.score.them}</span>`;
@@ -56,7 +57,7 @@ function renderRecentMatches(matches) {
 }
 
 function renderTotalMatches(matches) {
-    const matchContainer = document.getElementById('allMatchesContainer');
+    const matchContainer = document.getElementById('totalMatches-list');
     matchContainer.innerHTML = '';
 
     if (!matches || Object.keys(matches).length === 0) {
@@ -66,6 +67,7 @@ function renderTotalMatches(matches) {
 
     Object.entries(matches).forEach(([key, match], index) => {
         const matchBox = document.createElement('div');
+        matchBox.classList.add('matchtotal-box'); // 이 줄 추가
 
         const [date, time] = key.split('_');
         const formattedDate = new Date(match.date).toLocaleDateString('ko-KR');
@@ -73,7 +75,7 @@ function renderTotalMatches(matches) {
 
         const typeLabels = { "0": "축구", "1": "풋살", "2": "자체전" };
         const typeText = typeLabels[match.type] || "기타";
-                        
+                
         let scoreHTML = `<span class="match-vs">VS</span>`;
         if (match.type === "0") {
             scoreHTML = `<span class="match-vs">${match.score.us} : ${match.score.them}</span>`;
@@ -194,7 +196,7 @@ function renderPopup(matchData, teamName) {
     // 테이블 생성
     let playersTable = `<h3 class="styled-table-title">참여 선수 기록</h3>
                                 <table class="styled-table" border="0" cellspacing="0" cellpadding="5">
-`;
+                        `;
 
     // 테이블 헤더
     if (matchData.type === "0") {
@@ -379,129 +381,245 @@ function convertTo24HourFormat(timeStr) {
     return `${String(formattedHours).padStart(2, '0')}:00`;
 }
 
+function renderYearSelection() {
+    let selectYearDiv = document.getElementById('select-year');
+    if (!selectYearDiv) {
+        selectYearDiv = document.createElement('div');
+        selectYearDiv.id = 'select-year';
+        // 드래그 스크롤용 스타일 + 스크롤바 숨기기
+        selectYearDiv.style.overflowX = 'auto';
+        selectYearDiv.style.whiteSpace = 'nowrap';
+        // IE, Edge용 스크롤바 숨기기
+        selectYearDiv.style.msOverflowStyle = 'none';
+        // Firefox용
+        selectYearDiv.style.scrollbarWidth = 'none';
+        selectYearDiv.style.borderBottom = '1px solid #275AB3';
+        // .list-type 바로 아래에 삽입 (위치 필요에 따라 조정)
+        const listTypeDiv = document.querySelector('.list-type');
+        listTypeDiv.parentNode.insertBefore(selectYearDiv, listTypeDiv.nextSibling);
+    } else {
+        // 이미 존재하면 강제로 보이게 함
+        selectYearDiv.style.display = "block";
+        selectYearDiv.innerHTML = '';
+    }
+
+    // cachedData.matchesTotal의 모든 날짜를 순회하여 년도 집합 생성
+    const yearsSet = new Set();
+    Object.values(cachedData.matchesTotal).forEach(match => {
+        if (match.date) {
+            const year = new Date(match.date).getFullYear();
+            yearsSet.add(year);
+        }
+    });
+    // 내림차순 정렬 (최근 년도부터)
+    const yearsArray = Array.from(yearsSet).sort((a, b) => b - a);
+
+    // '전체' 버튼 추가
+    const allBtn = document.createElement('button');
+    allBtn.textContent = '전체';
+    allBtn.className = 'year-button active'; // 기본 active
+    allBtn.style.marginRight = '10px';
+    allBtn.addEventListener('click', function() {
+        // active 버튼 전환
+        document.querySelectorAll('.year-button').forEach(btn => btn.classList.remove('active'));
+        allBtn.classList.add('active');
+        // 전체 경기 데이터를 다시 렌더링
+        renderTotalMatches(cachedData.matchesTotal);
+    });
+    selectYearDiv.appendChild(allBtn);
+
+    // 각 년도 버튼 추가
+    yearsArray.forEach(year => {
+        const btn = document.createElement('button');
+        btn.textContent = year;
+        btn.className = 'year-button';
+        btn.style.marginRight = '10px';
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.year-button').forEach(btn => btn.classList.remove('active'));
+            btn.classList.add('active');
+            // 해당 년도에 해당하는 경기만 필터링
+            const filteredMatches = Object.entries(cachedData.matchesTotal).reduce((acc, [key, match]) => {
+                const matchYear = new Date(match.date).getFullYear();
+                if (matchYear === year) {
+                    acc[key] = match;
+                }
+                return acc;
+            }, {});
+            renderTotalMatches(filteredMatches);
+        });
+        selectYearDiv.appendChild(btn);
+    });
+
+    // 드래그 스크롤 활성화
+    enableDragScroll(selectYearDiv);
+}
+
+function enableDragScroll(container) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+  
+    container.addEventListener('mousedown', (e) => {
+        isDown = true;
+        container.classList.add('active'); // 필요 시 active 스타일 추가
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+    });
+  
+    container.addEventListener('mouseleave', () => {
+        isDown = false;
+        container.classList.remove('active');
+    });
+  
+    container.addEventListener('mouseup', () => {
+        isDown = false;
+        container.classList.remove('active');
+    });
+  
+    container.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 2; // 스크롤 속도 조절
+        container.scrollLeft = scrollLeft - walk;
+    });
+  
+    // 터치 이벤트도 추가 (모바일 지원)
+    container.addEventListener('touchstart', (e) => {
+        isDown = true;
+        startX = e.touches[0].pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+    });
+  
+    container.addEventListener('touchend', () => {
+        isDown = false;
+    });
+  
+    container.addEventListener('touchmove', (e) => {
+        if (!isDown) return;
+        const x = e.touches[0].pageX - container.offsetLeft;
+        const walk = (x - startX) * 2;
+        container.scrollLeft = scrollLeft - walk;
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const recentButton = document.getElementById('recentButton');
     const allButton = document.getElementById('allButton');
-    const searchButton = document.getElementById('searchButton'); // 검색 버튼 추가
-    const searchContainer = document.getElementById('searchContainer');
-    const searchInput = document.getElementById('searchInput');
+    const searchInput = document.querySelector(".search-container input");
     const searchResults = document.getElementById('searchResults');
-    
+    const recentMatchesList = document.getElementById('recentMatches-list');
+    const totalMatchesList = document.getElementById('totalMatches-list');
 
-    function toggleButton(clickedButton, ...otherButtons) {
-        clickedButton.classList.add('active');
-        otherButtons.forEach(btn => btn.classList.remove('active'));
-    }
+    // 기본: 최근 10경기 버튼 active
+    recentButton.classList.add("active");
+    allButton.classList.remove("active");
+    recentMatchesList.style.display = "block";
+    totalMatchesList.style.display = "none";
 
-    // 초기 UI 설정 (최근 10경기 표시, 모든 경기 숨기기)
-    function initializeUI() {
-        document.getElementById('recentMatchesContainer').style.display = 'block'; // 보이기
-        document.getElementById('allMatchesContainer').style.display = 'none'; // 숨기기
-        document.getElementById('searchContainer').style.display = 'none';
-        document.getElementById('searchInput').style.display = 'none';
-        document.getElementById('searchResults').style.display = 'none';
-        recentButton.classList.add('active'); // "최근 10경기" 버튼 활성화
-        fetchData(); // 데이터 로드
-    }
-
-    recentButton.addEventListener('click', function () {
-        toggleButton(recentButton, allButton, searchButton);
-        if (cachedData && cachedData.matchesTotal) {
-            document.getElementById('recentMatchesContainer').style.display = 'block'; // 보이기
-            document.getElementById('allMatchesContainer').style.display = 'none'; // 숨기기
-            document.getElementById('searchContainer').style.display = 'none';
-            document.getElementById('searchInput').style.display = 'none';
-            document.getElementById('searchResults').style.display = 'none';
-            document.getElementById('teamHistoryContainer').style.display = 'none'; // 숨기기
-            renderRecentMatches(cachedData.matchesTotal); // renderRecentMatches 실행
+    recentButton.addEventListener("click", () => {
+        recentButton.classList.add("active");
+        allButton.classList.remove("active");
+        recentMatchesList.style.display = "block";
+        totalMatchesList.style.display = "none";
+        searchResults.style.display = "none";
+        // select-year 영역 숨김
+        const selectYear = document.getElementById('select-year');
+        if (selectYear) {
+            selectYear.style.display = "none";
+        }
+    });
+    allButton.addEventListener("click", () => {
+        allButton.classList.add("active");
+        recentButton.classList.remove("active");
+        recentMatchesList.style.display = "none";
+        totalMatchesList.style.display = "block";
+        searchResults.style.display = "none";
+        // 전체 경기 모드에서는 select-year 영역 보이기
+        const selectYear = document.getElementById('select-year');
+        if (selectYear) {
+             selectYear.style.display = "block";
+        } else {
+             renderYearSelection();
         }
     });
 
-    allButton.addEventListener('click', function () {
-        toggleButton(allButton, recentButton, searchButton);
-        if (cachedData && cachedData.matchesTotal) {
-            document.getElementById('recentMatchesContainer').style.display = 'none'; // 숨기기
-            document.getElementById('allMatchesContainer').style.display = 'block'; // 보이기
-            document.getElementById('searchContainer').style.display = 'none';
-            document.getElementById('searchInput').style.display = 'none';
-            document.getElementById('searchResults').style.display = 'none';
-            document.getElementById('teamHistoryContainer').style.display = 'none'; // 숨기기
-            renderTotalMatches(cachedData.matchesTotal); // renderTotalMatches 실행
-        }
-    });
+    searchInput.addEventListener("input", function() {
+        const query = this.value.trim().toLowerCase();
+        const searchList = document.getElementById('searchResults');
+        // select-year 영역
+        let selectYear = document.getElementById('select-year');
 
-    searchButton.addEventListener('click', function () {
-        toggleButton(searchButton, recentButton, allButton);
-        document.getElementById('searchContainer').style.display = 'block';
-        document.getElementById('searchInput').style.display = 'block';
-        document.getElementById('searchResults').style.display = 'block';
-        document.getElementById('teamHistoryContainer').style.display = 'block'; // 숨기기
-        document.getElementById('recentMatchesContainer').style.display = 'none'; // 보이기
-        document.getElementById('allMatchesContainer').style.display = 'none'; // 숨기기
-    });
-
-    recentButton.classList.add('active');
-
-    // 검색 버튼 클릭 시
-    searchButton.addEventListener('click', function () {
-        toggleButton(searchButton, recentButton, allButton);
-        document.getElementById('recentMatchesContainer').style.display = 'none';
-        document.getElementById('allMatchesContainer').style.display = 'none';
-        searchContainer.style.display = 'block';
-    });
-
-    // 검색 입력 이벤트
-    searchInput.addEventListener('input', function () {
-        const query = searchInput.value.trim().toLowerCase(); // 소문자로 변환
         if (!query) {
-            searchResults.innerHTML = ''; // 검색 결과 초기화
+            // 검색어 없으면 검색 결과 숨김
+            searchList.style.display = "none";
+            // active 상태에 따라 리스트 보이기
+            if (recentButton.classList.contains("active")) {
+                recentMatchesList.style.display = "block";
+                totalMatchesList.style.display = "none";
+                if (selectYear) {
+                    selectYear.style.display = "none";
+                }
+            } else {
+                recentMatchesList.style.display = "none";
+                totalMatchesList.style.display = "block";
+                // 전체 경기 모드: select-year 영역 보이도록 처리
+                if (selectYear) {
+                    selectYear.style.display = "block";
+                } else {
+                    renderYearSelection();
+                }
+            }
             return;
         }
 
-        // 검색 로직: 중복 제거한 결과 반환
+        // 검색어가 있으면 기존 리스트와 select-year 영역 숨기고, 검색 결과 표시
+        recentMatchesList.style.display = "none";
+        totalMatchesList.style.display = "none";
+        if (selectYear) {
+            selectYear.style.display = "none";
+        }
+        searchList.style.display = "block";
+
+        // 중복 제거한 결과 반환 (최대 제한 없음)
         const results = Array.from(
             new Map(
                 Object.entries(cachedData.matchesTotal)
                     .filter(([key, match]) => match.opponent && match.opponent.toLowerCase().includes(query))
-                    .map(([key, match]) => [match.opponent, { key, opponent: match.opponent }]) // Map으로 중복 제거
+                    .map(([key, match]) => [match.opponent, { key, opponent: match.opponent }])
             ).values()
-        ).slice(0, 5); // 최대 5개
+        );
 
-        // 결과를 표시
-        searchResults.innerHTML = results.length
+        searchList.innerHTML = results.length
             ? results.map(result => `
-                                                <div style="
-                                                    padding: 5px 0px;
-                                                    border: 2px solid #ddd;
-                                                    border-radius: 5px;
-                                                    margin-bottom: 5px;
-                                                    cursor: pointer;
-                                                    width: 90%;
-                                                    max-width: 800px;
-                                                    text-align: center;
-                                                    margin: 0 auto;"
-                                                    data-key="${result.key}">
-                                                    ${result.opponent}
-                                                </div>
-                                            `).join('')
+                <div style="
+                    padding: 5px 0;
+                    border: 2px solid #ddd;
+                    border-radius: 5px;
+                    margin-bottom: 5px;
+                    cursor: pointer;
+                    width: 100%;
+                    text-align: left;"
+                    data-key="${result.key}">
+                    ${result.opponent}
+                </div>
+            `).join('')
             : `<div style="
-                                                    padding: 5px 10px;
-                                                    color: gray;
-                                                    text-align: center;">검색 결과가 없습니다.</div>`;
-
+                    padding: 5px 10px;
+                    color: gray;
+                    text-align: center;">
+                    검색 결과가 없습니다.
+               </div>`;
     });
 
-    // 검색 결과 클릭 이벤트
+    // 검색 결과 클릭 이벤트 처리
     searchResults.addEventListener('click', function (event) {
         if (event.target && event.target.tagName === 'DIV') {
-            const selectedTeam = event.target.innerText.trim(); // 선택한 팀 이름
-            const selectedKey = event.target.dataset.key; // 경기 키 가져오기
-
-            if (selectedTeam === '검색 결과가 없습니다.') return; // 클릭 방지
-            searchInput.value = selectedTeam; // 검색창에 선택된 팀 이름 표시
-            searchResults.innerHTML = ''; // 검색 결과 숨기기
-
-            // 팀 히스토리 표시
+            const selectedTeam = event.target.innerText.trim();
+            const selectedKey = event.target.dataset.key;
+            if (selectedTeam === '검색 결과가 없습니다.') return;
+            searchInput.value = selectedTeam;
+            searchResults.innerHTML = '';
             showTeamHistory(selectedTeam);
         }
     });
@@ -509,14 +627,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // 검색창에서 Enter 키 이벤트 처리
     searchInput.addEventListener('keypress', function (event) {
         if (event.key === 'Enter') {
-            event.preventDefault(); // 기본 엔터 동작 방지 (폼 제출 등)
+            event.preventDefault();
             const query = searchInput.value.trim().toLowerCase();
             if (!query) {
                 searchResults.innerHTML = '<div style="color: gray; text-align: center;">검색어를 입력해주세요.</div>';
                 return;
             }
-
-            // 상대 팀 검색 및 결과 표시
             const results = Array.from(
                 new Set(
                     Object.values(cachedData.matchesTotal)
@@ -524,59 +640,50 @@ document.addEventListener("DOMContentLoaded", function () {
                         .map(match => match.opponent)
                 )
             );
-
             if (results.length === 1) {
-                // 결과가 하나일 때
-                searchResults.innerHTML = ''; // 검색 결과 숨기기
-                searchInput.value = results[0]; // 검색창에 첫 번째 결과 표시
-                showTeamHistory(results[0]); // 해당 팀 히스토리 불러오기
+                searchResults.innerHTML = '';
+                searchInput.value = results[0];
+                showTeamHistory(results[0]);
             } else if (results.length > 1) {
                 searchResults.innerHTML = results
                     .map(opponent => `
-                    <div style="
-                        padding: 5px 0px;
-                        border: 2px solid #ddd;
-                        border-radius: 5px;
-                        margin-bottom: 5px;
-                        cursor: pointer;
-                        width: 90%;
-                        max-width: 800px;
-                        text-align: center;
-                        margin: 0 auto;">${opponent}</div>
-                `).join('');
+                        <div style="
+                            padding: 5px 0;
+                            border: 2px solid #ddd;
+                            border-radius: 5px;
+                            margin-bottom: 5px;
+                            cursor: pointer;
+                            width: 100%;
+                            text-align: left;"
+                        >${opponent}</div>
+                    `).join('');
             } else {
                 searchResults.innerHTML = '<div style="color: gray; text-align: center;">검색 결과가 없습니다.</div>';
             }
         }
     });
 
-    // 최근 10경기에서 "기록" 버튼 처리
-    document.getElementById('recentMatchesContainer').addEventListener('click', function (event) {
+    // 기타 기존 이벤트 리스너들...
+    document.getElementById('recentMatches-list').addEventListener('click', function (event) {
         if (event.target.classList.contains('popup-button')) {
             handleMatchButtonClick(event.target.closest('.match-box'));
         }
     });
 
-    // 모든 경기에서 "기록" 버튼 처리
-    document.getElementById('allMatchesContainer').addEventListener('click', function (event) {
+    document.getElementById('totalMatches-list').addEventListener('click', function (event) {
         if (event.target.classList.contains('popup-button')) {
             handleMatchButtonClick(event.target.closest('.matchtotal-box'));
         }
     });
 
-    // 공통 처리 로직
     function handleMatchButtonClick(matchBox) {
         if (!matchBox) return;
-
         const matchDate = matchBox.querySelector('.match-date').innerText.trim();
         const matchTimeRaw = matchBox.querySelector('.match-time').innerText.trim();
         const matchTime = convertTo24HourFormat(matchTimeRaw);
-
         const matchKey = matchBox.querySelector('.popup-button').dataset.key;
-
         const matchData = cachedData.matchesTotal[matchKey];
-        const teamName = matchData ? matchData.opponent : null; // teamName을 opponent로 설정
-
+        const teamName = matchData ? matchData.opponent : null;
         if (matchData) {
             renderPopup(matchData, teamName);
         } else {
@@ -584,36 +691,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // 히스토리 및 코멘트를 표시하는 함수
     function showTeamHistory(teamName) {
         const teamHistoryContainer = document.getElementById('teamHistoryContainer');
-
         if (!cachedData) return;
-
-        // matchesTotal 데이터에서 팀과의 기록 추출
         const opponentMatches = Object.entries(cachedData.matchesTotal)
             .filter(([key, match]) => match.opponent.replace(/\s/g, '').toLowerCase() === teamName.replace(/\s/g, '').toLowerCase())
-            .sort(([_, matchA], [__, matchB]) => new Date(matchB.date) - new Date(matchA.date)); // 날짜 내림차순 정렬
-
+            .sort(([_, matchA], [__, matchB]) => new Date(matchB.date) - new Date(matchA.date));
         let historyList = "<ul class='recent-matches-popup'>";
         if (opponentMatches.length > 0) {
             opponentMatches.forEach(([key, match]) => {
-
                 const matchDate = new Date(match.date);
                 if (isNaN(matchDate.getTime())) {
                     console.error('Invalid match.date format:', match.date);
                     return;
                 }
-
-                // 날짜 및 시간 포맷팅
-                const formattedDate = matchDate.toLocaleDateString('ko-KR'); // 예: "2024. 12. 17."
+                const formattedDate = matchDate.toLocaleDateString('ko-KR');
                 const formattedTime = matchDate.toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
-                }); // 예: "오후 9:07"
-
+                });
                 const location = match.location || "알 수 없음";
-
                 let scoreText = "";
                 if (match.type === "0" && match.score) {
                     const usScore = match.score.us;
@@ -621,22 +718,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     const result = usScore > themScore ? "승" : usScore < themScore ? "패" : "무";
                     scoreText = ` - <strong>${usScore} : ${themScore}</strong> (${result})`;
                 }
-
                 historyList += `<li>
-                                        ${formattedDate} - <span style="color: gray; font-size: 0.9em;">${formattedTime} / ${location}</span>
-                                        ${scoreText}
-                                    </li>`;
+                    ${formattedDate} - <span style="color: gray; font-size: 0.9em;">${formattedTime} / ${location}</span>
+                    ${scoreText}
+                </li>`;
             });
         } else {
             historyList += "<li>경기 기록 없음</li>";
         }
         historyList += "</ul>";
 
-        // 코멘트 추출
         const comments = opponentMatches
             .filter(([key, match]) => match.comment && match.comment.trim() !== "")
             .map(([key, match]) => match.comment);
-
         let commentList = "<ul class='recent-matches-popup'>";
         if (comments.length > 0) {
             comments.forEach(comment => {
@@ -647,21 +741,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         commentList += "</ul>";
 
-        // 컨테이너에 내용 업데이트
         teamHistoryContainer.innerHTML = `
-                                                        <div style="text-align: center;"><span style="font-size: 1.2em; font-weight: bold;">vs ${teamName}</span></div>
-                                                        <h3 class='recent-matches-popup-head'>역대 경기 기록</h3>
-                                                        ${historyList}
-                                                        <h3 class='recent-matches-popup-head'>코멘트</h3>
-                                                        ${commentList}
-                                                    `;
-        teamHistoryContainer.style.display = 'block'; // 컨테이너 표시
+            <div style="text-align: center;"><span style="font-size: 1.2em; font-weight: bold;">vs ${teamName}</span></div>
+            <h3 class='recent-matches-popup-head'>역대 경기 기록</h3>
+            ${historyList}
+            <h3 class='recent-matches-popup-head'>코멘트</h3>
+            ${commentList}
+        `;
+        teamHistoryContainer.style.display = 'block';
     }
 
     document.querySelector('.close-button').addEventListener('click', closePopup);
     document.querySelector('.overlay').addEventListener('click', closePopup);
-
-    initializeUI();
 });
 
 window.onload = async function () {
@@ -671,7 +762,8 @@ window.onload = async function () {
         await fetchData();
         initManagerPopup();
 
-        renderRecentMatches(cachedData.matchesTotal);                
+        renderRecentMatches(cachedData.matchesTotal);    
+        renderTotalMatches(cachedData.matchesTotal);
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
     }            
