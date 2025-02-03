@@ -74,7 +74,7 @@ async function renderPlayerList() {
                 card.className = 'player-card';
     
                 // 클릭 이벤트 추가
-                card.addEventListener('click', function () {
+                card.addEventListener('click', async function () {
                     if (cachedData && cachedData.players) {
                         const player = cachedData.players[number];
                         if (player) {
