@@ -25,7 +25,6 @@ function filterCurrentYearData(allTimeRecords, currentYear) {
 async function createCards(players, thisYearRecords) {
     if (!thisYearRecords || typeof thisYearRecords !== 'object' || Object.keys(thisYearRecords).length === 0) {
         console.error("올해 데이터가 없습니다.");
-        debugLog("올해 데이터가 없습니다.");
         return;
     }
 
@@ -41,71 +40,54 @@ async function createCards(players, thisYearRecords) {
             matches: record.matches || 0
         };
     });
-
-    debugLog("thisYearData 구성 완료");
     
     const topGoals = getSortedPlayers(thisYearData, 'goals').slice(0, 5);
-    debugLog("topGoals: " + JSON.stringify(topGoals));
     await createCard(document.getElementById('goal-card'), topGoals, 'goals', '골');
 
     const topAssists = getSortedPlayers(thisYearData, 'assists').slice(0, 5);
-    debugLog("topAssists: " + JSON.stringify(topAssists));
     await createCard(document.getElementById('assist-card'), topAssists, 'assists', '도움');
 
     const topAttackPoints = getSortedPlayers(thisYearData, 'attackP').slice(0, 5);
-    debugLog("topAttackPoints: " + JSON.stringify(topAttackPoints));
     await createCard(document.getElementById('attack-point-card'), topAttackPoints, 'attackP', 'P');
 
     const topMatches = getSortedPlayers(thisYearData, 'matches').slice(0, 5);
-    debugLog("topMatches: " + JSON.stringify(topMatches));
     await createCard(document.getElementById('match-card'), topMatches, 'matches', '경기');
-    debugLog("createCards 완료");
 }
 
 async function createCard(container, players, key, unit) {
-    debugLog("createCard 시작 for key: " + key);
     const card = document.createElement('div');
     card.className = 'card';
 
     for (const [index, player] of players.entries()) {
-        debugLog("처리 중 player: " + JSON.stringify(player));
         if (index === 0) {
             // 1등 특별 스타일
             const firstPlace = document.createElement('div');
             firstPlace.className = 'first-place';
-            debugLog("firstPlace통과");
 
             const badge = document.createElement('img');
             badge.src = 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/first.png';
             badge.alt = '1등 배지';
             badge.className = 'badge';
             firstPlace.appendChild(badge);
-            debugLog("badge통과");
 
             const imageContainer = document.createElement('div');
             imageContainer.className = 'player-image-container';
 
             const playerImage = await loadPlayerImage(player) || document.createElement('img'); // await 사용
             playerImage.className = 'player-image';
-            debugLog("playerImage통과");
 
             imageContainer.appendChild(playerImage);
-            debugLog("playerImage 추가하는거 통과");
-            debugLog("playerImage 정보: tagName=" + playerImage.tagName + ", src=" + playerImage.src + ", type=" + typeof playerImage);
 
             const playerNameContainer = document.createElement('div');
             playerNameContainer.className = 'player-name-container';
-            debugLog("playerNameContainer 생성 성공");
 
             const playerName = document.createElement('span');
             playerName.className = 'player-name';
             playerName.textContent = player.name;
-            debugLog("name통과");
 
             const playerPosition = document.createElement('span');
             playerPosition.className = 'player-position-first';
             playerPosition.textContent = player.posi;
-            debugLog("position통과");
 
             playerNameContainer.appendChild(playerName);
             playerNameContainer.appendChild(playerPosition);
@@ -113,7 +95,6 @@ async function createCard(container, players, key, unit) {
             const statValue = document.createElement('div');
             statValue.className = 'stat-value';
             statValue.textContent = `${player[key]} ${unit}`;
-            debugLog("stat통과");
 
             firstPlace.appendChild(imageContainer);
             firstPlace.appendChild(playerNameContainer);
@@ -166,7 +147,6 @@ async function createCard(container, players, key, unit) {
     }
 
     container.appendChild(card);
-    debugLog("createCard 완료 for key: " + key);
 }
 
 function getSortedPlayers(data, key) {
@@ -302,20 +282,6 @@ function enableDragScroll() {
     });
 }
 
-// 페이지 상단이나 초기화 시 실행 (전역에 추가)
-function debugLog(message) {
-  let debugDiv = document.getElementById("debug-container");
-  if (!debugDiv) {
-    debugDiv = document.createElement("div");
-    debugDiv.id = "debug-container";
-    debugDiv.style.cssText = "position: fixed; bottom: 0; left: 0; width: 100%; max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.8); color: #fff; font-size: 14px; z-index: 10000; padding: 10px;";
-    document.body.appendChild(debugDiv);
-  }
-  const p = document.createElement("div");
-  p.textContent = message;
-  debugDiv.appendChild(p);
-}
-
 window.onload = async function () {
     try {
         // 공통 요소 로드
@@ -327,8 +293,8 @@ window.onload = async function () {
         const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
         
         await updateMatchCards(cachedData.matchesTotal);
+        await createCards(cachedData.players, thisYearRecords);  
         enableDragScroll();
-        await createCards(cachedData.players, thisYearRecords);        
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
     }
