@@ -38,16 +38,7 @@ function classifyPosition(position) {
     return Object.keys(positionMapping).find(key => positionMapping[key].includes(position)) || "MF";
 }
 
-function updateYearNavigationButtons() {
-    const minYear = Math.min(...availableYears);
-    const maxYear = Math.max(...availableYears);
 
-    const prevButton = document.getElementById('prevYear');
-    const nextButton = document.getElementById('nextYear');
-
-    prevButton.disabled = currentYear <= minYear;
-    nextButton.disabled = currentYear >= maxYear;
-}
 
 function initializeAvailableYears(data) {
     const allYears = Object.values(data.recordAll || {}).flatMap(player =>
@@ -58,9 +49,6 @@ function initializeAvailableYears(data) {
     currentYear = availableYears.includes(new Date().getFullYear())
         ? new Date().getFullYear()
         : availableYears[0];
-
-    document.getElementById('currentYear').textContent = currentYear;
-    updateYearNavigationButtons();
 }
 
 function sortTable(a, b) {
@@ -142,6 +130,50 @@ function displayPlayerRecord(data) {
     requestAnimationFrame(() => matchRowHeights());
 }
 
+// 새로운 year-select 업데이트 함수 추가
+function updateYearSelect() {
+    const yearSelectContainer = document.querySelector('.year-select');
+    if (!availableYears || availableYears.length === 0) return;
+    
+    const minYear = Math.min(...availableYears);
+    const maxYear = Math.max(...availableYears);
+    
+    // 버튼 배열: '전체' 버튼와 max ~ min 년도 (내림차순)
+    const years = ['전체'];
+    for (let y = maxYear; y >= minYear; y--) {
+        years.push(y);
+    }
+    
+    yearSelectContainer.innerHTML = years.map(year => 
+        `<button data-year="${year}">${year}</button>`
+    ).join('');
+    
+    // 초기 활성화 처리 (전체 선택 또는 현재연도 선택)
+    const defaultYear = isTotal || currentYear === undefined ? '전체' : currentYear.toString();
+    yearSelectContainer.querySelectorAll('button').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-year') === defaultYear);
+        btn.addEventListener('click', function() {
+            yearSelectContainer.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const selected = this.getAttribute('data-year');
+            if (selected === '전체') {
+                isTotal = true;
+                document.getElementById('fromWhichYear').textContent = `${Math.min(...availableYears)}년부터 지금까지`;
+                const totalRecords = isSub
+                    ? getTotalRecords(cachedData.subPlayer, null, true)
+                    : getTotalRecords(recordAllData, playerInfoData, false);
+                displayPlayerRecord(totalRecords);
+            } else {
+                isTotal = false;
+                document.getElementById('fromWhichYear').textContent = '';
+                currentYear = parseInt(selected, 10);
+                renderTable(currentYear);
+            }
+        });
+    });
+}
+
 function setAvailableYears() {
     if (!isSub) {
         const years = Object.values(recordAllData)
@@ -154,9 +186,10 @@ function setAvailableYears() {
         );
     }
 
-    updateYearNavigationButtons(); // 버튼 상태 업데이트
     if (isTotal) document.getElementById('fromWhichYear').textContent = `${Math.min(...availableYears)}년부터 지금까지`;
     else document.getElementById('fromWhichYear').textContent = ``;
+
+    updateYearSelect();
 }
 
 function filterDataByYear(records, year) {
@@ -219,7 +252,7 @@ function setSortCriteria(criteria) {
     const sortCriteriaElement = document.getElementById('sortCriteria');
     sortCriteriaElement.textContent = criteria;
     currentSortCriteria = criteria;
-                
+        
     const data = isTotal
         ? isSub
             ? getTotalRecords(cachedData.subPlayer, null, true)
@@ -355,8 +388,6 @@ function transformSubPlayerData(subPlayerData, year) {
     if (!availableYears.includes(year)) {
         year = Math.max(...availableYears); // 최신 연도로 설정
         currentYear = year;
-        document.getElementById('currentYear').textContent = currentYear;
-        updateYearNavigationButtons(); // 버튼 상태 업데이트
     }
 
     return Object.keys(subPlayerData).map(playerName => {
@@ -412,9 +443,6 @@ function changeYear(direction) {
         currentYear++;
     }
 
-    document.getElementById('currentYear').textContent = currentYear;
-
-    updateYearNavigationButtons(); // 버튼 상태 업데이트
     renderTable(currentYear);
 }
 
@@ -484,15 +512,30 @@ function getTotalRecords(records, playerInfo, isSub) {
 }
 
 let officialButton;
-let yearButton;
 
 document.addEventListener("DOMContentLoaded", function () {
+    const yearSelectContainer = document.querySelector('.year-select');
+    let isDown = false, startX, scrollLeft;
+  
+    yearSelectContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - yearSelectContainer.offsetLeft;
+        scrollLeft = yearSelectContainer.scrollLeft;
+    });
+    yearSelectContainer.addEventListener('mouseleave', () => { isDown = false; });
+    yearSelectContainer.addEventListener('mouseup', () => { isDown = false; });
+    yearSelectContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - yearSelectContainer.offsetLeft;
+        const walk = (x - startX) * 2; // 드래그 민감도 조정
+        yearSelectContainer.scrollLeft = scrollLeft - walk;
+    });
+
     const logo = document.getElementById('logo');
     const subButton = document.getElementById('subButton');
-    const totalYearButton = document.getElementById('totalButton');
 
     officialButton = document.getElementById('officialButton');
-    yearButton = document.getElementById('everyYearButton');
 
     if (logo) {
         logo.addEventListener('click', function () {
@@ -518,48 +561,6 @@ document.addEventListener("DOMContentLoaded", function () {
         setAvailableYears();
         updateSortMenu(); // 정렬 메뉴 업데이트
         renderTable(currentYear);
-    });
-
-    totalYearButton.addEventListener('click', function () {
-        isTotal = true;
-        setAvailableYears();
-        const totalRecords = isSub
-            ? getTotalRecords(cachedData.subPlayer, null, true)
-            : getTotalRecords(recordAllData, playerInfoData, false);
-
-        // 합산된 데이터를 테이블로 렌더링
-        displayPlayerRecord(totalRecords);
-
-        // 버튼 활성화 상태 업데이트
-        document.querySelectorAll('.text-button').forEach(button => button.classList.remove('active'));
-        this.classList.add('active');
-
-        // 연도 네비게이션 비활성화 처리
-        const yearNavigation = document.querySelector('.year-navigation');
-        yearNavigation.classList.add('disabled'); // CSS 클래스 추가
-        Array.from(yearNavigation.querySelectorAll('button')).forEach(button => {
-            button.disabled = true; // 클릭 비활성화
-        });
-    });
-
-    yearButton.addEventListener('click', function () {
-        isTotal = false;
-        setAvailableYears();
-        updateSortMenu(); // 정렬 메뉴 업데이트
-        renderTable(currentYear);
-
-        // 버튼 활성화 상태 업데이트
-        document.querySelectorAll('.text-button').forEach(button => button.classList.remove('active'));
-        this.classList.add('active');
-
-        // 연도 네비게이션 활성화 처리
-        const yearNavigation = document.querySelector('.year-navigation');
-        yearNavigation.classList.remove('disabled'); // CSS 클래스 제거
-        Array.from(yearNavigation.querySelectorAll('button')).forEach(button => {
-            button.disabled = false; // 클릭 활성화
-        });
-
-        updateYearNavigationButtons();                
     });
 });
 
@@ -588,29 +589,17 @@ window.onload = async function () {
 
         recordAllData = cachedData.recordAll;
         initializePlayerInfoData(cachedData.players);
-        
+
         if (cachedData?.recordAll) {
             setAvailableYears();
             currentYear = availableYears.includes(new Date().getFullYear())
                 ? new Date().getFullYear()
                 : availableYears[0];
 
-            document.getElementById('currentYear').textContent = currentYear;
-
             // 데이터 준비 후 정회원 버튼 클릭 처리
             officialButton.click();
-
-            yearButton.click();
             // 첫 렌더링                    
             highlightSelectedColumn(1);
-
-            // 버튼 클릭 이벤트
-            prevYearButton.addEventListener('click', () => changeYear('prev'));
-            nextYearButton.addEventListener('click', () => changeYear('next'));
-
-            // 초기 버튼 상태 업데이트
-            updateYearNavigationButtons();
-
         } else {
             console.log("데이터를 불러오는 중 오류가 발생했습니다.");
         }
