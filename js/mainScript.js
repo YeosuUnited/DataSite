@@ -292,8 +292,8 @@ window.onload = async function () {
         const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
         
         await updateMatchCards(cachedData.matchesTotal);
-        await createCards(cachedData.players, thisYearRecords);
         enableDragScroll();
+        await createCards(cachedData.players, thisYearRecords);        
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
     }
