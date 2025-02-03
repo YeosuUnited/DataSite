@@ -92,9 +92,17 @@ function createCard(container, players, key, unit) {
             imageContainer.appendChild(playerImage);
 
             debugLog("playerImage 추가하는거 통과");
+            debugLog("playerImage 정보: tagName=" + playerImage.tagName + ", src=" + playerImage.src + ", type=" + typeof playerImage);
+            try {
+                const playerNameContainer = document.createElement('div');
+                playerNameContainer.className = 'player-name-container';
+                debugLog("playerNameContainer 생성 성공");
+            } catch (err) {
+                debugLog("playerNameContainer 생성 에러: " + err);
+            }
 
-            const playerNameContainer = document.createElement('div');
-            playerNameContainer.className = 'player-name-container';
+            //const playerNameContainer = document.createElement('div');
+            //playerNameContainer.className = 'player-name-container';
 
             debugLog("playernamecontainer 추가 통과");
 
