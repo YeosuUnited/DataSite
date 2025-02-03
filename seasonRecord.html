@@ -6,8 +6,16 @@
     <title>선수 기록</title>
     <link rel="stylesheet" href="https://yeosuunited.com/js/commonStyle.css?v=1.05">
     <style>
+        .main-title-text{
+            margin-top: 65px;
+            margin-left: 15px;
+            font-size: 45px;
+            color: #1D4487;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+        
         .thirdHeader {
-            margin-top: 55px;
+            margin-top: -10px;
             color: white;
             height: 45px;
             width: 100%;
@@ -17,7 +25,7 @@
             align-items: center;
             justify-content: space-between;
         }
-
+        
             .toggleL-button, .toggleR-button {
                 background-color: transparent;
                 position: relative;
@@ -27,21 +35,21 @@
                 cursor: pointer;
                 transition: all 0.3s;
             }
-
+        
             .toggleL-button{
                 margin-left:80px;
             }
-
+        
             .toggleR-button{
                 margin-right:80px;
             }
-
+        
                 .toggleL-button.active, .toggleR-button.active {
-                    color: black;
+                    color: #2565D0;
                     font-weight: bold;
                     border: none;
                 }        
-
+        
             .toggleL-button.active::after, 
             .toggleR-button.active::after {
                 content: "";
@@ -52,55 +60,19 @@
                 height: 3px; /* 밑줄 두께 */
                 background-color: #16418d; /* 밑줄 색상 (파란색) */
             }
-
-        .year-navigation {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top:10px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .year-navigation.disabled {
-            pointer-events: none; /* 클릭 차단 */
-            opacity: 0.3; /* 흐리게 표시 */
-        }        
-
-        .lowerbutton-container {
-            display: flex;
-            gap: 70px;
-            justify-content: center;
-        }
-
-        .text-button {
-            font-size: 16px;
-            padding: 10px 5px;
-            border: none;
-            background-color: white;
-            margin-top: 0px;
-            color: #000;
-            cursor: pointer;            
-        }
-
-            .text-button.active {
-                background-color: white;
-                color: #2565D0;
-                font-weight: bold;
-                border-bottom: 3px solid #2565D0; /* 밑줄 추가 */
-            }
-
+        
+        
         .divider {
-            background-color: #eaeaea;
-            height: 10px;
+            background-color: #1D4487;
+            height: 1px;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-
         
-
+        
+        
         .year-arrow {
             display: inline-block; /* 인라인 블록으로 표시 */
             background-color: transparent; /* 배경색 제거 */
@@ -112,56 +84,56 @@
             font-size: 24px; /* 글자 크기 */
             line-height: 1; /* 세로 정렬 간격 최소화 */
         }
-
+        
             .year-arrow:hover {
                 background-color: white;
             }
-
+        
             .year-arrow:disabled {
                 opacity: 0;
                 cursor: not-allowed;
             }
-
+        
         #currentYear {
             color: black;
             font-weight: bold;
             font-size: 24px;
         }
-
+        
         .table-container {
             width: 100%;
             margin: 0;
             display: flex;
             overflow: hidden;
         }
-
+        
         .fixed-column {
             width: 80px;
             border-collapse: collapse;
             background-color: white;
         }
-
+        
             .fixed-column th, .fixed-column td {
                 padding: 10px;
                 text-align: center;
                 border: 1px solid lightgray;
                 background-color: white;
             }
-
+        
         .scrollable-table-container {
             width: 100%; /* 화면 크기에 맞게 너비 설정 */
             border-collapse: collapse;
             background-color: white;
             table-layout: fixed; /* 고정된 레이아웃으로 설정 */
         }
-
+        
         .scrollable-table {
             width: 100%;
             border-collapse: collapse;
             background-color: white;
             min-width: 150px;
         }
-
+        
             .scrollable-table th, .scrollable-table td {
                 width: 25%; /* 1/4 등분 */
                 text-align: center;
@@ -172,7 +144,7 @@
                 border-left: none; /* 세로줄 제거 */
                 border-right: none; /* 세로줄 제거 */
             }
-
+        
             .scrollable-table th {
                 position: sticky;
                 top: 0;
@@ -180,12 +152,12 @@
                 background-color: white;
                 cursor: pointer; /* 클릭 가능한 손 모양 커서 추가 */
             }
-
+        
                 .scrollable-table td.selected, .scrollable-table th.selected {
                     background-color: white;
                     color: #6495ED;
                 }
-
+        
         #sortMenu span:hover {
             background: #f0f0f0;
             display: inline; /* 기존 block을 inline으로 변경하여 빈칸 제거 */
@@ -193,7 +165,7 @@
             margin: 0; /* 여백 제거 */
             line-height: normal; /* 라인 높이 초기화 */
         }
-
+        
         .managerPage {
             position: fixed; /* 화면 기준으로 고정 */
             bottom: 20px; /* 화면 상단에서 10px */
@@ -203,7 +175,7 @@
             cursor: pointer;
             z-index: 1000;
         }
-
+        
             /* 팝업창 기본 스타일 */
         .popup {
             position: fixed;
@@ -217,11 +189,11 @@
             justify-content: center;
             z-index: 2000; /* 다른 요소 위에 표시 */
         }
-
+        
             .popup.hidden {
                 display: none; /* 숨김 */
             }
-
+        
         .popup-content {
             background: white;
             padding: 20px;
@@ -232,24 +204,24 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             animation: popupFadeIn 0.3s ease;
         }
-
+        
         @keyframes popupFadeIn {
             from {
                 transform: scale(0.9);
                 opacity: 0;
             }
-
+        
             to {
                 transform: scale(1);
                 opacity: 1;
             }
         }
-
+        
         .popup-content h3 {
             font-size: 1.2em;
             margin-bottom: 15px;
         }
-
+        
         .popup-content input {
             width: 100%;
             padding: 10px;
@@ -259,11 +231,11 @@
             font-size: 1em;
             box-sizing: border-box;
         }
-
+        
             .popup-content input::placeholder {
                 color: gray;
             }
-
+        
         .popup-content button {
             padding: 10px 20px;
             font-size: 1em;
@@ -273,11 +245,11 @@
             color: white;
             cursor: pointer;
         }
-
+        
             .popup-content button:hover {
                 background-color: #305ec1;
             }
-
+        
         .close-btn {
             position: absolute;
             top: 10px;
@@ -286,7 +258,7 @@
             height: 20px;
             cursor: pointer;
         }
-
+        
         /* 오류 메시지 스타일 */
         .error-message {
             color: red;
@@ -294,32 +266,53 @@
             margin-top: 10px;
             display: none;
         }
+        
+        .year-select {
+            overflow-x: auto;
+            white-space: nowrap;
+            -ms-overflow-style: none; /* IE, Edge */
+            scrollbar-width: none; /* Firefox */
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 5px;
+        }
+        .year-select::-webkit-scrollbar {
+            display: none;
+        }
+        .year-select button {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .year-select button.active {
+            color: #2565D0;
+            font-weight: bold;
+            border-bottom: 3px solid #2565D0;
+        }
     </style>
 
-    <script src="https://yeosuunited.com/js/commonScript.js?v=1.08"></script>
-    <script src="https://yeosuunited.com/js/seasonRScript.js?v=1.04"></script>
+    <script src="https://yeosuunited.com/js/commonScript.js?v=1.09"></script>
+    <script src="https://yeosuunited.com/js/seasonRScript.js?v=1.05"></script>
 </head>
 <body>
     <div id="loader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; display: flex; align-items: center; justify-content: center;">
         <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/loading.gif" alt="Loading" style="transform: scale(2);">
     </div>
-    
+
     <div id="common-container"></div>
+
+    <div class="main-title-text">REOCRDS</div>
 
     <div class="thirdHeader">
         <button id="officialButton" class="toggleL-button">정회원</button>
         <button id="subButton" class="toggleR-button">용병</button>
     </div>
-    <div class="divider"></div>
-    <div class="year-navigation">
-        <button id="prevYear" class="year-arrow">&lt;</button>
-        <span id="currentYear"></span>
-        <button id="nextYear" class="year-arrow">&gt;</button>
-    </div>
-    <div class="lowerbutton-container">
-        <button id="everyYearButton" class="text-button">연도별 기록</button>
-        <button id="totalButton" class="text-button">역대 기록</button>
-    </div>
+    <div class="divider"></div>   
+    <div class="year-select"></div>
     <div class="divider"></div>
     <div style="margin-bottom: 10px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: bold; margin-left: 10px; margin-right: 10px;">
         <div>
