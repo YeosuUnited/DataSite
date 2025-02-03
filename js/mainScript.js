@@ -330,8 +330,6 @@ window.onload = async function () {
         await loadCommonBody();
         await fetchData();
         initManagerPopup();
-
-        document.getElementById('loader').style.display = 'none';
         
         const currentYear = new Date().getFullYear();
         const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
