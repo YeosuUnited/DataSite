@@ -235,7 +235,7 @@ function generateMatchCardHTML(match, isUpcoming) {
             <span class="match-league">${match.location || ""}</span>
             <div class="match-details">
                 <div class="team-box">
-                    <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/refs/heads/main/assets/images/Emblem.png" class="team-emblem">
+                    <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/Emblem.png" class="team-emblem">
                 </div>
                 ${scoreHTML}
                 <div class="team-box">${opponentHTML}</div>
