@@ -63,10 +63,12 @@ async function createCards(players, thisYearRecords) {
 }
 
 function createCard(container, players, key, unit) {
+    debugLog("createCard 시작 for key: " + key);
     const card = document.createElement('div');
     card.className = 'card';
 
     players.forEach((player, index) => {
+        debugLog("처리 중 player: " + JSON.stringify(player));
         if (index === 0) {
             // 1등 특별 스타일
             const firstPlace = document.createElement('div');
@@ -154,6 +156,7 @@ function createCard(container, players, key, unit) {
     });
 
     container.appendChild(card);
+    debugLog("createCard 완료 for key: " + key);
 }
 
 function getSortedPlayers(data, key) {
