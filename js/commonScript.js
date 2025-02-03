@@ -331,6 +331,20 @@ function loadPlayerImage(player) {
     return img;
 }
 
+// 페이지 상단이나 초기화 시 실행 (전역에 추가)
+function debugLog(message) {
+  let debugDiv = document.getElementById("debug-container");
+  if (!debugDiv) {
+    debugDiv = document.createElement("div");
+    debugDiv.id = "debug-container";
+    debugDiv.style.cssText = "position: fixed; bottom: 0; left: 0; width: 100%; max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.8); color: #fff; font-size: 14px; z-index: 10000; padding: 10px;";
+    document.body.appendChild(debugDiv);
+  }
+  const p = document.createElement("div");
+  p.textContent = message;
+  debugDiv.appendChild(p);
+}
+
 function loadPlayerProfileImage(player) {
     const img = document.createElement('img');
     const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}_P.png`;
