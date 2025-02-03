@@ -300,22 +300,33 @@ function base64ToUtf8(str) {
 }
 
 function loadPlayerImage(player) {
+    debugLog("loadPlayerImage 시작: " + JSON.stringify(player));
     const img = document.createElement('img');
     const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/${player.number || 'default'}.png`;
-
+    
     caches.open('my-image-cache').then(cache => {
         cache.match(imageUrl).then(response => {
-            if (response) return response.blob();
+            if (response) {
+                debugLog("캐시에서 이미지 발견");
+                return response.blob();
+            }
+            debugLog("캐시 미발견, fetch 진행");
             return fetch(imageUrl).then(networkResponse => {
                 cache.put(imageUrl, networkResponse.clone());
                 return networkResponse.blob();
             });
         }).then(blob => {
+            debugLog("blob 생성 완료");
             const objectURL = URL.createObjectURL(blob);
             img.src = objectURL;
-        }).catch(() => {
+            debugLog("이미지 src 설정 완료: " + objectURL);
+        }).catch((error) => {
+            debugLog("loadPlayerImage 에러 발생: " + error);
             img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
         });
+    }).catch((error) => {
+        debugLog("caches.open 에러: " + error);
+        img.src = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/default.png`;
     });
     return img;
 }
