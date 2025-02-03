@@ -22,7 +22,7 @@ function filterCurrentYearData(allTimeRecords, currentYear) {
     return filteredData;
 }
 
-function createCards(players, thisYearRecords) {
+async function createCards(players, thisYearRecords) {
     if (!thisYearRecords || typeof thisYearRecords !== 'object' || Object.keys(thisYearRecords).length === 0) {
         console.error("올해 데이터가 없습니다.");
         return;
@@ -175,7 +175,7 @@ function getSortedPlayers(data, key) {
     return sorted;
 }
 
-function updateMatchCards(matchesTotal) {
+async function updateMatchCards(matchesTotal) {
     const serverTime = new Date(); // 현재 서버 시간
     let upcomingMatch = null;
     let lastMatch = null;
@@ -291,12 +291,9 @@ window.onload = async function () {
         const currentYear = new Date().getFullYear();
         const thisYearRecords = filterCurrentYearData(cachedData.recordAll, currentYear);
         
-        updateMatchCards(cachedData.matchesTotal);
-
-        setTimeout(function() {
-            createCards(cachedData.players, thisYearRecords);
-            enableDragScroll();
-        }, 200);
+        await updateMatchCards(cachedData.matchesTotal);
+        await createCards(cachedData.players, thisYearRecords);
+        enableDragScroll();
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
     }
