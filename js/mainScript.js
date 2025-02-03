@@ -293,8 +293,10 @@ window.onload = async function () {
         
         updateMatchCards(cachedData.matchesTotal);
 
-        createCards(cachedData.players, thisYearRecords);
-        enableDragScroll();
+        setTimeout(function() {
+            createCards(cachedData.players, thisYearRecords);
+            enableDragScroll();
+        }, 200);
     } catch (error) {
         console.error('초기화 중 오류 발생:', error);
     }
