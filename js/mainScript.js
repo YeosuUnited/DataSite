@@ -25,6 +25,7 @@ function filterCurrentYearData(allTimeRecords, currentYear) {
 async function createCards(players, thisYearRecords) {
     if (!thisYearRecords || typeof thisYearRecords !== 'object' || Object.keys(thisYearRecords).length === 0) {
         console.error("올해 데이터가 없습니다.");
+        debugLog("올해 데이터가 없습니다.");
         return;
     }
 
@@ -41,17 +42,24 @@ async function createCards(players, thisYearRecords) {
         };
     });
 
+    debugLog("thisYearData 구성 완료");
+    
     const topGoals = getSortedPlayers(thisYearData, 'goals').slice(0, 5);
+    debugLog("topGoals: " + JSON.stringify(topGoals));
     createCard(document.getElementById('goal-card'), topGoals, 'goals', '골');
 
     const topAssists = getSortedPlayers(thisYearData, 'assists').slice(0, 5);
+    debugLog("topAssists: " + JSON.stringify(topAssists));
     createCard(document.getElementById('assist-card'), topAssists, 'assists', '도움');
 
     const topAttackPoints = getSortedPlayers(thisYearData, 'attackP').slice(0, 5);
+    debugLog("topAttackPoints: " + JSON.stringify(topAttackPoints));
     createCard(document.getElementById('attack-point-card'), topAttackPoints, 'attackP', 'P');
 
     const topMatches = getSortedPlayers(thisYearData, 'matches').slice(0, 5);
+    debugLog("topMatches: " + JSON.stringify(topMatches));
     createCard(document.getElementById('match-card'), topMatches, 'matches', '경기');
+    debugLog("createCards 완료");
 }
 
 function createCard(container, players, key, unit) {
@@ -279,6 +287,20 @@ function enableDragScroll() {
         const walk = (x - startX) * 2; // 드래그 속도 조정
         cardSectionContainer.scrollLeft = scrollLeft - walk;
     });
+}
+
+// 페이지 상단이나 초기화 시 실행 (전역에 추가)
+function debugLog(message) {
+  let debugDiv = document.getElementById("debug-container");
+  if (!debugDiv) {
+    debugDiv = document.createElement("div");
+    debugDiv.id = "debug-container";
+    debugDiv.style.cssText = "position: fixed; bottom: 0; left: 0; width: 100%; max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.8); color: #fff; font-size: 14px; z-index: 10000; padding: 10px;";
+    document.body.appendChild(debugDiv);
+  }
+  const p = document.createElement("div");
+  p.textContent = message;
+  debugDiv.appendChild(p);
 }
 
 window.onload = async function () {
