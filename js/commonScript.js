@@ -488,3 +488,23 @@ async function loadCommonBody() {
         console.error('공통 요소를 불러오는 데 실패했습니다:', error);
     }
 }
+
+function redirectToExternalBrowser() {
+    const userAgent = navigator.userAgent || navigator.vendor;
+    const url = window.location.href;
+
+    // ✅ 메신저 앱의 인앱 브라우저 감지
+    const isMessengerApp = /KAKAOTALK|Line|FBAN|FBAV|Instagram|Telegram/i.test(userAgent);
+
+    if (isMessengerApp) {
+        // ✅ 먼저 현재 창에서 외부 브라우저로 이동
+        window.location.href = url;
+
+        // ✅ 500ms 후 새 창에서도 시도 (팝업 차단 우회)
+        setTimeout(() => {
+            window.open(url, "_blank");
+        }, 500);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", redirectToExternalBrowser);
