@@ -73,18 +73,21 @@ function createCard(container, players, key, unit) {
             // 1등 특별 스타일
             const firstPlace = document.createElement('div');
             firstPlace.className = 'first-place';
+            debugLog("firstPlace통과");
 
             const badge = document.createElement('img');
             badge.src = 'https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/first.png';
             badge.alt = '1등 배지';
             badge.className = 'badge';
             firstPlace.appendChild(badge);
+            debugLog("badge통과");
 
             const imageContainer = document.createElement('div');
             imageContainer.className = 'player-image-container';
 
             const playerImage = loadPlayerImage(player) || document.createElement('img'); // null 방지                    
             playerImage.className = 'player-image';
+            debugLog("playerImage통과");
 
             imageContainer.appendChild(playerImage);
 
@@ -94,10 +97,12 @@ function createCard(container, players, key, unit) {
             const playerName = document.createElement('span');
             playerName.className = 'player-name';
             playerName.textContent = player.name;
+            debugLog("name통과");
 
             const playerPosition = document.createElement('span');
             playerPosition.className = 'player-position-first';
             playerPosition.textContent = player.posi;
+            debugLog("position통과");
 
             playerNameContainer.appendChild(playerName);
             playerNameContainer.appendChild(playerPosition);
@@ -105,6 +110,7 @@ function createCard(container, players, key, unit) {
             const statValue = document.createElement('div');
             statValue.className = 'stat-value';
             statValue.textContent = `${player[key]} ${unit}`;
+            debugLog("stat통과");
 
             firstPlace.appendChild(imageContainer);
             firstPlace.appendChild(playerNameContainer);
