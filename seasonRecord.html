@@ -30,6 +30,7 @@
                 background-color: transparent;
                 position: relative;
                 font-size: 16px;
+                font-weight: bold;
                 border: none;
                 color: gray;
                 cursor: pointer;
@@ -45,8 +46,7 @@
             }
         
                 .toggleL-button.active, .toggleR-button.active {
-                    color: #2565D0;
-                    font-weight: bold;
+                    color: #2565D0;                    
                     border: none;
                 }        
         
@@ -54,10 +54,10 @@
             .toggleR-button.active::after {
                 content: "";
                 position: absolute;
-                bottom: -10px; /* 밑줄 위치 조정 */
+                bottom: -11px; /* 밑줄 위치 조정 */
                 left: 0;
                 width: 100%; /* 텍스트 아래 전체 밑줄 */
-                height: 3px; /* 밑줄 두께 */
+                height: 4px; /* 밑줄 두께 */
                 background-color: #16418d; /* 밑줄 색상 (파란색) */
             }
         
@@ -268,6 +268,8 @@
         }
         
         .year-select {
+            font-weight: bold;
+            text-align: center;
             overflow-x: auto;
             white-space: nowrap;
             -ms-overflow-style: none; /* IE, Edge */
@@ -291,7 +293,13 @@
         .year-select button.active {
             color: #2565D0;
             font-weight: bold;
-            border-bottom: 3px solid #2565D0;
+            border-bottom: 3px solid #16418d;
+        }
+        
+        [data-year] {
+            font-weight: bold;
+            color: gray;
+            font-size: 0.9em;
         }
     </style>
 
