@@ -67,7 +67,7 @@ async function createCard(container, players, key, unit) {
     const card = document.createElement('div');
     card.className = 'card';
 
-    players.forEach((player, index) => {
+    for (const [index, player] of players.entries()) {
         debugLog("처리 중 player: " + JSON.stringify(player));
         if (index === 0) {
             // 1등 특별 스타일
@@ -85,26 +85,17 @@ async function createCard(container, players, key, unit) {
             const imageContainer = document.createElement('div');
             imageContainer.className = 'player-image-container';
 
-            const playerImage = await loadPlayerImage(player) || document.createElement('img'); // null 방지                    
+            const playerImage = await loadPlayerImage(player) || document.createElement('img'); // await 사용
             playerImage.className = 'player-image';
             debugLog("playerImage통과");
 
             imageContainer.appendChild(playerImage);
-
             debugLog("playerImage 추가하는거 통과");
             debugLog("playerImage 정보: tagName=" + playerImage.tagName + ", src=" + playerImage.src + ", type=" + typeof playerImage);
-            try {
-                const playerNameContainer = document.createElement('div');
-                playerNameContainer.className = 'player-name-container';
-                debugLog("playerNameContainer 생성 성공");
-            } catch (err) {
-                debugLog("playerNameContainer 생성 에러: " + err);
-            }
 
-            //const playerNameContainer = document.createElement('div');
-            //playerNameContainer.className = 'player-name-container';
-
-            debugLog("playernamecontainer 추가 통과");
+            const playerNameContainer = document.createElement('div');
+            playerNameContainer.className = 'player-name-container';
+            debugLog("playerNameContainer 생성 성공");
 
             const playerName = document.createElement('span');
             playerName.className = 'player-name';
@@ -138,7 +129,8 @@ async function createCard(container, players, key, unit) {
             rank.textContent = player.rank;
             rank.className = 'rank-number';
 
-            const playerImage = loadPlayerImage(player) || document.createElement('img'); // null 방지    
+            // 여기서도 await를 사용하려면 해당 부분을 async 처리해야 함
+            const playerImage = await loadPlayerImage(player) || document.createElement('img');
             playerImage.className = 'player-image-small';
 
             const nameAndPositionContainer = document.createElement('div');
@@ -171,7 +163,7 @@ async function createCard(container, players, key, unit) {
 
             card.appendChild(playerInfo);
         }
-    });
+    }
 
     container.appendChild(card);
     debugLog("createCard 완료 for key: " + key);
