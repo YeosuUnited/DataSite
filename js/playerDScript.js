@@ -78,7 +78,7 @@ async function renderPlayerList() {
                     if (cachedData && cachedData.players) {
                         const player = cachedData.players[number];
                         if (player) {
-                            displayPlayerDetails(player); // 선수 상세 정보 표시
+                            await displayPlayerDetails(player); // 선수 상세 정보 표시
                             displayPlayerRecord(player); // 선수 기록 표시
                             document.getElementById('player-details').style.display = 'block'; // 상세 정보 표시
                             document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
