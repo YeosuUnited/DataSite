@@ -46,23 +46,23 @@ async function createCards(players, thisYearRecords) {
     
     const topGoals = getSortedPlayers(thisYearData, 'goals').slice(0, 5);
     debugLog("topGoals: " + JSON.stringify(topGoals));
-    createCard(document.getElementById('goal-card'), topGoals, 'goals', '골');
+    await createCard(document.getElementById('goal-card'), topGoals, 'goals', '골');
 
     const topAssists = getSortedPlayers(thisYearData, 'assists').slice(0, 5);
     debugLog("topAssists: " + JSON.stringify(topAssists));
-    createCard(document.getElementById('assist-card'), topAssists, 'assists', '도움');
+    await createCard(document.getElementById('assist-card'), topAssists, 'assists', '도움');
 
     const topAttackPoints = getSortedPlayers(thisYearData, 'attackP').slice(0, 5);
     debugLog("topAttackPoints: " + JSON.stringify(topAttackPoints));
-    createCard(document.getElementById('attack-point-card'), topAttackPoints, 'attackP', 'P');
+    await createCard(document.getElementById('attack-point-card'), topAttackPoints, 'attackP', 'P');
 
     const topMatches = getSortedPlayers(thisYearData, 'matches').slice(0, 5);
     debugLog("topMatches: " + JSON.stringify(topMatches));
-    createCard(document.getElementById('match-card'), topMatches, 'matches', '경기');
+    await createCard(document.getElementById('match-card'), topMatches, 'matches', '경기');
     debugLog("createCards 완료");
 }
 
-function createCard(container, players, key, unit) {
+async function createCard(container, players, key, unit) {
     debugLog("createCard 시작 for key: " + key);
     const card = document.createElement('div');
     card.className = 'card';
@@ -85,7 +85,7 @@ function createCard(container, players, key, unit) {
             const imageContainer = document.createElement('div');
             imageContainer.className = 'player-image-container';
 
-            const playerImage = loadPlayerImage(player) || document.createElement('img'); // null 방지                    
+            const playerImage = await loadPlayerImage(player) || document.createElement('img'); // null 방지                    
             playerImage.className = 'player-image';
             debugLog("playerImage통과");
 
