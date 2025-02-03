@@ -91,8 +91,12 @@ function createCard(container, players, key, unit) {
 
             imageContainer.appendChild(playerImage);
 
+            debugLog("playerImage 추가하는거 통과");
+
             const playerNameContainer = document.createElement('div');
             playerNameContainer.className = 'player-name-container';
+
+            debugLog("playernamecontainer 추가 통과");
 
             const playerName = document.createElement('span');
             playerName.className = 'player-name';
