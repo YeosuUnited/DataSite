@@ -592,24 +592,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         searchList.innerHTML = results.length
             ? results.map(result => `
-                <div style="
-                    padding: 5px 0;
-                    border: 2px solid #ddd;
-                    border-radius: 5px;
-                    margin-bottom: 5px;
-                    cursor: pointer;
-                    width: 100%;
-                    text-align: left;"
-                    data-key="${result.key}">
+                <div class="search-item" data-key="${result.key}">
                     ${result.opponent}
                 </div>
             `).join('')
-            : `<div style="
-                    padding: 5px 10px;
-                    color: gray;
-                    text-align: center;">
+            : ` <div class="search-empty">
                     검색 결과가 없습니다.
-               </div>`;
+                </div>`;
     });
 
     // 검색 결과 클릭 이벤트 처리
