@@ -281,10 +281,11 @@ function enableDragScroll() {
     });
 }
 
-window.onload = function () {
-    loadCommonBody()
-    .then(function () { return fetchData(); })
-    .then(function () {
+window.onload = async function () {
+    try {
+        // 공통 요소 로드
+        await loadCommonBody();
+        await fetchData();
         initManagerPopup();
 
         console.log(cachedData);
@@ -295,11 +296,9 @@ window.onload = function () {
         updateMatchCards(cachedData.matchesTotal);
 
         enableDragScroll();
-    })
-    .catch(function (error) {
+    } catch (error) {
         console.error('초기화 중 오류 발생:', error);
-    })
-    .finally(function () {
-        document.getElementById('loader').style.display = 'none';
-    });
+    }
+
+    document.getElementById('loader').style.display = 'none';
 };
