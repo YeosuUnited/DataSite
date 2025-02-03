@@ -22,7 +22,7 @@
 
 .sponser-image{
     margin-right: 6px;
-    margin-top:3px;
+    margin-top:8px;
     width: 45px;
     height: auto;
 }
@@ -42,6 +42,7 @@
     display: flex;            
     z-index: 1000;
     transition: transform 0.3s ease; /* 부드러운 이동 효과 */
+    padding-top: 6px;
 }
 
 .header.hidden {
