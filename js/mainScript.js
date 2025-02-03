@@ -73,7 +73,7 @@ async function createCard(container, players, key, unit) {
             const imageContainer = document.createElement('div');
             imageContainer.className = 'player-image-container';
 
-            const playerImage = await loadPlayerImage(player) || document.createElement('img'); // await 사용
+            const playerImage = loadPlayerImage(player) || document.createElement('img'); // await 사용
             playerImage.className = 'player-image';
 
             imageContainer.appendChild(playerImage);
