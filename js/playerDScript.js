@@ -42,6 +42,7 @@ async function renderPlayerList() {
     for (const position of Object.keys(positionMapping)) {
         // 섹션 생성
         const section = document.createElement('div');
+        section.id = 'section-' + position;
         section.className = 'position-section';
     
         const titleWrapper = document.createElement('div');
@@ -346,7 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             document.getElementById('player-details').style.display = 'none';
             document.getElementById('player-list').style.display = 'block';
-           history.replaceState({ page: "playerList" }, "", location.pathname);
+            history.replaceState({ page: "playerList" }, "", location.pathname);
         }
     });
 
@@ -366,6 +367,49 @@ document.addEventListener("DOMContentLoaded", function () {
             initManagerPopup();
 
             await renderPlayerList();
+
+            document.getElementById("type-all").classList.add("active");
+
+            // 버튼 클릭 시 active 클래스 토글 함수 추가
+            function setActive(button) {
+                document.querySelectorAll('.player-type div').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            }
+
+            document.getElementById("type-all").addEventListener("click", (e) => {
+                setActive(e.currentTarget);
+                document.querySelectorAll('.position-section').forEach(section => {
+                section.style.display = "block";
+                });
+            });
+
+            document.getElementById("type-fw").addEventListener("click", (e) => {
+                setActive(e.currentTarget);
+                document.querySelectorAll('.position-section').forEach(section => {
+                section.style.display = (section.id === "section-FW") ? "block" : "none";
+                });
+            });
+
+            document.getElementById("type-mf").addEventListener("click", (e) => {
+                setActive(e.currentTarget);
+                document.querySelectorAll('.position-section').forEach(section => {
+                section.style.display = (section.id === "section-MF") ? "block" : "none";
+                });
+            });
+
+            document.getElementById("type-df").addEventListener("click", (e) => {
+                setActive(e.currentTarget);
+                document.querySelectorAll('.position-section').forEach(section => {
+                section.style.display = (section.id === "section-DF") ? "block" : "none";
+                });
+            });
+
+            document.getElementById("type-gk").addEventListener("click", (e) => {
+                setActive(e.currentTarget);
+                document.querySelectorAll('.position-section').forEach(section => {
+                section.style.display = (section.id === "section-GK") ? "block" : "none";
+                });
+            });
         } catch (error) {
             console.error('초기화 중 오류 발생:', error);
         }
