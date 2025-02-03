@@ -474,7 +474,7 @@ function clearPopup() {
 async function loadCommonBody() {
     try {
         const version = new Date().getTime(); // 캐싱 방지용 타임스탬프 추가
-        const response = await fetch(`https://raw.githubusercontent.com/YeosuUnited/DataSite/main/js/commonBody.html?v=${version}`);
+        const response = await fetch(`https://yeosuunited.com/js/commonBody.html?v=${version}`);
         if (!response.ok) throw new Error("공통 요소 로드 실패");
         
         const html = await response.text();
