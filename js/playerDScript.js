@@ -78,7 +78,7 @@ async function renderPlayerList() {
                     if (cachedData && cachedData.players) {
                         const player = cachedData.players[number];
                         if (player) {
-                            await displayPlayerDetails(player); // 선수 상세 정보 표시
+                            displayPlayerDetails(player); // 선수 상세 정보 표시
                             displayPlayerRecord(player); // 선수 기록 표시
                             document.getElementById('player-details').style.display = 'block'; // 상세 정보 표시
                             document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
@@ -90,8 +90,7 @@ async function renderPlayerList() {
                     }
                 });
     
-                // loadPlayerCardImage를 await로 처리
-                const playerImage = await loadPlayerCardImage(player) || document.createElement('img');
+                const playerImage = loadPlayerCardImage(player) || document.createElement('img');
                 playerImage.classList.add('player-list-Img');
                 card.appendChild(playerImage);
     
@@ -156,7 +155,7 @@ async function displayPlayerDetails(player) {
 
     const imageContainer = document.createElement('div');
     imageContainer.classList.add('profileImg-container');
-    const profileImg = await loadPlayerProfileImage(player) || document.createElement('img');
+    const profileImg = loadPlayerProfileImage(player) || document.createElement('img');
     profileImg.classList.add('player-info-photo');            
     imageContainer.appendChild(profileImg);
 
