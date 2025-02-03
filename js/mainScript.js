@@ -111,7 +111,7 @@ async function createCard(container, players, key, unit) {
             rank.className = 'rank-number';
 
             // 여기서도 await를 사용하려면 해당 부분을 async 처리해야 함
-            const playerImage = await loadPlayerImage(player) || document.createElement('img');
+            const playerImage = loadPlayerImage(player) || document.createElement('img');
             playerImage.className = 'player-image-small';
 
             const nameAndPositionContainer = document.createElement('div');
