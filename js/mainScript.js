@@ -229,7 +229,6 @@ function generateMatchCardHTML(match, isUpcoming) {
             <span class="match-type" style="color: black; font-size: 0.9em">${typeText}</span>
             <a href="matchRecord.html" class="match-link">전체 경기 일정 →</a>
         </div>
-        <hr class="match-divider">
         <div class="match-info">            
             <div class="match-details">
                 <div class="team-box">
