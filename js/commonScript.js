@@ -362,6 +362,7 @@ function toggleMenu() {
 
 window.addEventListener("scroll", function () {
     const header = document.querySelector(".header");
+    if (!header) return;
     const sponserList = document.querySelector(".sponserList");
     const sponserListHeight = sponserList ? sponserList.offsetHeight : 0;
     
@@ -376,6 +377,7 @@ window.addEventListener("scroll", function () {
 
 window.addEventListener("scroll", function () {
     const fullMenu = document.querySelector(".full-menu");
+    if (!fullMenu) return;
     const sponserList = document.querySelector(".sponserList");
     const sponserListHeight = sponserList ? sponserList.offsetHeight : 0;
 
