@@ -230,9 +230,7 @@ function generateMatchCardHTML(match, isUpcoming) {
             <a href="matchRecord.html" class="match-link">전체 경기 일정 →</a>
         </div>
         <hr class="match-divider">
-        <div class="match-info">
-            <span class="match-date">${formatDate(match.date)}</span>
-            <span class="match-league">${match.location || ""}</span>
+        <div class="match-info">            
             <div class="match-details">
                 <div class="team-box">
                     <img src="https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/Emblem.png" class="team-emblem">
@@ -240,6 +238,8 @@ function generateMatchCardHTML(match, isUpcoming) {
                 ${scoreHTML}
                 <div class="team-box">${opponentHTML}</div>
             </div>
+            <span class="match-date">${formatDate(match.date)}</span>
+            <span class="match-league">${match.location || ""}</span>
         </div>
     `;
 }
