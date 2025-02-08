@@ -362,7 +362,8 @@ function toggleMenu() {
 
 window.addEventListener("scroll", function () {
     const header = document.querySelector(".header");
-    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+    const sponserList = document.querySelector(".sponserList");
+    const sponserListHeight = sponserList ? sponserList.offsetHeight : 0;
     
     if (window.scrollY > sponserListHeight) {
         header.style.position = "fixed";
@@ -375,7 +376,8 @@ window.addEventListener("scroll", function () {
 
 window.addEventListener("scroll", function () {
     const fullMenu = document.querySelector(".full-menu");
-    const sponserListHeight = document.querySelector(".sponserList").offsetHeight;
+    const sponserList = document.querySelector(".sponserList");
+    const sponserListHeight = sponserList ? sponserList.offsetHeight : 0;
 
     if (window.scrollY > sponserListHeight) {
         fullMenu.classList.add("fixed");
