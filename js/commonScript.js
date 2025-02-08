@@ -40,6 +40,7 @@ async function fetchData() {
                 'assets/data/matches_total.json',
                 'assets/data/subPlayer_data.json',
                 'assets/data/youtube_link.json',
+                'assets/data/news_data.json',
             ];
 
             // 병렬 요청 수행
@@ -70,6 +71,10 @@ async function fetchData() {
                 youtubeLink:
                     responses[4].status === 'fulfilled'
                         ? responses[4].value.content
+                        : {},
+                newsData:
+                    responses[5].status === 'fulfilled'
+                        ? responses[5].value.content
                         : {},
             };
 
@@ -135,7 +140,8 @@ function validateCachedData(data) {
         data.players &&
         data.recordAll &&
         data.matchesTotal&&
-        data.youtubeLink
+        data.youtubeLink&&
+        data.newsData
     );
 }
 
