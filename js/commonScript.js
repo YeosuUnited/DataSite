@@ -274,6 +274,13 @@ async function getGitHubFile(repoOwner, repoName, filePath) {
 
 // 공통 유틸리티 함수: GitHub 파일 저장
 async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, message) {
+    // 파일 확장자가 이미지나 동영상이면 이미 base64된 것으로 가정
+    let encodedContent;
+    if (/\.(png|jpe?g|mp4)$/i.test(filePath)) {
+        encodedContent = content;
+    } else {
+        encodedContent = utf8ToBase64(JSON.stringify(content, null, 2));
+    }
     const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
         method: "PUT",
         headers: {
@@ -282,15 +289,13 @@ async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, messa
         },
         body: JSON.stringify({
             message,
-            content: utf8ToBase64(JSON.stringify(content, null, 2)),
-            sha: sha || null, // 새 파일인 경우 sha를 null로 처리
+            content: encodedContent,
+            sha: sha || null,
         }),
     });
-
     if (!response.ok) {
         throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
     }
-
     return await response.json();
 }
 
