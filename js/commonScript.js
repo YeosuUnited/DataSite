@@ -294,6 +294,25 @@ async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, messa
     return await response.json();
 }
 
+async function saveGitHubBinaryFile(repoOwner, repoName, filePath, base64Content, sha, message) {
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+        method: "PUT",
+        headers: {
+            Authorization: `token ${token}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            message,
+            content: base64Content, // 기존 인코딩 제거
+            sha: sha || null,
+        }),
+    });
+    if (!response.ok) {
+        throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
+    }
+    return await response.json();
+}
+
 // UTF-8 문자열을 Base64로 변환
 function utf8ToBase64(str) {
     return btoa(unescape(encodeURIComponent(str)));
