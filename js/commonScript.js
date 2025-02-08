@@ -277,7 +277,12 @@ async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, messa
     // 파일 확장자가 이미지나 동영상이면 이미 base64된 것으로 가정
     let encodedContent;
     if (/\.(png|jpe?g|mp4)$/i.test(filePath)) {
-        encodedContent = content;
+            // Data URI 접두사가 있으면 제거
+        if (content.startsWith("data:")) {
+            encodedContent = content.split(",")[1];
+        } else {
+            encodedContent = content;
+        }
     } else {
         encodedContent = utf8ToBase64(JSON.stringify(content, null, 2));
     }
