@@ -427,7 +427,7 @@
                     position: absolute;
                     left: 0;
                     right: 0;
-                    height: 40px; /* 그라데이션 높이 */
+                    height: 82%; /* 그라데이션 높이 */
                     width: 100%;
                     /*background: linear-gradient(to bottom, white, rgba(255, 255, 255, 0));*/
                     z-index: 1;
@@ -436,8 +436,9 @@
                 .first-place .player-image-container::after {
                     bottom: 0;
                     top: auto;
-                    background: linear-gradient(to top, white, rgba(255, 255, 255, 0)), linear-gradient(to left, white, rgba(255, 255, 255, 0) 30%), /* 오른쪽 */
-                    linear-gradient(to right, white, rgba(255, 255, 255, 0) 30%); /* 왼쪽 */
+                    background: linear-gradient(to top, white, rgba(255, 255, 255, 0) 30%), 
+                                linear-gradient(to left, white, rgba(255, 255, 255, 0) 20%), 
+                                linear-gradient(to right, white, rgba(255, 255, 255, 0) 20%);
                 }
 
             /* 1등 이름과 기록의 색상 수정 */
