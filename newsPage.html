@@ -3,34 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>뉴스</title>
+    <title>NEWS</title>
     <link rel="stylesheet" href="https://yeosuunited.com/js/commonStyle.css?v=1.05">
     <style>
-        .news-gallery{
-
+        .main-title-text{
+            margin-top: 65px;
+            margin-left: 15px;
+            font-size: 55px;
+            color: #1D4487;
+            font-family: 'Bebas Neue', sans-serif;
         }
 
-        .news-item{
-
+        .news-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
         }
+
+        .news-item {
+            flex: 1 1 calc(50% - 20px);
+            box-sizing: border-box;
+        }
+
+            .news-item img {
+                width: 100%;
+                height: 150px;
+                object-fit: cover;
+                display: block;
+            }
+
         .news-title{
         }
+
         .news-date{
 
         }
 
-        .news-detail{
-
+        .news-detail {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        .image-modal{
+            .news-detail img {
+                width: 100%;
+                height: 150px;
+                object-fit: cover;
+                display: block;
+            }
 
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
-        .modal-image{
 
+        .modal-image {
+            max-width: 100%;
+            max-height: 100%;
         }
-        .modal-close{
 
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
         }
     </style>
 
@@ -47,7 +94,6 @@
         function showNewsDetail(news, skipPushState) {
             removeModal();
             removeDetail();
-            var container = document.getElementById('common-container');
             var gallery = document.querySelector('.news-gallery');
             if(gallery) gallery.style.display = 'none';
 
@@ -62,8 +108,7 @@
                 });
                 detailContainer.appendChild(img);
             });
-            container.appendChild(detailContainer);
-            // (state는 클릭 이벤트에서 이미 푸시했으므로 skipPushState가 true면 추가 푸시하지 않음)
+            document.querySelector('.main-title-text').insertAdjacentElement('afterend', detailContainer);
         }
 
         function showModal(imageSrc, skipPushState) {
@@ -101,7 +146,7 @@
             removeDetail();
             removeModal();
             var gallery = document.querySelector('.news-gallery');
-            if(gallery) gallery.style.display = 'block';
+            if(gallery) gallery.style.display = 'flex';
         }
 
         window.addEventListener('popstate', function(e) {
@@ -164,7 +209,7 @@
                     gallery.appendChild(item);
                 });
 
-                container.appendChild(gallery);
+                document.querySelector('.main-title-text').insertAdjacentElement('afterend', gallery);
                 history.replaceState({view: 'gallery'}, '', '');
             } catch (error) {
                 console.error('초기화 중 오류 발생:', error);
@@ -181,5 +226,6 @@
     
     <div id="common-container"></div>
         
+    <div class="main-title-text">NEWS</div>
 </body>
 </html>
