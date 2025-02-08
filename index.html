@@ -112,6 +112,7 @@
             align-items: center;
             font-weight: bold;
             color: #1e3a8a;
+            margin-top: -10px;
         }
 
         .match-link {
@@ -120,27 +121,20 @@
             text-decoration: none;
         }
 
-        .match-divider {
-            height: 3px;
-            background: #2565D0;
-            border: none;
-            margin: 5px 0;
-        }
-
         .match-info {
+            margin-top: 7px;
             text-align: center;
             font-size: 1em;
         }
 
         .match-date {
-            font-weight: bold;
-            font-size: 1.4em;
+            font-size: 0.9em;
             font-family: "Do Hyeon", serif;
         }
 
         .match-league {
             color: #6b7280;
-            font-size: 1em;
+            font-size: 0.85em;
             font-family: "Do Hyeon", serif;
         }
 
@@ -156,15 +150,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 10px;
-            border: 1px solid #d1d5db;
+            width: 110px;
+            height: 60px;
+            margin-bottom: 0px;
         }
-
+        
         .team-emblem {
-            width: 50px;
+            width: 35px;
             height: auto;
         }
 
@@ -490,7 +482,6 @@
         <h2 class="section-title">Matches</h2>
 
         <div class="match-box upcoming-match" id="upcoming-match">            
-            <hr class="match-divider">
             <div class="match-info" id="upcoming-match-info">
                 <span class="no-match">다음 예정 경기 없음</span>
             </div>
