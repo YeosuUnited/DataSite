@@ -22,6 +22,9 @@ function renderRecentMatches(matches) {
 
         const typeLabels = { "0": "축구", "1": "풋살", "2": "자체전" };
         const typeText = typeLabels[match.type] || "기타";
+        if(typeText === "축구") {
+            matchBox.style.backgroundColor = "#efefef";
+        }
                 
         let scoreHTML = `<span class="match-vs">VS</span>`;
         if (match.type === "0") {
@@ -75,6 +78,9 @@ function renderTotalMatches(matches) {
 
         const typeLabels = { "0": "축구", "1": "풋살", "2": "자체전" };
         const typeText = typeLabels[match.type] || "기타";
+        if(typeText === "축구") {
+            matchBox.style.backgroundColor = "#efefef";
+        }
                 
         let scoreHTML = `<span class="match-vs">VS</span>`;
         if (match.type === "0") {
