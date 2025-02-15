@@ -13,7 +13,7 @@
             color: #1D4487;
             font-family: 'Bebas Neue', sans-serif;
         }
-        
+
         .news-gallery {
             display: flex;
             flex-wrap: wrap;
@@ -21,13 +21,13 @@
             padding: 10px;
             margin-top: -10px;
         }
-        
+
         .news-item {
             flex: 1 1 calc(50% - 20px);
             box-sizing: border-box;
             min-width: 0;
         }
-        
+
             .news-item img {
                 width: 100%;
                 height: auto;
@@ -35,7 +35,7 @@
                 object-fit: cover;
                 display: block;
             }
-        
+
         .news-title {
             font-size: 0.95em;
             margin-top: 3px;
@@ -46,13 +46,13 @@
             text-overflow: ellipsis;
             font-family: "Do Hyeon", serif;
         }
-        
+
         .news-date{
             margin-top: -8px;
             font-size: 0.9em;
             font-family: 'Bebas Neue', sans-serif;
         }
-        
+
         .news-detail {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -60,7 +60,7 @@
             padding: 10px;
             min-width: 0;
         }
-        
+
             .news-detail img {
                 width: 100%;
                 height: auto;
@@ -68,7 +68,7 @@
                 object-fit: cover;
                 display: block;
             }
-        
+
         .image-modal {
             position: fixed;
             top: 0;
@@ -81,12 +81,12 @@
             justify-content: center;
             z-index: 1000;
         }
-        
+
         .modal-image {
             max-width: 100%;
             max-height: 100%;
         }
-        
+
         .modal-close {
             position: absolute;
             top: 20px;
@@ -99,6 +99,69 @@
 
     <script src="https://yeosuunited.com/js/commonScript.js?v=1.12"></script>
     <script>
+        // 상단에 전역 변수 추가
+        let itemsLoaded = 0;
+        const itemsPerLoad = 10;
+
+        function loadMoreItems() {
+            const gallery = document.querySelector('.news-gallery');
+            const keys = Object.keys(cachedData.newsData);
+            const nextKeys = keys.slice(itemsLoaded, itemsLoaded + itemsPerLoad);
+            nextKeys.forEach(dateKey => {
+                var news = cachedData.newsData[dateKey];
+                var parts = dateKey.split('-');
+                var formattedDate = parseInt(parts[0]) + "." + parseInt(parts[1]) + "." + parseInt(parts[2]);
+
+                var item = document.createElement('div');
+                item.className = 'news-item';
+                item.addEventListener('click', function(){
+                    history.pushState({view: 'detail', dateKey: dateKey}, '', '');
+                    showNewsDetail(news);
+                });
+
+                var repImage = news.body[0];
+                var img = loadNewsImage(repImage);
+                img.alt = news.title;
+                item.appendChild(img);
+
+                var titleElem = document.createElement('div');
+                titleElem.className = 'news-title';
+                titleElem.textContent = news.title;
+                item.appendChild(titleElem);
+
+                var dateElem = document.createElement('div');
+                dateElem.className = 'news-date';
+                dateElem.textContent = formattedDate;
+                item.appendChild(dateElem);
+
+                gallery.appendChild(item);
+            });
+            itemsLoaded += nextKeys.length;
+
+            // 전체 항목이 홀수면 dummy 요소 추가 (화면 반절 차지)
+            if(gallery.children.length % 2 !== 0) {
+                const dummy = document.createElement('div');
+                dummy.className = 'news-item dummy';
+                dummy.style.opacity = '0';
+                dummy.style.pointerEvents = 'none';
+                gallery.appendChild(dummy);
+            }
+        }
+
+        function setupInfiniteScroll() {
+            // 스크롤 끝을 감시할 요소 추가
+            const sentinel = document.createElement('div');
+            sentinel.id = 'sentinel';
+            document.body.appendChild(sentinel);
+
+            const observer = new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting) {
+                    loadMoreItems();
+                }
+            });
+            observer.observe(sentinel);
+        }
+
         function loadNewsImage(filename) { 
             const img = document.createElement('img');
             const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/news/${filename}`;
@@ -190,42 +253,14 @@
                 await loadCommonBody();        
                 initManagerPopup();
 
-                var container = document.getElementById('common-container');
+                 // 기존 갤러리 생성 후 첫 항목만 로드
                 var gallery = document.createElement('div');
                 gallery.className = 'news-gallery';
-
-                Object.keys(cachedData.newsData).forEach(function(dateKey) {
-                    var news = cachedData.newsData[dateKey];
-                    var parts = dateKey.split('-');
-                    var formattedDate = parseInt(parts[0]) + "." + parseInt(parts[1]) + "." + parseInt(parts[2]) + "";
-
-                    var item = document.createElement('div');
-                    item.className = 'news-item';
-                    item.addEventListener('click', function(){
-                        history.pushState({view: 'detail', dateKey: dateKey}, '', '');
-                        showNewsDetail(news);
-                    });
-
-                    // 대표 이미지 (body 배열의 첫번째 이미지)
-                    var repImage = news.body[0];
-                    var img = loadNewsImage(repImage);
-                    img.alt = news.title;
-                    item.appendChild(img);
-
-                    var titleElem = document.createElement('div');
-                    titleElem.className = 'news-title';
-                    titleElem.textContent = news.title;
-                    item.appendChild(titleElem);
-
-                    var dateElem = document.createElement('div');
-                    dateElem.className = 'news-date';
-                    dateElem.textContent = formattedDate;
-                    item.appendChild(dateElem);
-
-                    gallery.appendChild(item);
-                });
-
                 document.querySelector('.main-title-text').insertAdjacentElement('afterend', gallery);
+        
+                loadMoreItems();  // 첫 로딩
+                setupInfiniteScroll();  // 무한 스크롤 설정
+        
                 history.replaceState({view: 'gallery'}, '', '');
             } catch (error) {
                 console.error('초기화 중 오류 발생:', error);
