@@ -439,7 +439,7 @@ function handleLogin() {
     const errorMessage = document.querySelector('#password-managerPopup .error-message');
     const password = passwordInput.value;
 
-    if (password === 'dutndusgkq1990') {
+    if (password === '1324') {
         localStorage.setItem('isAuthenticated', 'true');
         window.location.href = 'managerMain.html';
     } else {
