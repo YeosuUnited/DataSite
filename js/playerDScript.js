@@ -83,6 +83,7 @@ async function renderPlayerList() {
                             displayPlayerRecord(player); // 선수 기록 표시
                             document.getElementById('player-details').style.display = 'block'; // 상세 정보 표시
                             document.getElementById('player-list').style.display = 'none'; // 선수 목록 숨김
+                            window.scrollTo(0, 0); // 추가: 스크롤 최상단 이동
                         } else {
                             console.error(`Player not found for number: ${number}`);
                         }
