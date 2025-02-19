@@ -379,6 +379,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById("type-all").addEventListener("click", (e) => {
                 setActive(e.currentTarget);
+                document.getElementById('player-details').style.display = 'none';
+                document.getElementById('player-list').style.display = 'block';
                 document.querySelectorAll('.position-section').forEach(section => {
                 section.style.display = "block";
                 });
@@ -386,6 +388,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById("type-fw").addEventListener("click", (e) => {
                 setActive(e.currentTarget);
+                document.getElementById('player-details').style.display = 'none';
+                document.getElementById('player-list').style.display = 'block';
                 document.querySelectorAll('.position-section').forEach(section => {
                 section.style.display = (section.id === "section-FW") ? "block" : "none";
                 });
@@ -393,6 +397,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById("type-mf").addEventListener("click", (e) => {
                 setActive(e.currentTarget);
+                document.getElementById('player-details').style.display = 'none';
+                document.getElementById('player-list').style.display = 'block';
                 document.querySelectorAll('.position-section').forEach(section => {
                 section.style.display = (section.id === "section-MF") ? "block" : "none";
                 });
@@ -400,6 +406,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById("type-df").addEventListener("click", (e) => {
                 setActive(e.currentTarget);
+                document.getElementById('player-details').style.display = 'none';
+                document.getElementById('player-list').style.display = 'block';
                 document.querySelectorAll('.position-section').forEach(section => {
                 section.style.display = (section.id === "section-DF") ? "block" : "none";
                 });
@@ -407,6 +415,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById("type-gk").addEventListener("click", (e) => {
                 setActive(e.currentTarget);
+                document.getElementById('player-details').style.display = 'none';
+                document.getElementById('player-list').style.display = 'block';
                 document.querySelectorAll('.position-section').forEach(section => {
                 section.style.display = (section.id === "section-GK") ? "block" : "none";
                 });
