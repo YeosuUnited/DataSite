@@ -60,32 +60,6 @@
                 text-align: center; /* 텍스트가 여러 줄일 경우 가운데 정렬 */
             }
 
-            /* 가로 1열 버튼 스타일 (horizontal-layout 상태) */
-            .button-container.horizontal-layout .action-button {
-                background-color: #4CAF50; /* 가로 1열 배경색 */
-                height: 40px;
-                color: #f4f4f4; /* 가로 1열 글자색 */
-                font-size: 1.5em; /* 가로 1열 글꼴 크기 */
-                padding: 5px 0px 5px 0px; /* 위 오른쪽 아래 왼쪽 안쪽 여백*/
-                border-radius: 5px; /* 가로 1열 버튼 모서리 */
-                width: 100%;
-            }
-
-                /* 가로 1열에서 .style2 버튼만 주황색 유지 */
-                .button-container.horizontal-layout .action-button.style2 {
-                    background-color: #f0960e; /* 선수 추가/수정 버튼 주황색 */
-                }
-
-            .button-container.horizontal-layout {
-                display: flex; /* 클릭 후 가로 정렬 */
-                justify-content: space-between;
-                font-size: 0.5em;
-                align-items: center;
-                height: 50px;
-                padding: 5px;
-                background-color: #ffffff;
-            }
-
         .action-button {
             background-color: #4071e3;
             color: #f4f4f4;
@@ -130,22 +104,12 @@
                 font-size: 1em;
                 padding: 30px;
             }
-
-            .button-container.horizontal-layout .action-button {
-                flex: 1;
-                margin: 0 5px;
-            }
         }
 
         @media (max-width: 480px) {
             .action-button {
                 font-size: 0.8em;
                 padding: 20px;
-            }
-
-            .button-container.horizontal-layout .action-button {
-                flex: 1;
-                margin: 0 3px;
             }
         }
 
@@ -1391,8 +1355,7 @@
             // 메인 8버튼 화면 표시
             const buttonContainer = document.getElementById('button-container');
             buttonContainer.style.display = 'grid';
-            buttonContainer.classList.remove('horizontal-layout');
-            buttonContainer.classList.add('grid');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
         document.querySelectorAll('input[name="player-type"]').forEach((radio) => {
@@ -1433,8 +1396,6 @@
             document.getElementById('player-add-form-container').style.display = 'none';
 
             const buttonContainer = document.getElementById('button-container');
-            buttonContainer.classList.remove('horizontal-layout');
-            buttonContainer.classList.add('grid');
             fetchData().then(() => {
                 if (cachedData && cachedData.players) {
                     console.log(cachedData);
@@ -1903,9 +1864,7 @@
 
         //경기 추가 버튼
         document.getElementById('add-match-button').addEventListener('click', function () {
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.classList.remove('grid');
-            buttonContainer.classList.add('horizontal-layout');
+            document.getElementById('button-container').style.display = 'none';
 
             resetMatchForm(); // 폼 리셋 함수
             document.getElementById('submit-match').style.display = 'block';
@@ -1940,9 +1899,7 @@
         }
 
         document.getElementById('modify-match-button').addEventListener('click', function () {
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.classList.remove('grid');
-            buttonContainer.classList.add('horizontal-layout');
+            document.getElementById('button-container').style.display = 'none';
 
             document.getElementById('match-form-container').style.display = 'none';
             renderTotalMatches(cachedData.matchesTotal); // renderTotalMatches 실행
@@ -1956,9 +1913,7 @@
 
         // "선수 추가" 버튼 클릭 이벤트
         document.getElementById('add-player-button').addEventListener('click', function () {
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.classList.remove('grid');
-            buttonContainer.classList.add('horizontal-layout');
+            document.getElementById('button-container').style.display = 'none';
 
             document.getElementById('match-form-container').style.display = 'none';
             document.getElementById('match-modify-container').style.display = 'none';
@@ -2021,10 +1976,7 @@
 
 
         document.getElementById('add-news-button').addEventListener('click', function () {
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.style.display = 'none'; // 메인 버튼 숨김
-            buttonContainer.classList.remove('grid');
-            buttonContainer.classList.add('horizontal-layout');
+            document.getElementById('button-container').style.display = 'none';
             
             document.getElementById('cancel-news-add').style.display = 'block';
             document.getElementById('add-news-submit').style.display = 'block';
@@ -2041,10 +1993,8 @@
             document.getElementById('cancel-news-add').style.display = 'none';
             document.getElementById('add-news-submit').style.display = 'none';
             document.getElementById('news-add-form-container').style.display = 'none';
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.style.display = 'grid'; // 메인 버튼 복원
-            buttonContainer.classList.remove('horizontal-layout');
-            buttonContainer.classList.add('grid');
+            document.getElementById('button-container').style.display = 'grid';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
         document.getElementById('add-news-submit').addEventListener('click', async function() {
@@ -2117,6 +2067,7 @@
             cancelBtn.addEventListener('click', () => {
                 container.style.display = 'none';
                 document.getElementById('button-container').style.display = 'grid';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             container.appendChild(cancelBtn);
 
@@ -2234,6 +2185,7 @@
                     document.getElementById('news-modify-container').style.display = 'none';
                     // 메인 버튼 복원
                     document.getElementById('button-container').style.display = 'grid';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                     toggleLoadingOverlay(false);
                 } catch (err) {
                     console.error('뉴스 수정 오류:', err);
@@ -2280,6 +2232,7 @@
             document.getElementById('video-add-cancel').addEventListener('click', function () {
                 container.style.display = 'none';
                 document.getElementById('button-container').style.display = 'grid';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
             document.getElementById('video-add-submit').addEventListener('click', async function () {
@@ -2302,6 +2255,7 @@
                     await uploadYouTubeData(cachedData.youtubeLink);
                     container.style.display = 'none';
                     document.getElementById('button-container').style.display = 'grid';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                     toggleLoadingOverlay(false);
                 } catch (err) {
                     alert("영상 추가 중 오류가 발생했습니다.");
@@ -2386,6 +2340,7 @@
             cancelBtn.addEventListener('click', function () {
                 container.style.display = 'none';
                 document.getElementById('button-container').style.display = 'grid';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             container.appendChild(cancelBtn);
 
@@ -2432,6 +2387,7 @@
                     popup.style.display = 'none';
                     document.getElementById('video-modify-form-container').style.display = 'none';
                     document.getElementById('button-container').style.display = 'grid';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                     toggleLoadingOverlay(false);
                 } catch (err) {
                     console.error(err);
@@ -2480,9 +2436,7 @@
 
         // "선수 수정" 버튼 클릭 이벤트
         document.getElementById('modify-player-button').addEventListener('click', function () {
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.classList.remove('grid');
-            buttonContainer.classList.add('horizontal-layout');
+            document.getElementById('button-container').style.display = 'none';
 
             document.getElementById('player-add-form-container').style.display = 'none';
             renderPlayerList(); // 선수 리스트 렌더링
@@ -3239,9 +3193,8 @@
         function resetUIModifyMatch() {
             document.getElementById('match-form').reset();
             document.getElementById('player-list').innerHTML = '';
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.classList.remove('horizontal-layout');
-            buttonContainer.classList.add('grid');
+            document.getElementById('button-container').style.display = 'grid';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             document.getElementById('match-form-container').style.display = 'none';
         }
 
@@ -3432,31 +3385,14 @@
             document.getElementById('player-add-form').reset();
             document.getElementById('player-add-form-container').style.display = 'none';
 
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.classList.remove('horizontal-layout');
-            buttonContainer.classList.add('grid');
+            document.getElementById('button-container').style.display = 'grid';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // "취소하기" 버튼 클릭 이벤트
         document.getElementById('cancel-player-add').addEventListener('click', function () {
-            document.getElementById('player-add-form').reset(); // 폼 초기화
-            document.getElementById('player-add-form-container').style.display = 'none'; // 폼 숨기기
-
-            // 최초 화면 셋팅 복원
-            const buttonContainer = document.getElementById('button-container');
-            buttonContainer.classList.remove('horizontal-layout');
-            buttonContainer.classList.add('grid');
+            resetUIFromModifyPlayer();
         });
-
-        // UTF-8 문자열을 Base64로 변환
-        function utf8ToBase64(str) {
-            return btoa(unescape(encodeURIComponent(str)));
-        }
-
-        // Base64 문자열을 UTF-8로 변환
-        function base64ToUtf8(str) {
-            return decodeURIComponent(escape(atob(str)));
-        }
     </script>
 </body>
 </html>
