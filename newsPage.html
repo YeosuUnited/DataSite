@@ -99,46 +99,40 @@
 
     <script src="https://yeosuunited.com/js/commonScript.js?v=1.12"></script>
     <script>
-        // 상단에 전역 변수 추가
-        let itemsLoaded = 0;
-        const itemsPerLoad = 10;
-
-        function loadMoreItems() {
+        function loadAllItems() {
             const gallery = document.querySelector('.news-gallery');
             const keys = Object.keys(cachedData.newsData);
-            const nextKeys = keys.slice(itemsLoaded, itemsLoaded + itemsPerLoad);
-            nextKeys.forEach(dateKey => {
+            keys.forEach(dateKey => {
                 var news = cachedData.newsData[dateKey];
                 var parts = dateKey.split('-');
                 var formattedDate = parseInt(parts[0]) + "." + parseInt(parts[1]) + "." + parseInt(parts[2]);
-
+        
                 var item = document.createElement('div');
                 item.className = 'news-item';
                 item.addEventListener('click', function(){
                     history.pushState({view: 'detail', dateKey: dateKey}, '', '');
                     showNewsDetail(news);
                 });
-
+        
                 var repImage = news.body[0];
                 var img = loadNewsImage(repImage);
                 img.alt = news.title;
                 item.appendChild(img);
-
+        
                 var titleElem = document.createElement('div');
                 titleElem.className = 'news-title';
                 titleElem.textContent = news.title;
                 item.appendChild(titleElem);
-
+        
                 var dateElem = document.createElement('div');
                 dateElem.className = 'news-date';
                 dateElem.textContent = formattedDate;
                 item.appendChild(dateElem);
-
+        
                 gallery.appendChild(item);
             });
-            itemsLoaded += nextKeys.length;
-
-            // 전체 항목이 홀수면 dummy 요소 추가 (화면 반절 차지)
+        
+            // 홀수 개면 dummy 요소 추가
             if(gallery.children.length % 2 !== 0) {
                 const dummy = document.createElement('div');
                 dummy.className = 'news-item dummy';
@@ -147,38 +141,24 @@
                 gallery.appendChild(dummy);
             }
         }
-
-        function setupInfiniteScroll() {
-            // 스크롤 끝을 감시할 요소 추가
-            const sentinel = document.createElement('div');
-            sentinel.id = 'sentinel';
-            document.body.appendChild(sentinel);
-
-            const observer = new IntersectionObserver(entries => {
-                if (entries[0].isIntersecting) {
-                    loadMoreItems();
-                }
-            });
-            observer.observe(sentinel);
-        }
-
+        
         function loadNewsImage(filename) { 
             const img = document.createElement('img');
             const imageUrl = `https://raw.githubusercontent.com/YeosuUnited/DataSite/main/assets/images/news/${filename}`;
             img.src = imageUrl;
             return img;
         }
-
+        
         // 2. showNewsDetail 함수 (skipPushState: 뒤로가기 처리 시 중복 state 푸시 방지)
         function showNewsDetail(news, skipPushState) {
             removeModal();
             removeDetail();
             var gallery = document.querySelector('.news-gallery');
             if(gallery) gallery.style.display = 'none';
-
+        
             var detailContainer = document.createElement('div');
             detailContainer.className = 'news-detail';
-    
+            
             news.body.forEach(function(imageFilename) {
                 var img = loadNewsImage(imageFilename);
                 img.alt = news.title;
@@ -189,17 +169,17 @@
             });
             document.querySelector('.main-title-text').insertAdjacentElement('afterend', detailContainer);
         }
-
+        
         function showModal(imageSrc, skipPushState) {
             removeModal();
             var modal = document.createElement('div');
             modal.className = 'image-modal';
-    
+            
             var modalImg = document.createElement('img');
             modalImg.src = imageSrc;
             modalImg.className = 'modal-image';
             modal.appendChild(modalImg);
-    
+            
             var closeButton = document.createElement('div');
             closeButton.className = 'modal-close';
             closeButton.textContent = 'X';
@@ -207,11 +187,11 @@
                 history.back();
             });
             modal.appendChild(closeButton);
-    
+            
             document.body.appendChild(modal);
             if(!skipPushState) history.pushState({view: 'modal'}, '', '');
         }
-
+        
         // 4. 헬퍼 함수들 (리스트/상세/모달 제거)
         function removeDetail() {
             var detail = document.querySelector('.news-detail');
@@ -227,7 +207,7 @@
             var gallery = document.querySelector('.news-gallery');
             if(gallery) gallery.style.display = 'flex';
         }
-
+        
         window.addEventListener('popstate', function(e) {
             if(e.state) {
                 if(e.state.view === 'gallery') {
@@ -246,20 +226,19 @@
                 showGallery();
             }
         });
-
+        
         window.onload = async function () {
             try {
                 await fetchData();
                 await loadCommonBody();        
                 initManagerPopup();
-
+        
                  // 기존 갤러리 생성 후 첫 항목만 로드
                 var gallery = document.createElement('div');
                 gallery.className = 'news-gallery';
                 document.querySelector('.main-title-text').insertAdjacentElement('afterend', gallery);
         
-                loadMoreItems();  // 첫 로딩
-                setupInfiniteScroll();  // 무한 스크롤 설정
+                loadAllItems();
         
                 history.replaceState({view: 'gallery'}, '', '');
             } catch (error) {
