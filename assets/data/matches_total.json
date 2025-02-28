@@ -1,16 +1,4 @@
 {
-  "match_00099": {
-    "date": "2025-03-01T13:00:00.000Z",
-    "type": "1",
-    "opponent": "FC아트마",
-    "players": [],
-    "location": "영등포공원 풋살장",
-    "comment": "",
-    "score": {
-      "us": 0,
-      "them": 0
-    }
-  },
   "match_00098": {
     "date": "2025-03-01T01:00:00.000Z",
     "type": "1",
@@ -25,7 +13,7 @@
       "박지훈",
       "이덕환"
     ],
-    "location": "영등포공원",
+    "location": "영등포공원 풋살장",
     "comment": "",
     "score": {
       "us": 0,
