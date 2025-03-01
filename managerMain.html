@@ -2732,7 +2732,12 @@
             }
             document.getElementById('opponent-name').value = matchData.opponent;
             document.getElementById('opponent-score').value = matchData.score.them;
-            document.getElementById('match-date').value = matchData.date;
+            
+            const dateObj = new Date(matchData.date);
+            const localDateTime = dateObj.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM 형식
+            
+            document.getElementById('match-date').value = localDateTime;
+            
             document.getElementById('match-location').value = matchData.location;
             document.getElementById('match-comment').value = matchData.comment;
 
