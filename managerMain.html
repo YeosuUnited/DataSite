@@ -680,6 +680,7 @@
 
         let cachedData = null; // 캐싱 데이터를 저장
         let token = null;
+        let originalMatchData = null; // 불러온 원본 데이터를 저장하는 변수
 
         async function fetchData() {
             const now = new Date().getTime();
@@ -1864,6 +1865,7 @@
 
         //경기 추가 버튼
         document.getElementById('add-match-button').addEventListener('click', function () {
+            originalMatchData = null;
             document.getElementById('button-container').style.display = 'none';
 
             resetMatchForm(); // 폼 리셋 함수
@@ -2713,8 +2715,6 @@
             }
         });
 
-        let originalMatchData = null; // 불러온 원본 데이터를 저장하는 변수
-
         //경기 데이터 저장
         function loadMatchDataToForm(matchData, matchKey) {
             originalMatchData = JSON.parse(JSON.stringify(matchData)); // 원본 데이터 복사
@@ -3083,7 +3083,7 @@
                 const playerRecord = updatedRecordAll[playerNumber] ? { ...updatedRecordAll[playerNumber] } : {};
                 const yearData = playerRecord[year] ? { ...playerRecord[year] } : { goals: 0, assists: 0, attackP: 0, matches: 0 };
 
-                if (originalmatchdata) {
+                if (originalmatchdata != null) {
                     const originalGoals = (originalmatchdata.goal || []).filter(name => name === playerName).length;
                     const originalAssists = (originalmatchdata.assist || []).filter(name => name === playerName).length;
                     const wasPlaying = originalmatchdata.players.includes(playerName);
@@ -3123,7 +3123,7 @@
             const playerRecord = updatedSubRecordAll[playerName] || {};
             const yearData = playerRecord[year] || { goals: 0, assists: 0, attackP: 0, matches: 0 };
 
-            if (originalmatchdata) {
+            if (originalmatchdata != null) {
               // 기존 경기 데이터(originalmatchdata)에 subGoal, subAssist, subP 있는지 확인 후 처리
               const originalGoals = (originalmatchdata.subGoal || []).filter(name => name === playerName).length;
               const originalAssists = (originalmatchdata.subAssist || []).filter(name => name === playerName).length;
@@ -3151,7 +3151,7 @@
         // 매칭 데이터 삭제할 때 선수의 출전여부, 골, 어시 기록을 삭제함
         function deletePlayerMatchData(year) {
             // 기존 데이터(recordAll)를 복사하여 새로운 객체 생성 (원본 데이터 유지)
-            const updatedSubRecordAll = { ...cachedData.recordAll };
+            const updatedRecordAll = { ...cachedData.recordAll };
 
             // cachedData.players를 순회하며 업데이트 진행
             Object.values(cachedData.players).forEach(player => {
@@ -3163,9 +3163,17 @@
                     return;
                 }
 
-                const originalGoals = (originalmatchdata.goal || []).filter(name => name === playerName).length;
-                const originalAssists = (originalmatchdata.assist || []).filter(name => name === playerName).length;
-                const wasPlaying = originalmatchdata.players.includes(playerName);
+                // 생성된 HTML 요소에서 데이터 가져오기
+                const isPlaying = document.querySelector(`input[name="playing_${playerNumber}"]`)?.checked || false;
+                const goals = parseInt(document.getElementById(`goals_${playerNumber}`)?.value || '0', 10);
+                const assists = parseInt(document.getElementById(`assists_${playerNumber}`)?.value || '0', 10);
+
+                const playerRecord = updatedRecordAll[playerNumber] ? { ...updatedRecordAll[playerNumber] } : {};
+                const yearData = playerRecord[year] ? { ...playerRecord[year] } : { goals: 0, assists: 0, attackP: 0, matches: 0 };
+
+                const originalGoals = (originalMatchData.goal || []).filter(name => name === playerName).length;
+                const originalAssists = (originalMatchData.assist || []).filter(name => name === playerName).length;
+                const wasPlaying = originalMatchData.players.includes(playerName);
 
                 yearData.goals -= goals;
                 yearData.assists -= assists;
@@ -3185,14 +3193,20 @@
             // 기존 데이터(recordAll)를 복사하여 새로운 객체 생성 (원본 데이터 유지)
             const updatedSubRecordAll = { ...cachedData.subPlayer };
 
-            Object.values(cachedData.subPlayer).forEach(player => {
+            Object.values(cachedData.subPlayer).forEach(playerName => {
+
+                // 생성된 HTML 요소에서 데이터 가져오기
+                const isPlaying = document.querySelector(`input[name="playing_${playerName}"]`)?.checked || false;
+                const goals = parseInt(document.getElementById(`goals_${playerName}`)?.value || '0', 10);
+                const assists = parseInt(document.getElementById(`assists_${playerName}`)?.value || '0', 10);
+
                 // 등번호 없이 이름 기반으로 기록 업데이트
-                const playerRecord = updatedSubRecordAll[player] || {};
+                const playerRecord = updatedSubRecordAll[playerName] || {};
                 const yearData = playerRecord[year] || { goals: 0, assists: 0, attackP: 0, matches: 0 };
 
-                const originalGoals = originalMatchData.subGoal.filter(name => name === player).length;
-                const originalAssists = originalMatchData.subAssist.filter(name => name === player).length;
-                const wasPlaying = originalMatchData.subP.includes(player);
+                const originalGoals = (originalMatchData.subGoal || []).filter(name => name === playerName).length;
+                const originalAssists = (originalMatchData.subAssist || []).filter(name => name === playerName).length;
+                const wasPlaying = Array.isArray(originalMatchData.subP) && originalMatchData.subP.includes(playerName);
                                 
                 yearData.goals -= originalGoals;
                 yearData.assists -= originalAssists;
@@ -3201,7 +3215,7 @@
 
                 // 업데이트된 데이터를 반영
                 playerRecord[year] = yearData;
-                updatedRecordAll[player] = playerRecord;
+                updatedSubRecordAll[playerName] = playerRecord;
             });
 
             return updatedSubRecordAll;
@@ -3212,7 +3226,6 @@
             document.getElementById('match-form').reset();
             document.getElementById('player-list').innerHTML = '';
             document.getElementById('button-container').style.display = 'grid';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
             document.getElementById('match-form-container').style.display = 'none';
         }
 
