@@ -17,12 +17,20 @@
         .header {
             background-color: #2565D0;
             color: #e5e5e5;
+            top: 0;
+            left: 0;
             height: 66px;
             width: 100%;
             padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: fixed;
+            z-index: 1000;
+        }
+
+        .main-content {
+            margin-top: 66px; /* 상단바 높이만큼 여백을 줌 */
         }
 
         .header-title {
@@ -492,187 +500,189 @@
         </a>
         <span class="header-title">관리자 페이지</span>
     </div>
-    <div class="button-container" id="button-container">
-        <button class="action-button style1" id="add-match-button">경기 추가</button>
-        <button class="action-button style1" id="modify-match-button">경기 수정</button>
-        <button class="action-button style2" id="add-player-button">선수 추가</button>
-        <button class="action-button style2" id="modify-player-button">선수 수정</button>
-        <button class="action-button style1" id="add-news-button">뉴스 추가</button>
-        <button class="action-button style1" id="modify-news-button">뉴스 수정</button>
-        <button class="action-button style2" id="add-video-button">영상 추가</button>
-        <button class="action-button style2" id="modify-video-button">영상 수정</button>
-    </div>
+    <div class="main-content">
+        <div class="button-container" id="button-container">
+            <button class="action-button style1" id="add-match-button">경기 추가</button>
+            <button class="action-button style1" id="modify-match-button">경기 수정</button>
+            <button class="action-button style2" id="add-player-button">선수 추가</button>
+            <button class="action-button style2" id="modify-player-button">선수 수정</button>
+            <button class="action-button style1" id="add-news-button">뉴스 추가</button>
+            <button class="action-button style1" id="modify-news-button">뉴스 수정</button>
+            <button class="action-button style2" id="add-video-button">영상 추가</button>
+            <button class="action-button style2" id="modify-video-button">영상 수정</button>
+        </div>
 
-    <!-- 경기 추가 화면 -->
-    <div id="match-form-container" class="match-form" style="display: none;">
-        <form id="match-form">
-            <label>경기 종류</label>
-            <div id="match-types">
-                <label>축구 <input type="radio" name="match-type" value="축구"></label>
-                <label>풋살 <input type="radio" name="match-type" value="풋살"></label>
-                <label>자체전 <input type="radio" name="match-type" value="자체전"></label>
-            </div>
+        <!-- 경기 추가 화면 -->
+        <div id="match-form-container" class="match-form" style="display: none;">
+            <form id="match-form">
+                <label>경기 종류</label>
+                <div id="match-types">
+                    <label>축구 <input type="radio" name="match-type" value="축구"></label>
+                    <label>풋살 <input type="radio" name="match-type" value="풋살"></label>
+                    <label>자체전 <input type="radio" name="match-type" value="자체전"></label>
+                </div>
 
-            <label>상대팀 이름</label>
-            <input type="text" id="opponent-name" placeholder="상대이름 입력">
+                <label>상대팀 이름</label>
+                <input type="text" id="opponent-name" placeholder="상대이름 입력">
 
-            <label>상대팀 점수</label>
-            <input type="number" id="opponent-score" placeholder="상대팀 점수 입력" min="0" step="1">
+                <label>상대팀 점수</label>
+                <input type="number" id="opponent-score" placeholder="상대팀 점수 입력" min="0" step="1">
 
-            <label>날짜/시간</label>
-            <input type="datetime-local" id="match-date">
+                <label>날짜/시간</label>
+                <input type="datetime-local" id="match-date">
 
-            <label>장소</label>
-            <input type="text" id="match-location" placeholder="경기장소 입력">
+                <label>장소</label>
+                <input type="text" id="match-location" placeholder="경기장소 입력">
 
-            <label>참가 선수 (정회원)</label>
-            <table>
-                <thead>
-                    <tr>
-                        <th>이름</th>
-                        <th>출전</th>
-                        <th>득점</th>
-                        <th>도움</th>
-                    </tr>
-                </thead>
-                <tbody id="player-list"></tbody>
-            </table>
+                <label>참가 선수 (정회원)</label>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>이름</th>
+                            <th>출전</th>
+                            <th>득점</th>
+                            <th>도움</th>
+                        </tr>
+                    </thead>
+                    <tbody id="player-list"></tbody>
+                </table>
 
-            <label>참가 선수 (용병)</label>
-            <table>
-                <thead>
-                    <tr>
-                        <th>이름</th>
-                        <th>출전</th>
-                        <th>득점</th>
-                        <th>도움</th>
-                    </tr>
-                </thead>
-                <tbody id="subPlayer-list"></tbody>
-            </table>
+                <label>참가 선수 (용병)</label>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>이름</th>
+                            <th>출전</th>
+                            <th>득점</th>
+                            <th>도움</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subPlayer-list"></tbody>
+                </table>
 
-            <label>코멘트</label>
-            <textarea id="match-comment" placeholder="코멘트 입력"></textarea>
+                <label>코멘트</label>
+                <textarea id="match-comment" placeholder="코멘트 입력"></textarea>
 
-            <button type="button" id="submit-match">추가하기</button>
-            <button type="button" id="update-match">수정하기</button>
-            <button type="button" id="delete-match">삭제하기</button>
-            <button type="button" id="cancel-match">취소하기</button>
-        </form>
-    </div>
+                <button type="button" id="submit-match">추가하기</button>
+                <button type="button" id="update-match">수정하기</button>
+                <button type="button" id="delete-match">삭제하기</button>
+                <button type="button" id="cancel-match">취소하기</button>
+            </form>
+        </div>
 
-    <!-- 경기 수정 페이지 -->
-    <div id="match-modify-container" class="match-form" style="display: none;">
-        <!-- 경기 수정 페이지 내용 -->
-        <h2>경기 수정</h2>
-        <div id="allMatchesContainer" class="matches-defaultBox"></div>
-    </div>
+        <!-- 경기 수정 페이지 -->
+        <div id="match-modify-container" class="match-form" style="display: none;">
+            <!-- 경기 수정 페이지 내용 -->
+            <h2>경기 수정</h2>
+            <div id="allMatchesContainer" class="matches-defaultBox"></div>
+        </div>
 
-    <div id="player-add-form-container" style="display: none;">
-        <h2>선수 추가</h2>
-        <form id="player-add-form">
-            <label id="playerTypeLabel">선수 종류</label>
-            <div id="player-types">
-                <label>정회원 <input type="radio" name="player-type" value="정회원" checked></label>
-                <label>용병 <input type="radio" name="player-type" value="용병"></label>                
-            </div>
-            <label>프로필 사진</label>
-            <input type="file" id="player-photo" accept=".png" required>
-            <p id="photoNotice">※ 배경없는 사진. 파일 형식은 png.</p>
+        <div id="player-add-form-container" style="display: none;">
+            <h2>선수 추가</h2>
+            <form id="player-add-form">
+                <label id="playerTypeLabel">선수 종류</label>
+                <div id="player-types">
+                    <label>정회원 <input type="radio" name="player-type" value="정회원" checked></label>
+                    <label>용병 <input type="radio" name="player-type" value="용병"></label>                
+                </div>
+                <label>프로필 사진</label>
+                <input type="file" id="player-photo" accept=".png" required>
+                <p id="photoNotice">※ 배경없는 사진. 파일 형식은 png.</p>
 
-            <label>카드 사진</label>
-            <input type="file" id="player-photocard" accept=".png" required>
-            <p id="photocardNotice">※ 배경있는 사진. 파일 형식은 png.</p>
+                <label>카드 사진</label>
+                <input type="file" id="player-photocard" accept=".png" required>
+                <p id="photocardNotice">※ 배경있는 사진. 파일 형식은 png.</p>
 
-            <label>이름</label>
-            <input type="text" id="player-name" placeholder="이름 입력" required>
+                <label>이름</label>
+                <input type="text" id="player-name" placeholder="이름 입력" required>
 
-            <label>생년월일</label>
-            <input type="date" id="player-birth" required>
+                <label>생년월일</label>
+                <input type="date" id="player-birth" required>
 
-            <label>국적</label>
-            <select id="player-nationality" required>
-                <option value="대한민국">대한민국</option>
-                <option value="미국">미국</option>
-                <option value="일본">일본</option>
-                <option value="중국">중국</option>
-                <option value="대만">대만</option>
-                <option value="영국">영국</option>
-                <option value="프랑스">프랑스</option>
-                <option value="이탈리아">이탈리아</option>
-                <option value="독일">독일</option>
-                <!-- 필요시 국가 추가 -->
-            </select>
+                <label>국적</label>
+                <select id="player-nationality" required>
+                    <option value="대한민국">대한민국</option>
+                    <option value="미국">미국</option>
+                    <option value="일본">일본</option>
+                    <option value="중국">중국</option>
+                    <option value="대만">대만</option>
+                    <option value="영국">영국</option>
+                    <option value="프랑스">프랑스</option>
+                    <option value="이탈리아">이탈리아</option>
+                    <option value="독일">독일</option>
+                    <!-- 필요시 국가 추가 -->
+                </select>
 
-            <label>등번호</label>
-            <input type="number" id="player-number" min="1" placeholder="등번호 입력" required>
+                <label>등번호</label>
+                <input type="number" id="player-number" min="1" placeholder="등번호 입력" required>
 
-            <label>포지션</label>
-            <input type="text" id="player-position" placeholder="포지션 입력" required>
+                <label>포지션</label>
+                <input type="text" id="player-position" placeholder="포지션 입력" required>
 
-            <label>키(cm)</label>
-            <input type="number" id="player-height" min="1" placeholder="키 입력" required>
+                <label>키(cm)</label>
+                <input type="number" id="player-height" min="1" placeholder="키 입력" required>
 
-            <label>몸무게(kg)</label>
-            <input type="number" id="player-weight" min="1" placeholder="몸무게 입력" required>
+                <label>몸무게(kg)</label>
+                <input type="number" id="player-weight" min="1" placeholder="몸무게 입력" required>
 
-            <label>휴대폰(-없이 숫자만)</label>
-            <input type="number" id="player-phoneNumber" min="1" placeholder="휴대폰 번호 입력" required>
+                <label>휴대폰(-없이 숫자만)</label>
+                <input type="number" id="player-phoneNumber" min="1" placeholder="휴대폰 번호 입력" required>
 
-            <label>혈액형</label>            
-            <select id="player-bloodType" required>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="O">O</option>
-                <option value="AB">AB</option>
-                <!-- 필요시 국가 추가 -->
-            </select>
+                <label>혈액형</label>            
+                <select id="player-bloodType" required>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="O">O</option>
+                    <option value="AB">AB</option>
+                    <!-- 필요시 국가 추가 -->
+                </select>
 
-            <button type="button" id="add-player-submit">추가하기</button>
-            <button type="button" id="modify-player-confirm">수정하기</button>
-            <button type="button" id="changeFromSub-player">정회원 변환</button>
-            <button type="button" id="changeFromSub-lastBtn">정회원 최종승인</button>
-            <button type="button" id="cancel-player-add">취소하기</button>
-            <button type="button" id="delete-player-confirm">삭제하기</button>
-        </form>
-    </div>
+                <button type="button" id="add-player-submit">추가하기</button>
+                <button type="button" id="modify-player-confirm">수정하기</button>
+                <button type="button" id="changeFromSub-player">정회원 변환</button>
+                <button type="button" id="changeFromSub-lastBtn">정회원 최종승인</button>
+                <button type="button" id="cancel-player-add">취소하기</button>
+                <button type="button" id="delete-player-confirm">삭제하기</button>
+            </form>
+        </div>
         
-    <!-- 기존 player-list-container HTML을 이런 식으로 변경 -->
-    <div id="player-list-container" style="display: none;">
-         <label>선수 종류</label>
-         <div id="playerList-types"> 
-             <label>정회원 
-                <input type="radio" name="playerList-type" value="정회원" checked>
-             </label>
-             <label>용병 
-                <input type="radio" name="playerList-type" value="용병">
-             </label>                 
-         </div>
+        <!-- 기존 player-list-container HTML을 이런 식으로 변경 -->
+        <div id="player-list-container" style="display: none;">
+             <label>선수 종류</label>
+             <div id="playerList-types"> 
+                 <label>정회원 
+                    <input type="radio" name="playerList-type" value="정회원" checked>
+                 </label>
+                 <label>용병 
+                    <input type="radio" name="playerList-type" value="용병">
+                 </label>                 
+             </div>
 
-          <!-- 실제 목록을 그릴 영역 -->
-          <div id="player-list-wrapper"></div>
-    </div>
+              <!-- 실제 목록을 그릴 영역 -->
+              <div id="player-list-wrapper"></div>
+        </div>
 
-    <!-- 뉴스 추가 화면 -->
-    <div id="news-add-form-container" style="display: none;">
-        <h2>뉴스 추가</h2>
-        <form id="news-add-form">
-            <div class="news-field">
-                <div class="news-label">제목</div>
-                <input type="text" id="news-title" placeholder="제목 입력" required>
-            </div>
-            <div class="news-field">
-                <div class="news-label">날짜</div>
-                <input type="date" id="news-date" required>
-            </div>
-            <div class="news-label">사진 추가</div>
-                <div id="uploaded-files-list"></div>
-                <input type="file" id="news-file-input" accept=".jpg,.mp4" style="display: none;">
-                <button type="button" id="upload-file-btn">파일 업로드</button>
-            </div>
-            <button type="button" id="add-news-submit" style="display: none;">추가하기</button>
-            <button type="button" id="cancel-news-add" style="display: none;">취소하기</button>
-        </form>
+        <!-- 뉴스 추가 화면 -->
+        <div id="news-add-form-container" style="display: none;">
+            <h2>뉴스 추가</h2>
+            <form id="news-add-form">
+                <div class="news-field">
+                    <div class="news-label">제목</div>
+                    <input type="text" id="news-title" placeholder="제목 입력" required>
+                </div>
+                <div class="news-field">
+                    <div class="news-label">날짜</div>
+                    <input type="date" id="news-date" required>
+                </div>
+                <div class="news-label">사진 추가</div>
+                    <div id="uploaded-files-list"></div>
+                    <input type="file" id="news-file-input" accept=".jpg,.mp4" style="display: none;">
+                    <button type="button" id="upload-file-btn">파일 업로드</button>
+                </div>
+                <button type="button" id="add-news-submit" style="display: none;">추가하기</button>
+                <button type="button" id="cancel-news-add" style="display: none;">취소하기</button>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@latest/dist/browser-image-compression.js"></script>
