@@ -2732,23 +2732,23 @@
             }
             document.getElementById('opponent-name').value = matchData.opponent;
             document.getElementById('opponent-score').value = matchData.score.them;
-            
+
             const dateObj = new Date(matchData.date);
 
             // 한국 시간(KST, UTC+9)으로 변환
             dateObj.setMinutes(dateObj.getMinutes() + dateObj.getTimezoneOffset() + 540);
-            
+
             const year = dateObj.getFullYear();
             const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // 월(0-11)이므로 +1
             const day = String(dateObj.getDate()).padStart(2, '0');
             const hours = String(dateObj.getHours()).padStart(2, '0');
             const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-            
+
             // YYYY-MM-DDTHH:MM 형식
             const localDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-            
+
             document.getElementById('match-date').value = localDateTime;
-            
+
             document.getElementById('match-location').value = matchData.location;
             document.getElementById('match-comment').value = matchData.comment;
 
@@ -3060,7 +3060,7 @@
         }
 
         // 선수의 선수참가여부, 골, 어시의 변화 체크
-        function processPlayerData(year, originMatchData) {
+        function processPlayerData(year, originalmatchdata) {
             // 기존 데이터(recordAll)를 복사하여 새로운 객체 생성 (원본 데이터 유지)
             const updatedRecordAll = { ...cachedData.recordAll };
 
@@ -3083,10 +3083,10 @@
                 const playerRecord = updatedRecordAll[playerNumber] ? { ...updatedRecordAll[playerNumber] } : {};
                 const yearData = playerRecord[year] ? { ...playerRecord[year] } : { goals: 0, assists: 0, attackP: 0, matches: 0 };
 
-                if (originMatchData) {
-                    const originalGoals = (originMatchData.goal || []).filter(name => name === playerName).length;
-                    const originalAssists = (originMatchData.assist || []).filter(name => name === playerName).length;
-                    const wasPlaying = originMatchData.players.includes(playerName);
+                if (originalmatchdata) {
+                    const originalGoals = (originalmatchdata.goal || []).filter(name => name === playerName).length;
+                    const originalAssists = (originalmatchdata.assist || []).filter(name => name === playerName).length;
+                    const wasPlaying = originalmatchdata.players.includes(playerName);
 
                     yearData.goals += goals - originalGoals;
                     yearData.assists += assists - originalAssists;
@@ -3108,7 +3108,7 @@
         }
 
         // 용병의 선수참가여부, 골, 어시의 변화 체크
-        function processSubPlayerData(year, originMatchData = null) {
+        function processSubPlayerData(year, originalmatchdata = null) {
           // 기존 데이터(cachedData.subPlayer)를 복사하여 새로운 객체 생성 (원본 데이터 유지)
           const updatedSubRecordAll = { ...cachedData.subPlayer };
 
@@ -3123,11 +3123,11 @@
             const playerRecord = updatedSubRecordAll[playerName] || {};
             const yearData = playerRecord[year] || { goals: 0, assists: 0, attackP: 0, matches: 0 };
 
-            if (originMatchData) {
-              // 기존 경기 데이터(originMatchData)에 subGoal, subAssist, subP 있는지 확인 후 처리
-              const originalGoals = (originMatchData.subGoal || []).filter(name => name === playerName).length;
-              const originalAssists = (originMatchData.subAssist || []).filter(name => name === playerName).length;
-              const wasPlaying = Array.isArray(originMatchData.subP) && originMatchData.subP.includes(playerName);
+            if (originalmatchdata) {
+              // 기존 경기 데이터(originalmatchdata)에 subGoal, subAssist, subP 있는지 확인 후 처리
+              const originalGoals = (originalmatchdata.subGoal || []).filter(name => name === playerName).length;
+              const originalAssists = (originalmatchdata.subAssist || []).filter(name => name === playerName).length;
+              const wasPlaying = Array.isArray(originalmatchdata.subP) && originalmatchdata.subP.includes(playerName);
 
               yearData.goals += goals - originalGoals;
               yearData.assists += assists - originalAssists;
@@ -3163,9 +3163,9 @@
                     return;
                 }
 
-                const originalGoals = (originMatchData.goal || []).filter(name => name === playerName).length;
-                const originalAssists = (originMatchData.assist || []).filter(name => name === playerName).length;
-                const wasPlaying = originMatchData.players.includes(playerName);
+                const originalGoals = (originalmatchdata.goal || []).filter(name => name === playerName).length;
+                const originalAssists = (originalmatchdata.assist || []).filter(name => name === playerName).length;
+                const wasPlaying = originalmatchdata.players.includes(playerName);
 
                 yearData.goals -= goals;
                 yearData.assists -= assists;
@@ -3410,6 +3410,26 @@
         // "취소하기" 버튼 클릭 이벤트
         document.getElementById('cancel-player-add').addEventListener('click', function () {
             resetUIFromModifyPlayer();
+        });
+
+        history.pushState(null, null, location.href);
+            window.addEventListener('popstate', function() {
+                if (document.getElementById('button-container').style.display === 'none') {
+                    document.getElementById('button-container').style.display = 'grid';
+                    document.getElementById('match-form-container').style.display = 'none';
+                    document.getElementById('match-modify-container').style.display = 'none';
+                    document.getElementById('player-add-form-container').style.display = 'none';
+                    document.getElementById('player-list-container').style.display = 'none';
+                    document.getElementById('news-add-form-container').style.display = 'none';
+                    if(document.getElementById('video-add-form-container')) {
+                        document.getElementById('video-add-form-container').style.display = 'none';
+                    }
+                    if(document.getElementById('video-modify-form-container')) {
+                        document.getElementById('video-modify-form-container').style.display = 'none';
+                    }
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+                history.pushState(null, null, location.href);
         });
     </script>
 </body>
