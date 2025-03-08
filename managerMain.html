@@ -3203,7 +3203,7 @@
             // 기존 데이터(recordAll)를 복사하여 새로운 객체 생성 (원본 데이터 유지)
             const updatedSubRecordAll = { ...cachedData.subPlayer };
 
-            Object.values(cachedData.subPlayer).forEach(playerName => {
+            Object.keys(cachedData.subPlayer).forEach(playerName => {
 
                 // 생성된 HTML 요소에서 데이터 가져오기
                 const isPlaying = document.querySelector(`input[name="playing_${playerName}"]`)?.checked || false;
