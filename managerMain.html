@@ -1774,7 +1774,7 @@
 
                 // 기존 데이터에서 window.currentMatchKey와 동일한 matchKey 제거
                 const filteredContent = Object.fromEntries(
-                    Object.entries(existingData).filter(([key]) => key !== nowClickPlayer)
+                    Object.entries(existingData).filter(([key]) => key !== nowClickPlayer.id)
                 );
 
                 // 데이터를 GitHub에 저장
