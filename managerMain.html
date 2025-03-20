@@ -929,9 +929,7 @@
             document.getElementById('player-add-form-container').style.display = 'none';
 
             const buttonContainer = document.getElementById('button-container');
-
-            sessionStorage.setItem("reloadIndex", "true"); // index.html에서 새로고침하도록 설정
-
+            
             fetchData().then(() => {
                 if (cachedData && cachedData.players) {
                     console.log(cachedData);
