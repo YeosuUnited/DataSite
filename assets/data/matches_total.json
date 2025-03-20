@@ -1,16 +1,4 @@
 {
-  "match_00102": {
-    "date": "2025-04-21T10:04:00.000Z",
-    "type": "0",
-    "opponent": "테스트",
-    "players": [],
-    "location": "",
-    "comment": "",
-    "score": {
-      "us": 0,
-      "them": 1
-    }
-  },
   "match_00101": {
     "date": "2025-03-22T05:01:00.000Z",
     "type": "0",
