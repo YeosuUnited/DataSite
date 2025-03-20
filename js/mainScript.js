@@ -298,10 +298,4 @@ window.onload = async function () {
     }
 
     document.getElementById('loader').style.display = 'none';
-
-    // 매니저 페이지에서 왔다면 새로고침
-    if (sessionStorage.getItem("reloadIndex") === "true") {
-        sessionStorage.removeItem("reloadIndex"); // 플래그 제거
-        location.reload(); // 강제 새로고침
-    }
 };
