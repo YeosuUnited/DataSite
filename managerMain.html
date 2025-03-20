@@ -1085,6 +1085,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, newsData, sha, "뉴스 데이터를 업로드합니다.");
 
                 cachedData.newsData = newsData;
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error uploading news data:", error);
                 alert("뉴스 데이터를 업로드하는 중 오류가 발생했습니다.");
@@ -1563,9 +1564,6 @@
                 .sort((a, b) => (a < b ? 1 : -1))
                 .forEach(key => { sortedNews[key] = cachedData.newsData[key]; });
             cachedData.newsData = sortedNews;
-
-            console.log(sortedNews);
-
             try {
                 toggleLoadingOverlay(true);
                 await uploadNewsData(sortedNews);
@@ -1812,8 +1810,9 @@
             const filePath = "assets/data/youtube_link.json";
             const repoOwner = "YeosuUnited";
             const repoName = "DataSite";
-            const { sha } = await getGitHubFileMG(repoOwner, repoName, filePath);
+            const { sha } = await getGitHubFileMG(repoOwner, repoName, filePath);            
             await saveGitHubFile(repoOwner, repoName, filePath, youtubeData, sha, "영상 데이터를 업로드합니다.");
+            localStorage.setItem('cachedData', JSON.stringify(cachedData));
         }
 
         // 1. "영상 수정" 버튼 클릭 시
