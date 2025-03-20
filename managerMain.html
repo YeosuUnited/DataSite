@@ -1765,6 +1765,7 @@
 
         async function uploadDeleteSubPlayerData(){
             try {
+                console.log("uploadDeleteSubPlayerData");
                 const filePath = "assets/data/subPlayer_data.json";
                 const repoOwner = "YeosuUnited";
                 const repoName = "DataSite";
@@ -1774,7 +1775,7 @@
 
                 // 기존 데이터에서 window.currentMatchKey와 동일한 matchKey 제거
                 const filteredContent = Object.fromEntries(
-                    Object.entries(existingData).filter(([key]) => key !== nowClickPlayer.id)
+                    Object.entries(existingData).filter(([key]) => key !== nowClickPlayer)                    
                 );
 
                 // 데이터를 GitHub에 저장
@@ -2459,6 +2460,7 @@
         let nowClickPlayer = null;
 
         function renderPlayerList() {
+            console.log("renderPlayerList");
             const container = document.getElementById('player-list-container');
             container.style.display = 'block';
 
@@ -2614,6 +2616,7 @@
 
                     cachedData.players[updatedPlayer.number] = updatedPlayer; // 데이터 업데이트
                     document.getElementById('player-add-form-container').style.display = 'none';
+                    document.getElementById('player-list-container').style.display = 'none';
                     toggleLoadingOverlay(false);
                 });
             }
@@ -2639,6 +2642,7 @@
 
                     cachedData.players[updatedPlayer.name] = updatedPlayer; // 데이터 업데이트
                     document.getElementById('player-add-form-container').style.display = 'none';
+                    document.getElementById('player-list-container').style.display = 'none';
                     toggleLoadingOverlay(false);
                 });
 
@@ -2920,8 +2924,8 @@
 
         function getPlayerType(){
             const selectedType = document.querySelector('input[name="player-type"]:checked')?.value;
-            if(!selectedType) throw new Error('선수 종류를 선택해주세요');
-            
+            if(!selectedType) throw new Error('선수 종류를 선택해주세요');           
+
             const typeMap = { "정회원" : "0", "용병" : "1"};
             const typeNumber = typeMap[selectedType];
 
@@ -3245,7 +3249,8 @@
 
             const playerType = getPlayerType();
 
-            if(playerType == 0){
+            if(playerType.typeNumber == "0"){
+
                 const photoInput = document.getElementById('player-photo');
                 const photocardInput = document.getElementById('player-photocard');
                 const playerName = document.getElementById('player-name').value.trim();
@@ -3292,6 +3297,7 @@
                 renderPlayerList();
 
                 resetUIFromModifyPlayer();
+                document.getElementById('player-list-container').style.display = 'none';
                 toggleLoadingOverlay(false);
             }
         });
@@ -3342,6 +3348,7 @@
             renderPlayerList();
 
             resetUIFromModifyPlayer();
+            document.getElementById('player-list-container').style.display = 'none';
             toggleLoadingOverlay(false);
         });
 
@@ -3359,6 +3366,7 @@
             }
 
             resetUIFromModifyPlayer();
+            document.getElementById('player-list-container').style.display = 'none';
             toggleLoadingOverlay(false);
         });
 
