@@ -2919,7 +2919,7 @@
         });
 
         function getPlayerType(){
-            const selectedType = document.querySelector('input[name="player-types"]:checked')?.value;
+            const selectedType = document.querySelector('input[name="playerList-type"]:checked')?.value;
             if(!selectedType) throw new Error('선수 종류를 선택해주세요');
             
             const typeMap = { "정회원" : "0", "용병" : "1"};
