@@ -1,5 +1,6 @@
 let cachedData = null; // 캐싱 데이터를 저장
 let token = null;
+let originalMatchData = null; // 불러온 원본 데이터를 저장하는 변수
 
 async function fetchData() {
     const now = new Date().getTime();
@@ -237,6 +238,26 @@ async function addMissingSubYearData(year, subPlayer, subSha) {
 
 // 공통 유틸리티 함수: GitHub 파일 가져오기
 async function getGitHubFile(repoOwner, repoName, filePath) {
+    const response = await fetch(`https://raw.githubusercontent.com/YeosuUnited/DataSite/main/${filePath}`);
+
+    if (response.ok) {
+        try {
+            const fileData = await response.json(); // Base64 변환 제거
+            return {
+                sha: null, // raw.githubusercontent.com에서는 sha 제공 안 함
+                content: fileData,
+            };
+        } catch (error) {
+            console.error(`JSON 파싱 오류 발생: ${filePath}`, error);
+            return { sha: null, content: {} };
+        }
+    } else {
+        console.warn(`파일을 찾을 수 없습니다: ${filePath}`);
+        return { sha: null, content: {} };
+    }
+}
+
+async function getGitHubFileMG(repoOwner, repoName, filePath) {
     const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
         headers: {
             Authorization: `token ${token}`,
@@ -252,24 +273,7 @@ async function getGitHubFile(repoOwner, repoName, filePath) {
     } else {
         console.warn(`파일을 찾을 수 없습니다: ${filePath}`);
         return { sha: null, content: {} };
-    }    
-    //const response = await fetch(`https://raw.githubusercontent.com/YeosuUnited/DataSite/main/${filePath}`);
-
-    //if (response.ok) {
-    //    try {
-    //        const fileData = await response.json(); // Base64 변환 제거
-    //        return {
-    //            sha: null, // raw.githubusercontent.com에서는 sha 제공 안 함
-    //            content: fileData,
-    //        };
-    //    } catch (error) {
-    //        console.error(`JSON 파싱 오류 발생: ${filePath}`, error);
-    //       return { sha: null, content: {} };
-    //    }
-    //} else {
-    //    console.warn(`파일을 찾을 수 없습니다: ${filePath}`);
-    //    return { sha: null, content: {} };
-    //}
+    }                
 }
 
 // 공통 유틸리티 함수: GitHub 파일 저장
