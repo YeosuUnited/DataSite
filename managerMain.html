@@ -929,7 +929,7 @@
             document.getElementById('player-add-form-container').style.display = 'none';
 
             const buttonContainer = document.getElementById('button-container');
-            
+
             fetchData().then(() => {
                 if (cachedData && cachedData.players) {
                     console.log(cachedData);
@@ -966,6 +966,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, finalSortedContent, sha, "경기 데이터를 추가 및 정렬합니다.");
 
                 cachedData.matchesTotal = finalSortedContent;
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error saving match data:", error);
                 alert("경기 데이터를 저장하는 중 오류가 발생했습니다.");
@@ -997,6 +998,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, finalSortedContent, sha, "경기 데이터를 수정 및 정렬합니다.");
 
                 cachedData.matchesTotal = finalSortedContent;
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error saving match data:", error);
                 alert("경기 데이터를 저장하는 중 오류가 발생했습니다.");
@@ -1024,6 +1026,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, finalSortedContent, sha, "경기 데이터를 삭제 및 정렬합니다.");
 
                 cachedData.matchesTotal = finalSortedContent;
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error saving match data:", error);
                 alert("경기 데이터를 저장하는 중 오류가 발생했습니다.");
@@ -1042,7 +1045,7 @@
                 // 데이터를 GitHub에 저장
                 await saveGitHubFile(repoOwner, repoName, filePath, recordData, sha, "새로운 기록 데이터를 업로드합니다.");
                 cachedData.recordAll = recordData;
-
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error uploading match data:", error);
                 alert("경기 데이터를 업로드하는 중 오류가 발생했습니다.");
@@ -1062,6 +1065,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, subRecordData, sha, "새로운 기록 데이터를 업로드합니다.");
 
                 cachedData.subPlayer = subRecordData;
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error uploading match data:", error);
                 alert("경기 데이터를 업로드하는 중 오류가 발생했습니다.");
@@ -1192,7 +1196,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, sortedData, sha, "새로운 선수 데이터를 추가합니다.");
 
                 cachedData.players = sortedData;
-
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error uploading match data:", error);
                 alert("경기 데이터를 업로드하는 중 오류가 발생했습니다.");
@@ -1245,6 +1249,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, sortedData, sha, "새로운 선수 데이터를 추가합니다.");
 
                 cachedData.subPlayer = sortedData;
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error uploading match data:", error);
                 alert("경기 데이터를 업로드하는 중 오류가 발생했습니다.");
@@ -1280,6 +1285,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, filteredContent, sha, "선수 데이터를 삭제합니다.");
 
                 cachedData.players = filteredContent;
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error uploading match data:", error);
                 alert("경기 데이터를 업로드하는 중 오류가 발생했습니다.");
@@ -1304,6 +1310,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, filteredContent, sha, "선수 데이터를 삭제합니다.");
 
                 cachedData.subPlayer = filteredContent;
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error uploading match data:", error);
                 alert("경기 데이터를 업로드하는 중 오류가 발생했습니다.");
@@ -1328,6 +1335,7 @@
                 await saveGitHubFile(repoOwner, repoName, filePath, filteredContent, sha, "선수 데이터를 삭제합니다.");
 
                 cachedData.recordAll = filteredContent;
+                localStorage.setItem('cachedData', JSON.stringify(cachedData));
             } catch (error) {
                 console.error("Error uploading match data:", error);
                 alert("경기 데이터를 업로드하는 중 오류가 발생했습니다.");
