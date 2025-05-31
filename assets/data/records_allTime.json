@@ -100,7 +100,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 8
+      "matches": 9
     }
   },
   "7": {
@@ -152,7 +152,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 8
+      "matches": 9
     }
   },
   "9": {
@@ -175,10 +175,10 @@
       "matches": 20
     },
     "2025": {
-      "goals": 2,
+      "goals": 3,
       "assists": 0,
-      "attackP": 2,
-      "matches": 7
+      "attackP": 3,
+      "matches": 8
     }
   },
   "10": {
@@ -204,7 +204,7 @@
       "goals": 2,
       "assists": 0,
       "attackP": 2,
-      "matches": 11
+      "matches": 12
     }
   },
   "11": {
@@ -305,10 +305,10 @@
       "matches": 11
     },
     "2025": {
-      "goals": 2,
+      "goals": 6,
       "assists": 0,
-      "attackP": 2,
-      "matches": 8
+      "attackP": 6,
+      "matches": 9
     }
   },
   "15": {
@@ -386,7 +386,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 6
+      "matches": 7
     }
   },
   "20": {
@@ -412,7 +412,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 0
+      "matches": 1
     }
   },
   "21": {
@@ -438,7 +438,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 3
+      "matches": 4
     }
   },
   "23": {
@@ -464,7 +464,7 @@
       "goals": 0,
       "assists": 2,
       "attackP": 2,
-      "matches": 7
+      "matches": 8
     }
   },
   "26": {
@@ -487,10 +487,10 @@
       "matches": 5
     },
     "2025": {
-      "goals": 3,
+      "goals": 4,
       "assists": 1,
-      "attackP": 4,
-      "matches": 9
+      "attackP": 5,
+      "matches": 10
     }
   },
   "27": {
@@ -566,9 +566,9 @@
     },
     "2025": {
       "goals": 0,
-      "assists": 0,
-      "attackP": 0,
-      "matches": 10
+      "assists": 3,
+      "attackP": 3,
+      "matches": 11
     }
   },
   "31": {
@@ -672,7 +672,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 1
+      "matches": 2
     }
   },
   "88": {
@@ -724,7 +724,7 @@
       "goals": 1,
       "assists": 0,
       "attackP": 1,
-      "matches": 6
+      "matches": 7
     }
   }
 }
