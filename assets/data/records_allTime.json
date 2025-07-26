@@ -22,7 +22,7 @@
       "goals": 0,
       "assists": 1,
       "attackP": 1,
-      "matches": 14
+      "matches": 15
     }
   },
   "3": {
@@ -74,7 +74,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 5
+      "matches": 6
     }
   },
   "6": {
@@ -152,7 +152,7 @@
       "goals": 2,
       "assists": 1,
       "attackP": 3,
-      "matches": 11
+      "matches": 12
     }
   },
   "9": {
@@ -204,7 +204,7 @@
       "goals": 2,
       "assists": 0,
       "attackP": 2,
-      "matches": 14
+      "matches": 15
     }
   },
   "11": {
@@ -334,7 +334,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 18
+      "matches": 19
     }
   },
   "16": {
@@ -386,7 +386,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 11
+      "matches": 12
     }
   },
   "20": {
@@ -490,7 +490,7 @@
       "goals": 5,
       "assists": 2,
       "attackP": 7,
-      "matches": 13
+      "matches": 14
     }
   },
   "27": {
@@ -539,10 +539,10 @@
       "matches": 6
     },
     "2025": {
-      "goals": 1,
-      "assists": 1,
-      "attackP": 2,
-      "matches": 8
+      "goals": 3,
+      "assists": 2,
+      "attackP": 5,
+      "matches": 9
     }
   },
   "30": {
@@ -568,7 +568,7 @@
       "goals": 0,
       "assists": 5,
       "attackP": 5,
-      "matches": 13
+      "matches": 14
     }
   },
   "31": {
@@ -594,7 +594,7 @@
       "goals": 2,
       "assists": 1,
       "attackP": 3,
-      "matches": 18
+      "matches": 19
     }
   },
   "39": {
@@ -620,7 +620,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 4
+      "matches": 5
     }
   },
   "66": {
@@ -698,7 +698,7 @@
       "goals": 1,
       "assists": 0,
       "attackP": 1,
-      "matches": 4
+      "matches": 5
     }
   },
   "99": {
