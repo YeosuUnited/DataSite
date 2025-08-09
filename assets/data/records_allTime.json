@@ -332,8 +332,8 @@
     },
     "2025": {
       "goals": 1,
-      "assists": 1,
-      "attackP": 2,
+      "assists": 0,
+      "attackP": 1,
       "matches": 21
     }
   },
@@ -696,8 +696,8 @@
     },
     "2025": {
       "goals": 1,
-      "assists": 0,
-      "attackP": 1,
+      "assists": 1,
+      "attackP": 2,
       "matches": 6
     }
   },
