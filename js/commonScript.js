@@ -199,19 +199,25 @@ async function addMissingYearData(year, recordAll) {
 }
 
 async function addMissingSubYearData(year, subPlayer) {
-  let isModify = false;
+  let isSubModify = false;
 
   for (const playerName in subPlayer) {
     if (!subPlayer[playerName][year]) {
-      isModify = true;
-      subPlayer[playerName][year] = { goals: 0, assists: 0, attackP: 0, matches: 0 };
+      isSubModify = true;
+      subPlayer[playerName][year] = {
+        goals: 0,
+        assists: 0,
+        attackP: 0,
+        matches: 0,
+      };
     }
   }
 
-  if (isModify) {
+  if (isSubModify) {
+    // 저장 직전에 sha 가져오기
     const cur = await getGitHubFileMG('YeosuUnited', 'DataSite', 'assets/data/subPlayer_data.json');
     if (!cur.sha) {
-      console.warn("sha 못 가져와서 저장 스킵. 화면은 로컬 데이터로 진행");
+      console.warn("subPlayer sha 못 가져와서 저장 스킵(화면은 로컬 데이터로 진행)");
       return subPlayer;
     }
 
@@ -222,45 +228,15 @@ async function addMissingSubYearData(year, subPlayer) {
         'assets/data/subPlayer_data.json',
         subPlayer,
         cur.sha,
-        `Add ${year} data if missing`
+        `Add ${year} subPlayer data if missing`
       );
-      console.log(`"${year}" 데이터 추가 후 GitHub 저장 완료`);
+      console.log(`"${year}" subPlayer 데이터 추가 후 GitHub 저장 완료`);
     } catch (e) {
-      console.warn("GitHub 저장 실패(화면은 계속):", e);
+      console.warn("subPlayer GitHub 저장 실패(화면은 계속):", e);
     }
   }
 
   return subPlayer;
-}
-
-async function addMissingSubYearData(year, subPlayer, subSha) {
-    let isSubModify = false;
-
-    for (const playerName in subPlayer) {
-        if (!subPlayer[playerName][year]) {
-            isSubModify = true;
-            subPlayer[playerName][year] = {
-                goals: 0,
-                assists: 0,
-                attackP: 0,
-                matches: 0,
-            }
-        }
-    }
-
-    if (isSubModify) {
-        await saveGitHubFile(
-            'YeosuUnited',
-            'DataSite',
-            'assets/data/subPlayer_data.json',
-            subPlayer,
-            subSha, // 기존 파일의 sha
-            `Add ${year} data if missing`
-        );
-        console.log(`"${year}" 데이터가 없던 선수에게 기본값을 추가하고, GitHub에 업로드했습니다.`);
-    }
-
-    return subPlayer;
 }
 
 // 공통 유틸리티 함수: GitHub 파일 가져오기
