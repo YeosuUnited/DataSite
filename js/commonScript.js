@@ -27,8 +27,12 @@ async function fetchData() {
             );
 
             // token 파일 내용 합치기
-            const token_1 = tokenResponses[0].status === 'fulfilled' ? tokenResponses[0].value.replace(/\n/g, '') : '';
-            const token_2 = tokenResponses[1].status === 'fulfilled' ? tokenResponses[1].value.replace(/\n/g, '') : '';
+            const token_1 = tokenResponses[0].status === 'fulfilled'
+              ? tokenResponses[0].value.replace(/[\r\n]/g, '')
+              : '';
+            const token_2 = tokenResponses[1].status === 'fulfilled'
+              ? tokenResponses[1].value.replace(/[\r\n]/g, '')
+              : '';
             token = token_1 + token_2;
 
             // token을 localStorage에 저장
@@ -78,17 +82,6 @@ async function fetchData() {
                         ? responses[5].value.content
                         : {},
             };
-
-            const recordAllSha =
-                responses[1].status === 'fulfilled'
-                    ? responses[1].value.sha
-                    : null;
-
-            const subPlayerSha =
-                responses[3].status === 'fulfilled'
-                    ? responses[3].value.sha
-                    : null;
-
 
             const nowYear = new Date().getFullYear();
             data.recordAll = await addMissingYearData(nowYear, data.recordAll);
@@ -247,7 +240,7 @@ async function getGitHubFile(repoOwner, repoName, filePath) {
         try {
             const fileData = await response.json(); // Base64 변환 제거
             return {
-                sha: null, // raw.githubusercontent.com에서는 sha 제공 안 함
+                sha: sha || null, // raw.githubusercontent.com에서는 sha 제공 안 함
                 content: fileData,
             };
         } catch (error) {
@@ -285,7 +278,7 @@ async function getGitHubFileMG(repoOwner, repoName, filePath) {
 async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, message) {
     const body = {
     message,
-    content: utf8ToBase64(JSON.stringify(content, null, 2)),
+    content: base64Content,
     ...(sha ? { sha } : {}), // sha 있을 때만 포함
   };
     
