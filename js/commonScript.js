@@ -91,17 +91,8 @@ async function fetchData() {
 
 
             const nowYear = new Date().getFullYear();
-            data.recordAll = await addMissingYearData(
-                nowYear,
-                data.recordAll,
-                recordAllSha
-            );
-
-            data.subPlayer = await addMissingSubYearData(
-                nowYear,
-                data.subPlayer,
-                subPlayerSha
-            );
+            data.recordAll = await addMissingYearData(nowYear, data.recordAll);
+            data.subPlayer = await addMissingSubYearData(nowYear, data.subPlayer);
 
             // 캐싱 데이터 저장
             cachedData = data;
@@ -149,21 +140,17 @@ function validateCachedData(data) {
 
 // 캐싱 데이터 로드 함수
 function useCachedData() {
-    const cachedToken = localStorage.getItem('token');
-    if (cachedToken) {
-        token = cachedToken;
-    }
-    else {
-        console.log("데이터를 불러오는 중 오류가 발생했습니다.");
-    }
+  const cachedToken = localStorage.getItem('token');
+  if (cachedToken) token = cachedToken;
 
-    const cached = localStorage.getItem('cachedData');
-    if (cached) {
-        cachedData = JSON.parse(cached);                
-        console.log("캐싱된 데이터를 사용 중입니다.");
-    } else {
-        throw new Error("캐싱된 데이터가 없습니다.");
-    }
+  const cached = localStorage.getItem('cachedData');
+  if (cached) {
+    cachedData = JSON.parse(cached);
+    return;
+  }
+
+  console.warn("캐시 없음. 빈 데이터로 시작");
+  cachedData = { players:{}, recordAll:{}, matchesTotal:{}, subPlayer:{}, youtubeLink:{}, newsData:{} };
 }
 
 function formatTime(date) {
@@ -174,36 +161,76 @@ function formatTime(date) {
     return `${period} ${formattedHours}시${minutes ? ` ${minutes}분` : ''}`;
 }
 
-async function addMissingYearData(year, recordAll, sha,) {
-    let isModify = false;
+async function addMissingYearData(year, recordAll) {
+  let isModify = false;
 
-    for (const playerNumber in recordAll) {
-        // 해당 선수에 year 키가 없으면 추가
-        if (!recordAll[playerNumber][year]) {
-            isModify = true;
-            recordAll[playerNumber][year] = {
-                goals: 0,
-                assists: 0,
-                attackP: 0,
-                matches: 0,
-            };
-        }
+  for (const playerNumber in recordAll) {
+    if (!recordAll[playerNumber][year]) {
+      isModify = true;
+      recordAll[playerNumber][year] = { goals: 0, assists: 0, attackP: 0, matches: 0 };
+    }
+  }
+
+  if (isModify) {
+    // 저장 직전에 sha 확보
+    const cur = await getGitHubFileMG('YeosuUnited', 'DataSite', 'assets/data/records_allTime.json');
+    if (!cur.sha) {
+      console.warn("sha 못 가져와서 저장 스킵. 화면은 로컬 데이터로 진행");
+      return recordAll;
     }
 
-    // 누락된 연도가 하나라도 있었다면 GitHub에 저장
-    if (isModify) {
-        await saveGitHubFile(
-            'YeosuUnited',
-            'DataSite',
-            'assets/data/records_allTime.json',
-            recordAll,
-            sha, // 기존 파일의 sha
-            `Add ${year} data if missing`
-        );
-        console.log(`"${year}" 데이터가 없던 선수에게 기본값을 추가하고, GitHub에 업로드했습니다.`);
+    // 저장 실패해도 화면 로딩은 계속되게 try/catch
+    try {
+      await saveGitHubFile(
+        'YeosuUnited',
+        'DataSite',
+        'assets/data/records_allTime.json',
+        recordAll,
+        cur.sha,
+        `Add ${year} data if missing`
+      );
+      console.log(`"${year}" 데이터 추가 후 GitHub 저장 완료`);
+    } catch (e) {
+      console.warn("GitHub 저장 실패(화면은 계속):", e);
+    }
+  }
+
+  return recordAll;
+}
+
+async function addMissingSubYearData(year, subPlayer) {
+  let isModify = false;
+
+  for (const playerName in subPlayer) {
+    if (!subPlayer[playerName][year]) {
+      isModify = true;
+      subPlayer[playerName][year] = { goals: 0, assists: 0, attackP: 0, matches: 0 };
+    }
+  }
+
+  if (isModify) {
+    const cur = await getGitHubFileMG('YeosuUnited', 'DataSite', 'assets/data/subPlayer_data.json');
+    if (!cur.sha) {
+      console.warn("sha 못 가져와서 저장 스킵. 화면은 로컬 데이터로 진행");
+      return subPlayer;
     }
 
-    return recordAll;
+    try {
+      await saveGitHubFile(
+        'YeosuUnited',
+        'DataSite',
+        'assets/data/subPlayer_data.json',
+        subPlayer,
+        cur.sha,
+        `Add ${year} data if missing`
+      );
+      console.log(`"${year}" 데이터 추가 후 GitHub 저장 완료`);
+    } catch (e) {
+      console.warn("GitHub 저장 실패(화면은 계속):", e);
+    }
+  }
+
+  return subPlayer;
 }
 
 async function addMissingSubYearData(year, subPlayer, subSha) {
@@ -258,22 +285,24 @@ async function getGitHubFile(repoOwner, repoName, filePath) {
 }
 
 async function getGitHubFileMG(repoOwner, repoName, filePath) {
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-        headers: {
-            Authorization: `token ${token}`,
-        },
-    });
+  const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+    headers: {
+      Authorization: `token ${token}`,
+      Accept: "application/vnd.github+json",
+    },
+  });
 
-    if (response.ok) {
-        const fileData = await response.json();
-        return {
-            sha: fileData.sha,
-            content: JSON.parse(base64ToUtf8(fileData.content)),
-        };
-    } else {
-        console.warn(`파일을 찾을 수 없습니다: ${filePath}`);
-        return { sha: null, content: {} };
-    }                
+  if (!response.ok) {
+    const err = await response.text();
+    console.warn("getGitHubFileMG fail:", filePath, response.status, err);
+    return { sha: null, content: {} };
+  }
+
+  const fileData = await response.json();
+  return {
+    sha: fileData.sha,
+    content: JSON.parse(base64ToUtf8(fileData.content)),
+  };
 }
 
 // 공통 유틸리티 함수: GitHub 파일 저장
