@@ -278,21 +278,25 @@ async function getGitHubFileMG(repoOwner, repoName, filePath) {
 
 // 공통 유틸리티 함수: GitHub 파일 저장
 async function saveGitHubFile(repoOwner, repoName, filePath, content, sha, message) {
+    const body = {
+    message,
+    content: utf8ToBase64(JSON.stringify(content, null, 2)),
+    ...(sha ? { sha } : {}), // sha 있을 때만 포함
+  };
+    
     const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
         method: "PUT",
         headers: {
             Authorization: `token ${token}`,
             "Content-Type": "application/json",
+            Accept: "application/vnd.github+json",
         },
-        body: JSON.stringify({
-            message,
-            content: utf8ToBase64(JSON.stringify(content, null, 2)),
-            sha: sha || null, // 새 파일인 경우 sha를 null로 처리
-        }),
+        body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-        throw new Error(`파일 저장에 실패했습니다: ${filePath}`);
+        const err = await response.text();
+        throw new Error(`파일 저장 실패: ${filePath} (${response.status}) ${err}`);
     }
 
     return await response.json();
