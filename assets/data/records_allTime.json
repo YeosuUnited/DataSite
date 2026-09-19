@@ -28,7 +28,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 21
+      "matches": 22
     }
   },
   "3": {
@@ -188,7 +188,7 @@
       "goals": 0,
       "assists": 1,
       "attackP": 1,
-      "matches": 24
+      "matches": 25
     }
   },
   "9": {
@@ -217,10 +217,10 @@
       "matches": 16
     },
     "2026": {
-      "goals": 7,
+      "goals": 8,
       "assists": 0,
-      "attackP": 7,
-      "matches": 16
+      "attackP": 8,
+      "matches": 17
     }
   },
   "10": {
@@ -284,7 +284,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 6
+      "matches": 7
     }
   },
   "12": {
@@ -348,7 +348,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 4
+      "matches": 5
     }
   },
   "14": {
@@ -412,7 +412,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 20
+      "matches": 21
     }
   },
   "16": {
@@ -444,7 +444,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 7
+      "matches": 8
     }
   },
   "18": {
@@ -540,7 +540,7 @@
       "goals": 0,
       "assists": 0,
       "attackP": 0,
-      "matches": 19
+      "matches": 20
     }
   },
   "23": {
@@ -604,7 +604,7 @@
       "goals": 0,
       "assists": 1,
       "attackP": 1,
-      "matches": 7
+      "matches": 8
     }
   },
   "27": {
@@ -700,7 +700,7 @@
       "goals": 1,
       "assists": 3,
       "attackP": 4,
-      "matches": 27
+      "matches": 28
     }
   },
   "31": {
@@ -729,10 +729,10 @@
       "matches": 31
     },
     "2026": {
-      "goals": 2,
+      "goals": 3,
       "assists": 0,
-      "attackP": 2,
-      "matches": 26
+      "attackP": 3,
+      "matches": 27
     }
   },
   "39": {
@@ -794,9 +794,9 @@
     },
     "2026": {
       "goals": 1,
-      "assists": 1,
-      "attackP": 2,
-      "matches": 7
+      "assists": 2,
+      "attackP": 3,
+      "matches": 8
     }
   },
   "77": {
@@ -889,10 +889,10 @@
       "matches": 17
     },
     "2026": {
-      "goals": 1,
+      "goals": 2,
       "assists": 1,
-      "attackP": 2,
-      "matches": 15
+      "attackP": 3,
+      "matches": 16
     }
   }
 }
