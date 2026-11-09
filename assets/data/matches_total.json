@@ -1,22 +1,4 @@
 {
-  "match_00166": {
-    "date": "2026-11-14T12:20:00.000Z",
-    "type": "0",
-    "opponent": "연습",
-    "location": "둥댜",
-    "comment": "",
-    "players": [],
-    "subP": [],
-    "score": {
-      "us": 0,
-      "them": 0
-    },
-    "goal": [],
-    "assist": [],
-    "subGoal": [],
-    "subAssist": [],
-    "lineupId": "589e9aa1-1d97-41a6-9736-f516822a4c40"
-  },
   "match_00165": {
     "date": "2026-11-06T23:00:00.000Z",
     "type": "1",
